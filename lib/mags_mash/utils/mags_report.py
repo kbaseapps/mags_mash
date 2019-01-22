@@ -77,7 +77,7 @@ def create_tree(GOLD, tree, tree_cols):
         tree.append(
             {
                 'name':t,
-                'count'type_count[t],
+                'count':type_count[t],
                 'children':create_tree(GOLD[GOLD[col]==t], [], tree_cols[1:])
             }
         )
@@ -109,8 +109,8 @@ def generate_report(cb_url, scratch, workspace_name, id_to_dist_and_kbid_and_rel
         f.write(html_output)
     
     html_link = {
-        'path': file_dir
-        'name': 'output.html'
+        'path': file_dir,
+        'name': 'output.html',
         'description':"MAG Mash output html report"
     }
     report = KBaseReport(cb_url)
