@@ -5,8 +5,8 @@ search_db = 'JGI_MAGS'
 
 def query_ahs_mags(sw_url, ws_ref, n_max_results):
     payload = {
-        'method':'get_homologs';
-        'params': {
+        "method":"get_homologs",
+        "params": {
             'ws_ref': ws_ref,
             'search_db': search_db,
             'n_max_results': n_max_results

@@ -6,6 +6,8 @@ You will need to have the SDK installed to use this module. [Learn more about th
 
 You can also learn more about the apps implemented in this module from its [catalog page](https://narrative.kbase.us/#catalog/modules/mags_mash) or its [spec file]($module_name.spec).
 
+This SDK application leverages the KBase sketch service. fid more info about the sketch service [here](https://www.github.com/kbaseapps/sketch_service)
+
 # Setup and test
 
 Add your KBase developer token to `test_local/test.cfg` and run the following:
@@ -16,6 +18,7 @@ $ kb-sdk test
 ```
 
 After making any additional changes to this repo, run `kb-sdk test` again to verify that everything still works.
+ 
 
 # Installation from another module
 
