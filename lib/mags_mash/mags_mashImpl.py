@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
 import os
-from installed_clients.KBaseReportClient import KBaseReport
+from utils.mags_input import get_fasta
+from utils.mags_query import query_ahs_mags
+from utils.mags_report import generate_report 
 #END_HEADER
 
 
@@ -33,6 +35,7 @@ class mags_mash:
         #BEGIN_CONSTRUCTOR
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.shared_folder = config['scratch']
+        self.sw_url = config['srv-wiz-url']
         #END_CONSTRUCTOR
         pass
 
@@ -47,14 +50,21 @@ class mags_mash:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_mags_mash
-        report = KBaseReport(self.callback_url)
-        report_info = report.create({'report': {'objects_created':[],
-                                                'text_message': params['parameter_1']},
-                                                'workspace_name': params['workspace_name']})
-        output = {
-            'report_name': report_info['name'],
-            'report_ref': report_info['ref'],
-        }
+        ws_ref = params.get('ws_ref')
+        n_max_results = params.get('n_max_results')
+        # verify inputs
+        if not ws_ref:
+            raise ValueError("Assembly Reference must be provided")
+        if not n_max_results:
+            raise ValueError("n_max_results was not set properly")
+
+
+        # get associated fasta of ref
+        # ref_fasta = get_fasta(self.callback_url, params.get('ws_ref'))
+        id_to_dist_and_kbid_and_relatedids = query_ahs_mags(self.sw_url, ws_ref, n_max_results)
+        output = generate_report(self.callback_url, self.shared_folder,\
+                                  params.get('workspace_name'), id_to_dist_and_kbid_and_relatedids)
+
         #END run_mags_mash
 
         # At some point might do deeper type checking...

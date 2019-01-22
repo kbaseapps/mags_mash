@@ -11,14 +11,27 @@
     },
     "parameters": [ 
         {
-            "id": "parameter_1",
+            "id": "ws_ref",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [""],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": ["KBaseGenomeAnnotations.Assembly"]
+            }
+        },{
+            "id": "n_max_results",
             "optional": true,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [ "" ],
+            "default_values": [10],
             "field_type": "text",
             "text_options": {
-                "valid_ws_types": [ ]
+                "valid_ws_types":[],
+                "validate_as":"int",
+                "min_int":1,
+                "max_int":100
             }
         }
     ],
@@ -35,8 +48,11 @@
                     "narrative_system_variable": "workspace_id",
                     "target_property": "workspace_id"
                 },{
-                    "input_parameter": "parameter_1",
-                    "target_property": "parameter_1"
+                    "input_parameter": "ws_ref",
+                    "target_property": "ws_ref"
+                },{
+                    "input_parameter": "n_max_results",
+                    "target_property": "n_max_results"
                 }
             ],
             "output_mapping": [
