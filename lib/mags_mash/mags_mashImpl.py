@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
 import os
-from utils.mags_input import get_fasta
 from utils.mags_query import query_ahs_mags
 from utils.mags_report import generate_report 
 #END_HEADER
@@ -58,9 +57,6 @@ class mags_mash:
         if not n_max_results:
             raise ValueError("n_max_results was not set properly")
 
-
-        # get associated fasta of ref
-        # ref_fasta = get_fasta(self.callback_url, params.get('ws_ref'))
         id_to_dist_and_kbid_and_relatedids = query_ahs_mags(self.sw_url, ws_ref, n_max_results)
         output = generate_report(self.callback_url, self.shared_folder,\
                                   params.get('workspace_name'), id_to_dist_and_kbid_and_relatedids)
