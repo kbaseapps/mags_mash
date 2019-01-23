@@ -54,7 +54,8 @@ def ids_to_info(ids):
     '''
     # fill this in when we actually have acess to GOLD data
     # we're going to use pandas to read in the csv files we have
-    gold_id_to_id = {val[2]['GOLD_Analysis_id']:key for key, val in ids.items()}
+    print(ids)
+    gold_id_to_id = {val[2]['GOLD_Analysis_ID']:key for key, val in ids.items()}
     
     GOLD = pd.read_csv('data/GOLD-metadata.csv')
     
