@@ -22,11 +22,9 @@ def parse_response(resp):
         raise RuntimeError("Sketch Service Error: "+resp['error'])
     if not resp.get('result'): 
         raise ValueError("No results in JSON response body")
-    if not resp.get('data'):
-        raise ValueError("Results emtpy in JSON response body")
     if not resp['result'].get('distances'):
         raise ValueError("No Distances in JSON response")
-    
+
     id_to_dist_and_kbid_and_related_ids = {}
     for d in resp['result']['distances']:
         id_ = d.get('sourceid')
