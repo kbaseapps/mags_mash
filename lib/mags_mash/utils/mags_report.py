@@ -109,6 +109,7 @@ def generate_report(cb_url, scratch, workspace_name, id_to_dist_and_kbid_and_rel
 
     html_output = htmlify(id_to_dist_and_kbid_and_relatedids)
     report_file = os.path.join(scratch, report_name)
+    os.mkdir(report_file)
     html_path = os.path.join(report_file, 'output.html')
 
     with open(html_path, 'w') as f:
