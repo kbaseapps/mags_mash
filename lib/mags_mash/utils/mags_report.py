@@ -74,9 +74,10 @@ def ids_to_info(ids):
 
 def create_tree(GOLD, tree, tree_cols):
     '''
-    '''
+    '''    
     if len(tree_cols) == 0:
         return tree
+    col = tree_cols[0]
     type_count = GOLD[col].value_counts().to_dict()
     for t in type_count:
         tree.append(
