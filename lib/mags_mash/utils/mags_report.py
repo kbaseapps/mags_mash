@@ -98,7 +98,7 @@ def htmlify(id_to_dist_and_kbid_and_relatedids):
     '''
     stats, tree = ids_to_info(id_to_dist_and_kbid_and_relatedids)
     # for now convert IDs we have to report
-    template = env.get_template('output_tempalte.html')
+    template = env.get_template('output_template.html')
     return template.render(tree=tree, stats=stats)
 
     
