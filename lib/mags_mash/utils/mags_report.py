@@ -116,7 +116,7 @@ def generate_report(cb_url, scratch, workspace_name, id_to_dist_and_kbid_and_rel
         f.write(html_output)
     
     html_link = {
-        'path': file_dir,
+        'path': report_file,
         'name': 'output.html',
         'description':"MAG Mash output html report"
     }
