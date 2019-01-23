@@ -17,7 +17,9 @@ def get_statistics(ids, GOLD):
     '''
     '''
     output = []
-    Stats = pd.read_csv('data/Stats-taxonomy.csv')
+    currdir = os.path.dirname(__file__)
+    stats_path = os.path.join(currdir, 'data', 'Stats-taxonomy.csv')
+    Stats = pd.read_csv(stats_path)
     curr_stats = Stats[Stats['binid'].isin(ids.keys())]
     curr_stats = curr_stats.fillna('Unknown')
     for id_ in ids:
@@ -56,9 +58,10 @@ def ids_to_info(ids):
     # fill this in when we actually have acess to GOLD data
     # we're going to use pandas to read in the csv files we have
     gold_id_to_id = {val[2]['GOLD_Analysis_ID']:key for key, val in ids.items()}
-    currdir = os.path.dirname(__file__)   
-    print('currdir:',currdir,os.listdir('data'))
-    GOLD = pd.read_csv('data/GOLD-metadata.csv')
+    currdir = os.path.dirname(__file__)
+    gold_path = os.path.join(currdir,'data','GOLD-metadata.csv')
+    # print('currdir:',currdir,os.listdir('data'))
+    GOLD = pd.read_csv(gold_path)
     
     curr_GOLD = GOLD[GOLD['GOLD Analysis Project ID'].isin(gold_id_to_id.keys())]
     tree_cols = ['Ecosysytem','Ecosystem Category','Ecosystem Subtype',\
