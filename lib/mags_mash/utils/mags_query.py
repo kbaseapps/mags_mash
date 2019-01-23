@@ -13,7 +13,8 @@ def query_ahs_mags(sw_url, ws_ref, n_max_results):
         }
     }
     sketch_url = get_sketch_service_url(sw_url)
-    resp = requests.post(url=sketch_url, data=json.dumps(payload))
+    resp = requests.post(url=sketch_url, data=json.dumps(payload),
+                         headers={'content-type':'application/json')
     return parse_response(resp.json())
     
 def parse_response(resp):
