@@ -25,7 +25,7 @@ def parse_response(resp):
     if not resp['result'].get('distances'):
         raise ValueError("No Distances in JSON response")
 
-    id_to_dist_and_kbid_and_related_ids = {}
+    id_to_dist_and_kbid_and_relatedids = {}
     for d in resp['result']['distances']:
         id_ = d.get('sourceid')
         kb_id = d.get('kbase_id', None)
