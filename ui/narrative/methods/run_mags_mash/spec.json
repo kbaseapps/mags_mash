@@ -49,7 +49,8 @@
                     "target_property": "workspace_id"
                 },{
                     "input_parameter": "ws_ref",
-                    "target_property": "ws_ref"
+                    "target_property": "ws_ref",
+                    "target_type_transform":"ref"
                 },{
                     "input_parameter": "n_max_results",
                     "target_property": "n_max_results"

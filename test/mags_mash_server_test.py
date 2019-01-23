@@ -70,23 +70,25 @@ class mags_mashTest(unittest.TestCase):
 
     def upload_data_and_get_refs(self, ws_name):
         files = os.listdir('data/')
+        files = [f for f in files if '.fa' in f]
         refs = []
         au = AssemblyUtil(self.__class__.callback_url)
         for f in files:
-            new_path = os.path.join(cls.__class__.scratch,f)
+            new_path = os.path.join(self.__class__.scratch,f)
             path = os.path.join(os.path.join(os.getcwd(),'data'),f)
-            args = ['mv',path, new_path]
-            subprocess.popen(args)
-            self.assertTrue(os.path.exists(path))
+            args = ['cp',path, new_path]
+            subprocess.check_output(args)
+            self.assertTrue(os.path.exists(new_path))
+            print('curr file',f)
             ref = au.save_assembly_from_fasta(
                 {
                     "file":{
-                        "path":path,
+                        "path":new_path,
                         "assembly_name":f.split('.fa')[0]
                     },
                     "assembly_name": f.split('.fa')[0] + "_mags_mash_test",
                     "workspace_name": ws_name,
-                    "min_contig_length":500,
+                    "min_contig_length":100,
                     "type": "metagenome"
                 }
             )
