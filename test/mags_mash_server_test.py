@@ -9,7 +9,7 @@ from mags_mash.mags_mashServer import MethodContext
 from mags_mash.authclient import KBaseAuth as _KBaseAuth
 
 from installed_clients.WorkspaceClient import Workspace
-
+from installed_clients.AssemblyUtilClient import AssemblyUtil
 
 class mags_mashTest(unittest.TestCase):
 
@@ -67,16 +67,45 @@ class mags_mashTest(unittest.TestCase):
     def getContext(self):
         return self.__class__.ctx
 
+    def upload_data_and_get_refs(self, ws_name):
+        files = os.listdir('data/')
+        refs = []
+        au = AssemblyUtil(self.__class__.callback_url)
+        for f in files:
+            path = os.path.join(os.path.join(os.getcwd(),'data'),f)
+            self.assertTrue(os.path.exists(path))
+            ref = au.save_assembly_from_fasta(
+                {
+                    "file":{
+                        "path":path,
+                        "assembly_name":f.split('.fa')[0]
+                    },
+                    "assembly_name": f.split('.fa')[0] + "_mags_mash_test",
+                    "workspace_name": ws_name,
+                    "min_contig_length":500,
+                    "type": "metagenome"
+                }
+            )
+            refs.append(ref)
+        return refs
+
+    def validate_report_is_populated(self, ret):
+        self.assertTrue('report_ref' in ret)
+
+
+    def iteration_of_test(self, ref, ws_name):
+        ret = self.getImpl().run_mags_mash(self.getContext(), {'workspace_name': ws_name,
+                                                                'ws_ref': ref,
+                                                                'n_max_results':10})
+        validate_report_is_populated(ret)
+
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
     def test_your_method(self):
-        # Prepare test objects in workspace if needed using
-        # self.getWsClient().save_objects({'workspace': self.getWsName(),
-        #                                  'objects': []})
-        #
-        # Run your method by
-        # ret = self.getImpl().your_method(self.getContext(), parameters...)
-        #
-        # Check returned data with
-        # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.getImpl().run_mags_mash(self.getContext(), {'workspace_name': self.getWsName(),
-                                                                    'parameter_1': 'Hello World!'})
+        '''
+        simple test to see if the 5 files run.
+        '''
+        ws_name = self.getWsName()
+        refs = self.upload_data_and_get_refs(ws_name)
+        for ref in refs:
+            self.iteration_of_test(ref, ws_name)
+

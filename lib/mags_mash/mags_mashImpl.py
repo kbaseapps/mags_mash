@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
 import os
-from utils.mags_query import query_ahs_mags
-from utils.mags_report import generate_report 
+from .utils.mags_query import query_ahs_mags
+from .utils.mags_report import generate_report 
 #END_HEADER
 
 
