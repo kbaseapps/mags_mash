@@ -2,6 +2,7 @@
 import os
 import time
 import unittest
+import subprocess
 from configparser import ConfigParser
 
 from mags_mash.mags_mashImpl import mags_mash
@@ -72,7 +73,10 @@ class mags_mashTest(unittest.TestCase):
         refs = []
         au = AssemblyUtil(self.__class__.callback_url)
         for f in files:
+            new_path = os.path.join(cls.__class__.scratch,f)
             path = os.path.join(os.path.join(os.getcwd(),'data'),f)
+            args = ['mv',path, new_path]
+            subprocess.popen(args)
             self.assertTrue(os.path.exists(path))
             ref = au.save_assembly_from_fasta(
                 {
