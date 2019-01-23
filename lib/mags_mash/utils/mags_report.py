@@ -64,7 +64,7 @@ def ids_to_info(ids):
     GOLD = pd.read_csv(gold_path)
     
     curr_GOLD = GOLD[GOLD['GOLD Analysis Project ID'].isin(gold_id_to_id.keys())]
-    tree_cols = ['Ecosysytem','Ecosystem Category','Ecosystem Subtype',\
+    tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
     tree = create_tree(curr_GOLD, [], tree_cols)
     # markers = get_location_markers(gold_id_to_id.values())
