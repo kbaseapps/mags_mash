@@ -18,13 +18,13 @@ def query_ahs_mags(sw_url, ws_ref, n_max_results):
     return parse_response(resp.json())
     
 def parse_response(resp):
-    if 'error' in resp:
+    if resp.get('error'):
         raise RuntimeError("Sketch Service Error: "+resp['error'])
-    if 'result' not in resp:
+    if not resp.get('result'): 
         raise ValueError("No results in JSON response body")
-    if not resp['data']:
+    if not resp.get('data'):
         raise ValueError("Results emtpy in JSON response body")
-    if 'distances' not in rep['result']:
+    if not resp['result'].get('distances'):
         raise ValueError("No Distances in JSON response")
     
     id_to_dist_and_kbid_and_related_ids = {}
