@@ -70,7 +70,7 @@ table {
 
 th {
     font-family: arial, sans-serif;
-    border: 3px solid #dddddd;
+    border: 1px solid #000000;
     text-align: left;
     padding: 8px;
     font-size: 16px;
@@ -78,14 +78,14 @@ th {
 
 td {
     font-family: arial, sans-serif;
-    border: 2px solid #dddddd;
+    border: 1px solid #000000;
     text-align: left;
     padding: 8px;
     font-size: 12px;
 }
 
 tr:nth-child(even){
-    background-color: #dddddd
+    background-color: #e2e2e2
 }
 
 </style>
@@ -128,16 +128,16 @@ Statistics List view
         </tr>
         {% for item in stats %}
         <tr>
-            <th>{{item.dist}}</th>
-            <th>{{item.mag_id}}</th>
-            <th>{{item.kb_id}}</th>
-            <th>{{item.GOLD_Analysis_ID}}</th>
-            <th>{{item.GOLD_Sequencing_ID}}</th>
-            <th>{{item.IMG_Genome_ID}}</th>
-            <th>{{item.completeness}}</th>
-            <th>{{item.contamination}}</th>
-            <th>{{item.MIMAG}}</th>
-            <th>{{item.project}}</th>
+            <td>{{item.dist}}</td>
+            <td>{{item.mag_id}}</td>
+            <td>{{item.kb_id}}</td>
+            <td>{{item.GOLD_Analysis_ID}}</td>
+            <td>{{item.GOLD_Sequencing_ID}}</td>
+            <td>{{item.IMG_Genome_ID}}</td>
+            <td>{{item.completeness}}</td>
+            <td>{{item.contamination}}</td>
+            <td>{{item.MIMAG}}</td>
+            <td>{{item.project}}</td>
         </tr>
         {% endfor %}
     </table>    
