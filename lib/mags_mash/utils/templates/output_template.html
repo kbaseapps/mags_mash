@@ -8,6 +8,35 @@ table {
     width: 100%;
 }
 
+.caret {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
+
+.caret::before{
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.caret-down::before{
+    -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.nested {
+    display: none
+}
+
+.active {
+    display: block;
+}
+
 .tab {
     overflow: hidden;
     border: 1px solid #ccc;
@@ -39,10 +68,17 @@ table {
     border-top: none;
 }
 
-td, th {
+tbody {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
+}
+
+th {
+    font-size: 16px;
+}
+td {
+    font-size: 12px;
 }
 
 tr:nth-child(even){
@@ -109,6 +145,19 @@ NOTE: hold off on this for now.
 
 <div id="map" class="tabcontent"></div>
 -->
+<script>
+var toggler = document.getElementsByClassName("caret");
+var i;
+
+for (i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener("click", function() {
+    this.parentElement.querySelector(".nested").classList.toggle("active");
+    this.classList.toggle("caret-down");
+  });
+}
+</script>
+
+
 <script>
     function openTab(evt, name) {
         // Declare all variables
