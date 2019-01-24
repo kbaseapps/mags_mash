@@ -35,6 +35,7 @@ class mags_mash:
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.shared_folder = config['scratch']
         self.sw_url = config['srv-wiz-url']
+        self.auth_token = os.environ['KB_AUTH_TOKEN']
         #END_CONSTRUCTOR
         pass
 
@@ -49,15 +50,16 @@ class mags_mash:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_mags_mash
-        ws_ref = params.get('ws_ref')
-        n_max_results = params.get('n_max_results')
-        # verify inputs
-        if not ws_ref:
+        if params.get('ws_ref'):
+            ws_ref = params.get('ws_ref')
+        else:
             raise ValueError("Assembly Reference must be provided")
-        if not n_max_results:
+        if params.get('n_max_results'):
+            n_max_results = params.get('n_max_results')
+        else:
             raise ValueError("n_max_results was not set properly")
 
-        id_to_dist_and_kbid_and_relatedids = query_ahs_mags(self.sw_url, ws_ref, n_max_results)
+        id_to_dist_and_kbid_and_relatedids = query_ahs_mags(self.sw_url, ws_ref, n_max_results, self.auth_token)
         output = generate_report(self.callback_url, self.shared_folder,\
                                   params.get('workspace_name'), id_to_dist_and_kbid_and_relatedids)
 

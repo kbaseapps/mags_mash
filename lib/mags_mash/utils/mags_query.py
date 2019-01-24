@@ -3,7 +3,7 @@ import json
 
 search_db = 'JGI_MAGS'
 
-def query_ahs_mags(sw_url, ws_ref, n_max_results):
+def query_ahs_mags(sw_url, ws_ref, n_max_results, auth_token):
     payload = {
         "method":"get_homologs",
         "params": {
@@ -14,7 +14,7 @@ def query_ahs_mags(sw_url, ws_ref, n_max_results):
     }
     sketch_url = get_sketch_service_url(sw_url)
     resp = requests.post(url=sketch_url, data=json.dumps(payload),
-                         headers={'content-type':'application/json'})
+                         headers={'content-type':'application/json', 'authorization':auth_token})
     return parse_response(resp.json())
     
 def parse_response(resp):
