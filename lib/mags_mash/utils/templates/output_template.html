@@ -61,8 +61,7 @@ tr:nth-child(even){
 <!--
 Recursive Tree structure below, fill in with tree=
 -->
-<ul id="tree">
-
+<ul id="tree" class="tabcontent">
     {%- for t in tree recursive %}
         <li><span class="caret">{{t.name}} ({{t.count}})</span>
         {%- if t.children -%}
@@ -73,7 +72,7 @@ Recursive Tree structure below, fill in with tree=
 <!--
 Statistics List view
 -->
-<ul id='stats'>
+<ul id='stats' class="tabcontent">
     <table>
         <tr>
             <th>Distance</th>
@@ -108,7 +107,7 @@ Looks like we'll have to use the google maps api to get this done
 
 NOTE: hold off on this for now.
 
-<div id="map"></div>
+<div id="map" class="tabcontent"></div>
 -->
 <script>
     function openTab(evt, name) {
