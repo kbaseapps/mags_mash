@@ -88,16 +88,16 @@ Statistics List view
         </tr>
         {% for item in stats %}
         <tr>
-            <th>item.dist</th>
-            <th>item.mag_id</th>
-            <th>item.kb_id</th>
-            <th>item.GOLD_Analysis_ID</th>
-            <th>item.GOLD_Sequencing_ID</th>
-            <th>item.IMG_Genome_ID</th>
-            <th>item.completeness</th>
-            <th>item.contamination</th>
-            <th>item.MIMAG</th>
-            <th>item.project</th>
+            <th>{{item.dist}}</th>
+            <th>{{item.mag_id}}</th>
+            <th>{{item.kb_id}}</th>
+            <th>{{item.GOLD_Analysis_ID}}</th>
+            <th>{{item.GOLD_Sequencing_ID}}</th>
+            <th>{{item.IMG_Genome_ID}}</th>
+            <th>{{item.completeness}}</th>
+            <th>{{item.contamination}}</th>
+            <th>{{item.MIMAG}}</th>
+            <th>{{item.project}}</th>
         </tr>
         {% endfor %}
     </table>    
