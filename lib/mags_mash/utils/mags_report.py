@@ -80,10 +80,13 @@ def create_tree(GOLD, tree, tree_cols):
     col = tree_cols[0]
     type_count = GOLD[col].value_counts().to_dict()
     for t in type_count:
+        if type_count[t] > 1:
+            name = t+" ({})".format(type_count[t])
+        else:
+            name = t
         tree.append(
             {
-                'name':t,
-                'count':type_count[t],
+                'name':name,
                 'children':create_tree(GOLD[GOLD[col]==t], [], tree_cols[1:])
             }
         )

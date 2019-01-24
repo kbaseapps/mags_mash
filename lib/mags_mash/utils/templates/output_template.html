@@ -107,10 +107,13 @@ Recursive Tree structure below, fill in with tree=
 -->
 <ul id="tree" class="tabcontent">
     {%- for t in tree recursive %}
-        <li><span class="caret">{{t.name}} ({{t.count}})</span>
         {%- if t.children -%}
+        <li><span class="caret">{{t.name}}</span>
             <ul class="nested">{{ loop(t.children) }} </ul>
-        {%- endif %}</li>
+        </li>
+        {%- else -%}
+        <li>{{t.name}}</li>
+        {%- endif %}
     {%- endfor %}
 </ul>
 <!--
