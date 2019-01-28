@@ -9,9 +9,18 @@ def get_location_markers(ids):
     For now this simply returns 1 marker with
     the location of LBL
 
-    change this to form a list of [marker name, latitude, longitude] 
+    returns list of markers
+    
+    marker format:
+    {
+        'name': name of marker
+        'lat': latitude as a float
+        'lng': longitude as a float
+        'details': pop up details
+
+    }
     '''
-    return [['LBL', 37.877344, -122.250694]]
+    return [{'name':'LBL', 'lat':37.877344, 'lng'-122.250694, 'details':""}]
 
 def get_statistics(ids, GOLD):
     '''
@@ -67,9 +76,9 @@ def ids_to_info(ids):
     tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
     tree = create_tree(curr_GOLD, [], tree_cols)
-    # markers = get_location_markers(gold_id_to_id.values())
+    markers = get_location_markers(gold_id_to_id.values())
     stats = get_statistics(ids, curr_GOLD)
-    return stats, tree #, markers
+    return stats, tree, markers
 
 
 def create_tree(GOLD, tree, tree_cols):
@@ -99,10 +108,10 @@ env = Environment(loader=PackageLoader('mags_mash','utils/templates'),
 def htmlify(id_to_dist_and_kbid_and_relatedids):
     '''
     '''
-    stats, tree = ids_to_info(id_to_dist_and_kbid_and_relatedids)
+    stats, tree, markers = ids_to_info(id_to_dist_and_kbid_and_relatedids)
     # for now convert IDs we have to report
     template = env.get_template('output_template.html')
-    return template.render(tree=tree, stats=stats)
+    return template.render(tree=tree, stats=stats, markers=markers)
 
     
 def generate_report(cb_url, scratch, workspace_name, id_to_dist_and_kbid_and_relatedids):

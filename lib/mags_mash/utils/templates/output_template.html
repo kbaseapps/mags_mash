@@ -1,7 +1,14 @@
 <html>
 <head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"></link>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"></link>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
+<script src="leaflet/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+
 <style>
 /*CSS styling*/
 
@@ -75,7 +82,7 @@ ul{
 <div class='tab'>
     <button class="tablinks" onclick="openTab(event, 'stats')" id="defaultOpen">List View</button>
     <button class="tablinks" onclick="openTab(event, 'tree')">Ecosystem Tree</button>
-    <!--<button class="tablinks" onclick="openTab(event, 'Map View')">map</button>-->
+    <button class="tablinks" onclick="openTab(event, 'map')">Map</button>
 </div>
 
 <!--
@@ -134,16 +141,42 @@ Statistics List view
     </table>    
 </div>
 <!--
-Google maps view below
-Looks like we'll have to use the google maps api to get this done
-
-NOTE: hold off on this for now.
-
 <div id="map" class="tabcontent"></div>
 -->
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+<div id="map" class="tabcontent"></div>
+
+<script>
+    var map;
+    var plotlist;
+
+    var markers={{ markers|safe }};
+
+    function initmap() {
+        // set up the map
+        map = new L.Map('map');
+
+        // create the tile layer with correct attribution
+        var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmAttrib='Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+        var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});       
+
+        // start the map in South-East England
+        map.setView(new L.LatLng(37.877344, -122.250694),7);
+        map.addLayer(osm);
+
+        for (i=0;i<markers.length;i++) {
+            var plotll = new L.LatLng(markers[i].lat,markers[i].lng, true);
+            var plotmark = new L.Marker(plotll);
+            plotmark.data=markers[i];
+            map.addLayer(plotmark);
+            plotmark.bindPopup("<h3>"+markers[i].name+"</h3>"+markers[i].details);
+        }
+    }
+
+    initmap();
+    
+</script>
 
 <script type="text/javascript">
     $(document).ready(function()){
