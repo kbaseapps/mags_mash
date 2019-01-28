@@ -10,7 +10,7 @@ def get_location_markers(ids):
     the location of LBL
 
     returns list of markers
-    
+
     marker format:
     {
         'name': name of marker
@@ -20,7 +20,7 @@ def get_location_markers(ids):
 
     }
     '''
-    return [{'name':'LBL', 'lat':37.877344, 'lng'-122.250694, 'details':""}]
+    return [{'name':'LBL', 'lat':37.877344, 'lng':-122.250694, 'details':""}]
 
 def get_statistics(ids, GOLD):
     '''
