@@ -11,6 +11,9 @@
 
 <style>
 /*CSS styling*/
+#map {
+    height: 100%;
+}
 
 ul{
     list-style-type: none;
@@ -92,7 +95,7 @@ Recursive Tree structure below, fill in with tree=
     {%- for t in tree recursive %}
         {%- if t.children -%}
         <li><span class="caret">{{t.name}}</span>
-            <li class="nested">{{ loop(t.children) }} </li>
+            <ul class="nested">{{ loop(t.children) }} </ul>
         </li>
         {%- else -%}
         <li>{{t.name}}</li>
@@ -140,9 +143,6 @@ Statistics List view
         </tbody>
     </table>    
 </div>
-<!--
-<div id="map" class="tabcontent"></div>
--->
 
 <div id="map" class="tabcontent"></div>
 
