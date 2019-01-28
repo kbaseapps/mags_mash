@@ -9,11 +9,11 @@ ul{
     list-style-type: none;
 }
 
-.table a {
+/*.table a {
     display: block;
     text-decoration: none;
 }
-
+*/
 .caret {
     cursor: pointer;
     -webkit-user-select: none;
@@ -85,7 +85,7 @@ Recursive Tree structure below, fill in with tree=
     {%- for t in tree recursive %}
         {%- if t.children -%}
         <li><span class="caret">{{t.name}}</span>
-            <ul class="nested">{{ loop(t.children) }} </ul>
+            <li class="nested">{{ loop(t.children) }} </li>
         </li>
         {%- else -%}
         <li>{{t.name}}</li>
@@ -147,11 +147,7 @@ NOTE: hold off on this for now.
 
 <script type="text/javascript">
     $(document).ready(function()){
-        $('#stats_table').Datatable({
-            scrollY:   '30vh',
-            scrollCollapse: true,
-            paging: false
-        })
+        $('#stats_table').Datatable();
     }
 </script>
 
