@@ -1,5 +1,7 @@
 <html>
 <head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"></link>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"></link>
 <style>
 /*CSS styling*/
 table {
@@ -74,25 +76,26 @@ ul{
 
 th {
     font-family: arial, sans-serif;
-    border: 1px solid #000000;
+    border: 1px solid #ccc;
     text-align: left;
     padding: 8px;
-    font-size: 16px;
+    font-size: 13px;
 }
 
 td {
     font-family: arial, sans-serif;
-    border: 1px solid #000000;
+    border: 1px solid #ccc;
     text-align: left;
     padding: 8px;
     font-size: 12px;
 }
 
 tr:nth-child(even){
-    background-color: #e2e2e2
+    background-color: #eaeaea
 }
 
 </style>
+
 </head>
 <!-- HTML below -->
 <body>
@@ -109,7 +112,7 @@ Recursive Tree structure below, fill in with tree=
     {%- for t in tree recursive %}
         {%- if t.children -%}
         <li><span class="caret">{{t.name}}</span>
-            <ul class="nested">{{ loop(t.children) }} </ul>
+            <ul class="active">{{ loop(t.children) }} </ul>
         </li>
         {%- else -%}
         <li>{{t.name}}</li>
@@ -120,33 +123,37 @@ Recursive Tree structure below, fill in with tree=
 Statistics List view
 -->
 <ul id='stats' class="tabcontent">
-    <table>
-        <tr>
-            <th>Distance</th>
-            <th>MAG ID</th>
-            <th>KBase ID</th>
-            <th>GOLD Analysis Project ID</th>
-            <th>GOLD Sequencing Project ID</th>
-            <th>IMG Genome ID</th>
-            <th>Completeness</th>
-            <th>Contamination</th>
-            <th>MIMAG</th>
-            <th>Project/Study Name</th>
-        </tr>
-        {% for item in stats %}
-        <tr>
-            <td>{{item.dist}}</td>
-            <td>{{item.mag_id}}</td>
-            <td>{{item.kb_id}}</td>
-            <td>{{item.GOLD_Analysis_ID}}</td>
-            <td>{{item.GOLD_Sequencing_ID}}</td>
-            <td>{{item.IMG_Genome_ID}}</td>
-            <td>{{item.completeness}}</td>
-            <td>{{item.contamination}}</td>
-            <td>{{item.MIMAG}}</td>
-            <td>{{item.project}}</td>
-        </tr>
-        {% endfor %}
+    <table id='stats_table'>
+        <thead>
+            <tr>
+                <th>Distance</th>
+                <th>MAG ID</th>
+                <th>KBase ID</th>
+                <th>GOLD Analysis Project ID</th>
+                <th>GOLD Sequencing Project ID</th>
+                <th>IMG Genome ID</th>
+                <th>Completeness</th>
+                <th>Contamination</th>
+                <th>MIMAG</th>
+                <th>Project/Study Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in stats %}
+            <tr>
+                <td>{{item.dist}}</td>
+                <td>{{item.mag_id}}</td>
+                <td>{{item.kb_id}}</td>
+                <td>{{item.GOLD_Analysis_ID}}</td>
+                <td>{{item.GOLD_Sequencing_ID}}</td>
+                <td>{{item.IMG_Genome_ID}}</td>
+                <td>{{item.completeness}}</td>
+                <td>{{item.contamination}}</td>
+                <td>{{item.MIMAG}}</td>
+                <td>{{item.project}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>    
 </ul>
 <!--
@@ -157,18 +164,30 @@ NOTE: hold off on this for now.
 
 <div id="map" class="tabcontent"></div>
 -->
-<script>
-var toggler = document.getElementsByClassName("caret");
-var i;
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-for (i = 0; i < toggler.length; i++) {
-  toggler[i].addEventListener("click", function() {
-    this.parentElement.querySelector(".nested").classList.toggle("active");
-    this.classList.toggle("caret-down");
-  });
-}
+<script type="text/javascript">
+    $(document).ready(function()){
+        $('#stats_table').Datatable({
+            scrollY:   '30vh',
+            scrollCollapse: true,
+            paging: false
+        })
+    }
 </script>
 
+<script>
+    var toggler = document.getElementsByClassName("caret");
+    var i;
+
+    for (i = 0; i < toggler.length; i++) {
+      toggler[i].addEventListener("click", function() {
+        this.parentElement.querySelector(".nested").classList.toggle("active");
+        this.classList.toggle("caret-down");
+      });
+    }
+</script>
 
 <script>
     function openTab(evt, name) {
