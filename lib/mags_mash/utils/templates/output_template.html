@@ -71,6 +71,13 @@ ul{
 
 </style>
 
+<script type="text/javascript" class="init">
+    $(document).ready(function()){
+        $('#stats_table').Datatable();
+    }
+</script>
+
+
 </head>
 <!-- HTML below -->
 <body>
@@ -98,25 +105,25 @@ Recursive Tree structure below, fill in with tree=
 Statistics List view
 -->
 <div id='stats' class="tabcontent">
-    <table id='stats_table' class='table table-striped table-bordered'>
+    <table id='stats_table' class='table table-striped table-bordered dataTable' style="width:100%" role="grid">
         <thead>
             <tr>
-                <th>Distance</th>
-                <th>MAG ID</th>
-                <th>KBase ID</th>
-                <th>GOLD Analysis Project ID</th>
-                <th>GOLD Sequencing Project ID</th>
-                <th>IMG Genome ID</th>
-                <th>Completeness</th>
-                <th>Contamination</th>
-                <th>MIMAG</th>
-                <th>Project/Study Name</th>
+                <th class="sorting" aria-controls="stats_table">Distance</th>
+                <th class="sorting" aria-controls="stats_table">MAG ID</th>
+                <th class="sorting" aria-controls="stats_table">KBase ID</th>
+                <th class="sorting" aria-controls="stats_table">GOLD Analysis Project ID</th>
+                <th class="sorting" aria-controls="stats_table">GOLD Sequencing Project ID</th>
+                <th class="sorting" aria-controls="stats_table">IMG Genome ID</th>
+                <th class="sorting" aria-controls="stats_table">Completeness</th>
+                <th class="sorting" aria-controls="stats_table">Contamination</th>
+                <th class="sorting" aria-controls="stats_table">MIMAG</th>
+                <th class="sorting" aria-controls="stats_table">Project/Study Name</th>
             </tr>
         </thead>
         <tbody>
             {% for item in stats %}
             <tr>
-                <td>{{item.dist}}</td>
+                <td class="sorting_1">{{item.dist}}</td>
                 <td>{{item.mag_id}}</td>
                 <td>{{item.kb_id}}</td>
                 <td>
@@ -136,15 +143,17 @@ Statistics List view
     </table>    
 </div>
 
-<div id="map" style = "height: 100%; border: 1px #000;" class="tabcontent"></div>
+<div id="map" style = "height: 200px; background-color: pink;" class="tabcontent"></div>
 
 <script>
 
     var markers={{ markers|safe }};
 
+    var map;
+
     function initmap() {
         // set up the map
-        var map = new L.Map('map');
+        map = new L.Map('map');
 
         // create the tile layer with correct attribution
         var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -165,12 +174,6 @@ Statistics List view
 
     initmap();
     
-</script>
-
-<script type="text/javascript">
-    $(document).ready(function()){
-        $('#stats_table').Datatable();
-    }
 </script>
 
 <script>
