@@ -105,10 +105,10 @@ Recursive Tree structure below, fill in with tree=
 Statistics List view
 -->
 <div id='stats' class="tabcontent">
-    <table id='stats_table' class='table table-striped table-bordered dataTable' style="width:100%" role="grid">
+    <table id='stats_table' class='table table-striped table-bordered dataTable' style="width:height%" role="grid">
         <thead>
             <tr>
-                <th class="sorting" aria-controls="stats_table">Distance</th>
+                <th class="sorting" aria-controls="stats_table" aria-sort="ascending">Distance</th>
                 <th class="sorting" aria-controls="stats_table">MAG ID</th>
                 <th class="sorting" aria-controls="stats_table">KBase ID</th>
                 <th class="sorting" aria-controls="stats_table">GOLD Analysis Project ID</th>
@@ -143,7 +143,7 @@ Statistics List view
     </table>    
 </div>
 
-<div id="map" style = "height: 200px; background-color: pink;" class="tabcontent"></div>
+<div id="map" style = "height: 100%; background-color: pink;" class="tabcontent"></div>
 
 <script>
 
@@ -156,7 +156,7 @@ Statistics List view
         map = new L.Map('map');
 
         // create the tile layer with correct attribution
-        var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmUrl='https://{s}.tile.openstreetmap.org/${z}/${x}/${y}.png';
         var osmAttrib='Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
         var osm = new L.TileLayer(osmUrl, {minZoom: 3, maxZoom: 12, attribution: osmAttrib}).addTo(map);       
 
@@ -164,7 +164,7 @@ Statistics List view
         map.setView(new L.LatLng(37.877344, -122.250694),7);
 
         for (i=0;i<markers.length;i++) {
-            L.marker([markers[i].lat, markers[i].lng]).bindPopup("<h3>"+markers[i].name+"</h3>"+markers[i].details).addTo(map);
+            L.marker([markers[i].lat, markers[i].lng]).addTo(map).bindPopup("<h3>"+markers[i].name+"</h3>"+markers[i].details);
             // var plotll = new L.LatLng(markers[i].lat,markers[i].lng, true);
             // var plotmark = new L.marker(plotll);
             // plotmark.data=markers[i];
