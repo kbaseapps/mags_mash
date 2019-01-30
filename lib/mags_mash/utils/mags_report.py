@@ -52,7 +52,7 @@ def get_statistics(ids, GOLD):
                 else:
                     curr[key] = 'Unknown'
         if relatedids['GOLD_Analysis_ID']:
-            curr['project'] = GOLD[GOLD['GOLD Analysis Project ID'] == relatedids['GOLD_Analysis_ID']]
+            curr['project'] = GOLD[GOLD['GOLD Analysis Project ID'] == relatedids['GOLD_Analysis_ID']].iloc[0]['Project / Study Name']
         else:
             curr['project'] = 'Unknown'
 
