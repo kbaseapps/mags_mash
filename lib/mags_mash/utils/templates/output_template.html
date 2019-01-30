@@ -73,7 +73,7 @@
     <div class='tab'>
         <button class="tablinks" onclick="openTab(event, 'stats')" id="defaultOpen">List View</button>
         <button class="tablinks" onclick="openTab(event, 'tree')">Ecosystem Tree</button>
-        <button class="tablinks" onclick="openTab(event, 'map')">Map</button>
+        <button class="tablinks" onclick="openTab(event, 'maptab')">Map</button>
     </div>
 
     <!--
@@ -107,16 +107,6 @@
                     <td>Contamination</td>
                     <td>MIMAG</td>
                     <td>Project/Study Name</td>
-                    <!--<th class="sorting" aria-controls="stats_table" aria-sort="ascending">Distance</th>
-                    <th class="sorting" aria-controls="stats_table">MAG ID</th>
-                    <th class="sorting" aria-controls="stats_table">KBase ID</th>
-                    <th class="sorting" aria-controls="stats_table">GOLD Analysis Project ID</th>
-                    <th class="sorting" aria-controls="stats_table">GOLD Sequencing Project ID</th>
-                    <th class="sorting" aria-controls="stats_table">IMG Genome ID</th>
-                    <th class="sorting" aria-controls="stats_table">Completeness</th>
-                    <th class="sorting" aria-controls="stats_table">Contamination</th>
-                    <th class="sorting" aria-controls="stats_table">MIMAG</th>
-                    <th class="sorting" aria-controls="stats_table">Project/Study Name</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -142,7 +132,9 @@
         </table>    
     </div>
 
-    <div id="map" style="height: 90%; background-color: pink;" class="tabcontent"></div>
+    <div id="maptab" class="tabcontent">
+        <div id="map" style="height: 90%; background-color: pink;"></div>
+    </div>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.js"></script>
@@ -159,12 +151,12 @@
     <script>
 
         var markers={{ markers|safe }};
-        var mymap = new L.map("map").setView(new L.LatLng(37.87, -122.25),7);
+        var mymap = new L.map("map").setView([37.87, -122.25],7);
 
         // create the tile layer with correct attribution
         var osmUrl='https://{s}.tile.osm.org/{z}/{x}/{y}.png';
         var osmAttrib='Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
-        var osm = new L.TileLayer(osmUrl, {minZoom: 3, maxZoom: 12, attribution: osmAttrib}).addTo(mymap);
+        L.TileLayer(osmUrl, {attribution: osmAttrib}).addTo(mymap);
 
         // for (i=0;i<markers.length;i++) {
         //     L.marker([markers[i].lat, markers[i].lng]).addTo(mymap).bindPopup("<h3>"+markers[i].name+"</h3>"+markers[i].details);
