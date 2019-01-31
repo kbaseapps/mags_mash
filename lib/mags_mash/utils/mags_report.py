@@ -20,7 +20,7 @@ def get_location_markers(ids):
 
     }
     '''
-    return [{'name':'LBL', 'lat':37.877344, 'lng':-122.250694, 'details':""}]
+    return [{'name':'LBL', 'lat':37.877344, 'lng':-122.250694, 'details':"This is Lawrence Berkeley National Laboratory"}]
 
 def get_statistics(ids, GOLD):
     '''
