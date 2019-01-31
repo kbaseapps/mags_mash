@@ -75,7 +75,7 @@ def ids_to_info(ids):
     curr_GOLD = GOLD[GOLD['GOLD Analysis Project ID'].isin(gold_id_to_id.keys())]
     tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
-    tree = {'name': "TREEE", 'children':create_tree(curr_GOLD, [], tree_cols), 'count':"({})".format(str(len(ids)))}
+    tree = {'name': "TREE", 'children':create_tree(curr_GOLD, [], tree_cols), 'count':"({})".format(str(len(ids)))}
     markers = get_location_markers(gold_id_to_id.values())
     stats = get_statistics(ids, curr_GOLD)
     return stats, tree, markers
