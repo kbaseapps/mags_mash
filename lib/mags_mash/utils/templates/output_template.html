@@ -20,7 +20,7 @@
         list-style-type: none;
     }
 
-    .caret {
+/*    .caret {
         cursor: pointer;
         -webkit-user-select: none;
         -moz-user-select: none;
@@ -48,7 +48,7 @@
     .active {
         display: block;
     }
-
+*/
     .tab {
         overflow: hidden;
         border: 1px solid #ccc;
@@ -110,7 +110,7 @@
     going to replace this tree thing with html 
     -->
     <div id="treetab" class="tabcontent" style="width: 100%; height: 100%;">
-        <div id="treeid" style="width: 100%; height: 100%;"></div>
+        <div id="treeid" style="width: 100%; height: 88%;"></div>
     </div>
 <!--         {%- for t in tree recursive %}
             {%- if t.children -%}
@@ -216,6 +216,7 @@
             .attr("width", width) // + margin.left + margin.right)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 
         root = d3.hierarchy(tree);
         root.x0 = 0;
