@@ -94,13 +94,18 @@ def create_tree(GOLD, tree, tree_cols):
             count = "({})".format(type_count[t])
         else:
             count = ""
-        tree.append(
-            {
+        leaf = create_tree(GOLD[GOLD[col]==t], [], tree_cols[1:])
+        if leaf == []:
+            tree.append({
+                'name':t,
+                'count':count
+            })
+        else:
+            tree.append({
                 'name':t,
                 'count':count,
-                'children':create_tree(GOLD[GOLD[col]==t], [], tree_cols[1:])
-            }
-        )
+                'children':leaf
+            })
     return tree
 
 env = Environment(loader=PackageLoader('mags_mash','utils/templates'),
