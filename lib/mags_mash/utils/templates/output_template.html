@@ -113,7 +113,7 @@
     <div id="treetab" class="tabcontent" style="width: 100%; height: 100%;">
         <div id="treeid" style="width: 100%; height: 88%;"></div>
     </div>
-<!--         {%- for t in tree recursive %}
+    <!--{%- for t in tree recursive %}
             {%- if t.children -%}
             <li><span class="caret">{{t.name}}</span>
                 <ul class="nested">{{ loop(t.children) }} </ul>
@@ -212,7 +212,7 @@
             .x(function(d) { return d.y; })
             .y(function(d) { return d.x; });
 
-        var svg = d3.select("treeid").append("svg")
+        var svg = d3.select("#treeid").append("svg")
             .attr("width", width) // + margin.left + margin.right)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
