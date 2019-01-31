@@ -75,53 +75,8 @@ def ids_to_info(ids):
     curr_GOLD = GOLD[GOLD['GOLD Analysis Project ID'].isin(gold_id_to_id.keys())]
     tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
-    # tree = create_tree(curr_GOLD, [], tree_cols)
-    # tree_wrapper = {"name":"Tree", "count":"({})".format(str(len(ids))), "children":tree}
-
-    tree_wrapper = {
-      "name": "Tree",
-      "count": "(10)",
-      "children": [
-        {
-          "name": "Engineered",
-          "count": "(4)",
-          "children": [
-            {
-              "name": "Wastewater",
-              "count": "(2)",
-              "children": [
-                {
-                  "name": "Petrochemical",
-                  "count": "(2)",
-                  "children": [
-                    {
-                      "name": "Industrial wastewater",
-                      "count": "(2)",
-                      "children": [
-                        {
-                          "name": "Unclassified",
-                          "count": "(2)",
-                          "children": [
-                            {
-                              "name": "Wastewater microbial communities from Syncrude, Ft. McMurray, Alberta - Microbes in  water sample from Medicine Hat oil field -PW_MHGC_2012April2:",
-                              "count": ""
-                            },
-                            {
-                              "name": "Wastewater microbial communities from Syncrude, Ft. McMurray, Alberta - Biofilm from sections of failed pipe of  Encana Pipeline",
-                              "count": ""
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+    tree = create_tree(curr_GOLD, [], tree_cols)
+    tree_wrapper = {"name":"Tree", "count":"({})".format(str(len(ids))), "children":tree}
 
     markers = get_location_markers(gold_id_to_id.values())
     stats = get_statistics(ids, curr_GOLD)
