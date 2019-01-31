@@ -159,7 +159,7 @@
     </div>
 
     <div id="maptab" class="tabcontent">
-        <div id="map" style="height: 90%; background-color: pink;"></div>
+        <div id="mapid" style="height: 90%; background-color: pink;"></div>
     </div>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -177,12 +177,12 @@
     <script>
 
         var markers={{ markers|safe }};
-        var mymap = new L.map("map").setView([37.87, -122.25],7);
+        var mymap = new L.map("mapid").setView([37.87, -122.25],7);
 
         // create the tile layer with correct attribution
         var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         var osmAttrib='Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
-        L.TileLayer(osmUrl, {attribution: osmAttrib}).addTo(mymap);
+        var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib}).addTo(mymap);
 
         // for (i=0;i<markers.length;i++) {
         //     L.marker([markers[i].lat, markers[i].lng]).addTo(mymap).bindPopup("<h3>"+markers[i].name+"</h3>"+markers[i].details);
