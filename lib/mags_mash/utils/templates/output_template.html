@@ -99,7 +99,7 @@
 <body>
     <div class='tab'>
         <button class="tablinks" onclick="openTab(event, 'stats')" id="defaultOpen">List View</button>
-        <button class="tablinks" onclick="openTab(event, 'tree')">Ecosystem Tree</button>
+        <button class="tablinks" onclick="openTab(event, 'treetab')">Ecosystem Tree</button>
         <button class="tablinks" onclick="openTab(event, 'maptab')">Map</button>
     </div>
 
@@ -109,7 +109,9 @@
 
     going to replace this tree thing with html 
     -->
-    <div id="tree" class="tabcontent"></div>
+    <div id="treetab" class="tabcontent">
+        <div id="treeid"></div>
+    </div>
 <!--         {%- for t in tree recursive %}
             {%- if t.children -%}
             <li><span class="caret">{{t.name}}</span>
@@ -163,7 +165,7 @@
     </div>
 
     <div id="maptab" class="tabcontent">
-        <div id="mapid" style="height: 90%; background-color: pink;"></div>
+        <div id="mapid" style="height: 88%;"></div>
     </div>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
