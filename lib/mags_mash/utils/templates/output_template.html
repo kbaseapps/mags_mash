@@ -1,6 +1,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" 
     integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
@@ -11,6 +12,9 @@
 
     <style>
     /*CSS styling*/
+
+    *{font-family: 'Oxygen', Helvetica, sans-serif;}
+
 
     ul{
         list-style-type: none;
@@ -78,7 +82,7 @@
     }
 
     .node text {
-        font: 10px sans-serif;
+        font: 12px;
         pointer-events: none;
     }
 
@@ -190,12 +194,13 @@
         
     </script> 
 
-<!--     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script>
-        var tree = {{tree|safe}}
+        var tree = {{ tree|safe }}
     </script>
-    <script src="tree_script.js"></script> -->
-    <script>
+    <script src="tree_script.js"></script>
+
+<!--     <script>
         var toggler = document.getElementsByClassName("caret");
         var i;
 
@@ -205,7 +210,7 @@
             this.classList.toggle("caret-down");
           });
         }
-    </script>
+    </script> -->
 
     <script>
         function openTab(evt, name) {
