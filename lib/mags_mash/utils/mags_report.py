@@ -20,7 +20,12 @@ def get_location_markers(ids):
 
     }
     '''
-    return [{'name':'LBL', 'lat':37.877344, 'lng':-122.250694, 'details':"This is Lawrence Berkeley National Laboratory"}]
+    return [
+        {'name':"LBL", "lat":37.877344, "lng":-122.250694, "details":"This is Lawrence Berkeley National Laboratory."},
+        {'name':"Golden Gate Bridge", "lat": 37.817060, "lng": -122.478206, "details":"This is the Golden Gate Bridge."},
+        {'name':"SFO Airport", 'lat':37.616310, 'lng': -122.386793, 'details':"This is San Francisco International Airport."},
+        {'name':"Mount Diablo", "lat": 37.881523, "lng": -121.914325, "details":"This is Mount Diablo."}
+    ]
 
 def get_statistics(ids, GOLD):
     '''
