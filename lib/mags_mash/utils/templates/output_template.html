@@ -318,7 +318,6 @@
                   }else{return d.data.compl}
                 })
             // ========================================================================
-
             // ------------------------------------------------------------------------
             // Enter any new nodes at the parent's previous position.
             nodeEnter.append("rect")
@@ -327,7 +326,7 @@
                 .attr("transform", leaf_transform_2)
                 .attr("width", function(d){
                     console.log(d)
-                    return barWidth - d.depth * margin.left
+                    return barWidth - d.depth * margin.left - leaf_width(d) * 2
                 })
                 .style("fill", color)
                 .on("click", click);

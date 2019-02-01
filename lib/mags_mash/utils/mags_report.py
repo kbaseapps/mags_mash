@@ -84,6 +84,7 @@ def ids_to_info(ids):
     curr_GOLD = GOLD[GOLD['GOLD Analysis Project ID'].isin(gold_id_to_id.keys())]
     tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
+    curr_GOLD = curr_GOLD.fillna({col:"Unknown" for col in tree_cols})
     # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
     stats, dist_compl = get_statistics(ids, curr_GOLD)
     tree = create_tree(curr_GOLD, tree_cols, dist_compl)
@@ -91,7 +92,7 @@ def ids_to_info(ids):
     markers = get_location_markers(gold_id_to_id.values())
     return stats, tree_wrapper, markers
 
-name_max_len = 130
+name_max_len = 120
 
 def create_tree(GOLD, tree_cols, dist_compl):
     '''
