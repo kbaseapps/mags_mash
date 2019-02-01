@@ -30,7 +30,7 @@ def get_location_markers(ids):
 def get_statistics(ids, GOLD):
     '''
     '''
-    dist_compl
+    dist_compl = {}
 
     output = []
     currdir = os.path.dirname(__file__)
