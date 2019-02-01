@@ -26,19 +26,19 @@ suggestions:
 parameters :
     ws_ref :
         ui-name : |
-            Assembly workspace reference
+            Assembly or Genome
         short-hint : |
-            workspace reference of an assembly item of type KBaseGenomeAnnotations.Assembly
+            Assembly or Genome object name
         long-hint  : |
-            workspace reference of an assembly item of type KBaseGenomeAnnotations.Assembly
+            Assembly or Genome object name
 
     n_max_results:
         ui-name: |
             Maximum number of results
         short-hint: |
-            Maximum number of similar sequence results to return 
+            Maximum number of similar sequence results to return, limit 100
         long-hint: |
-            Maximum number of similar sequence results to return 
+            Maximum number of similar sequence results to return, limit 100
 
 description : |
 
