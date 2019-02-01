@@ -198,9 +198,10 @@
     </script> 
 
     <script>
+
         var tree = {{ tree|safe }}
         var margin = {top: 30, right: 20, bottom: 30, left: 20},
-            width = 1460,
+            width = 1490,
             barHeight = 30,
             barWidth = (width - margin.left - margin.right) * 0.8;
 
@@ -266,12 +267,12 @@
                 .on("click", click);
 
             nodeEnter.append("text")
-                .attr("dy", 4.5)
+                .attr("dy", 5)
                 .attr("dx", 5.5)
                 .text(function(d) { return d.data.name; });
 
             nodeEnter.append("text")
-                .attr('dy', 4.5)
+                .attr('dy', 5)
                 .attr('dx', function(d){return barWidth - 30 - d.depth * margin.left})
                 .style("fill", "#9b9b9b")
                 .text(function(d) {return d.data.count})
@@ -316,7 +317,7 @@
         }
 
         function color(d) {
-            return d._children ? "#7ab9ff" : d.children ? "#7ab9ff" : "#badaff";
+            return d._children ? "#badaff" : d.children ? "#badaff" : "#7ab9ff";
         }
 
     </script>

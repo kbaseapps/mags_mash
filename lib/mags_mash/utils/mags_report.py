@@ -76,7 +76,7 @@ def ids_to_info(ids):
     tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
     tree = create_tree(curr_GOLD, [], tree_cols)
-    tree_wrapper = {"name":"Tree", "count":"({})".format(str(len(ids))), "children":tree}
+    tree_wrapper = {"name":"", "count":"({})".format(str(len(ids))), "children":tree}
 
     markers = get_location_markers(gold_id_to_id.values())
     stats = get_statistics(ids, curr_GOLD)
@@ -91,15 +91,13 @@ def create_tree(GOLD, tree, tree_cols):
     col = tree_cols[0]
     type_count = GOLD[col].value_counts().to_dict()
     for t in type_count:
-        if type_count[t] > 1:
-            count = "({})".format(type_count[t])
-        else:
-            count = ""
+        count = "({})".format(type_count[t])
         leaf = create_tree(GOLD[GOLD[col]==t], [], tree_cols[1:])
         if leaf == []:
+            # is terminal node/actually a leaf
             tree.append({
                 'name':t,
-                'count':count
+                'count':""
             })
         else:
             tree.append({
