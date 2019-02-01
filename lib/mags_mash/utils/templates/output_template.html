@@ -93,6 +93,19 @@
         stroke-width: 1.5px;
     }
 
+    .tooltip {
+        font-family: 'Oxygen', Helvetica, sans-serif;
+        position: absolute;
+        z-index: 10;
+        visibility: hidden;
+        background-color: #7ab9ff;
+        text-align: center;
+        padding: 4px;
+        font-weight: bold;
+        border-radius: 4px;
+        color: #1e1e1e;
+    }
+
     </style>
 
 </head>
@@ -213,6 +226,8 @@
             .x(function(d) { return d.y; })
             .y(function(d) { return d.x; });
 
+        var tooltip = d3.select("#treeid").append("div").attr("class", 'tooltip');
+
         var svg = d3.select("#treeid").append("svg")
             .attr("width", width) // + margin.left + margin.right)
             .append("g")
@@ -255,10 +270,61 @@
                 .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
                 .style("opacity", 0);
 
+
+            // ========================================================================
+            // want to fork here and only include this if its a leaf...
+            nodeEnter.append("rect")
+                .attr("y", -barHeight/2)
+                .attr("height", barHeight)
+                .attr("width", leaf_width)
+                .attr("border", 0)
+                //.style('stroke', "#7ab9ff")
+                .style("fill", color)
+                .on("click", click)
+                .on("mouseover", show_dist_text)
+                .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
+                .on("mouseout", function(d){return tooltip.style("visibility", "hidden");})
+
+
+            nodeEnter.append("text")
+                .attr("dy", 5)
+                .attr("dx", 4.5)
+                .style("font-weight", "bold")
+                .text(function(d){
+                  if(d.children){return ""
+                  }else{return d.data.dist}
+                })
+
+            nodEnter.append("rect")
+                .attr("y", -barHeight / 2)
+                .attr("height",barHeight)
+                .attr("width", leaf_width)
+                .attr("border", 0)
+                .attr("transform", leaf_transform)
+                //.style('stroke', "#7ab9ff")
+                .style("fill", color)
+                .on("click", click)
+                .on("mouseover",show_compl_text)
+                .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
+                .on("mouseout", function(d){return tooltip.style("visibility", "hidden");})
+
+            nodeEnter.append("text")
+                .attr("dy", 5)
+                .attr("dx", 4.5)
+                .style("font-weight", "bold")
+                .attr("transform", leaf_transform)
+                .text(function(d){
+                  if(d.children){return ""
+                  }else{return d.data.compl}
+                })
+            // ========================================================================
+
+            // ------------------------------------------------------------------------
             // Enter any new nodes at the parent's previous position.
             nodeEnter.append("rect")
                 .attr("y", -barHeight / 2)
                 .attr("height", barHeight)
+                .attr("transform", leaf_transform_2)
                 .attr("width", function(d){
                     console.log(d)
                     return barWidth - d.depth * margin.left
@@ -269,6 +335,7 @@
             nodeEnter.append("text")
                 .attr("dy", 5)
                 .attr("dx", 5.5)
+                .attr('transform', leaf_transform_2)
                 .text(function(d) { return d.data.name; });
 
             nodeEnter.append("text")
@@ -276,6 +343,7 @@
                 .attr('dx', function(d){return barWidth - 40 - d.depth * margin.left})
                 .style("fill", "#9b9b9b")
                 .text(function(d) {return d.data.count})
+            // ------------------------------------------------------------------------
 
             // Transition nodes to their new position.
             nodeEnter.transition()
@@ -302,6 +370,30 @@
                 d.x0 = d.x;
                 d.y0 = d.y;
             });
+        }
+
+        function show_compl_text(d){
+            return tooltip.style("visibility", "visible").text("Completeness");
+        }
+
+        function show_dist_text(d){
+            return tooltip.style("visibility", "visible").text("Distance")
+        }
+
+        function leaf_transform(d){
+            return "translate("+ (leaf_width(d)).toString() + ",0)"
+        }
+
+        function leaf_transform_2(d){
+            return "translate("+ (2 * leaf_width(d)).toString() + ",0)"
+        }
+
+        function leaf_width(d){
+            if (d.data.compl){
+                return 50
+            }else{
+                return 0
+            }
         }
 
         // Toggle children on click.

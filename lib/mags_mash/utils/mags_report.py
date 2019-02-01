@@ -30,6 +30,8 @@ def get_location_markers(ids):
 def get_statistics(ids, GOLD):
     '''
     '''
+    dist_compl
+
     output = []
     currdir = os.path.dirname(__file__)
     stats_path = os.path.join(currdir, 'data', 'Stats-taxonomy.csv')
@@ -58,12 +60,14 @@ def get_statistics(ids, GOLD):
                     curr[key] = 'Unknown'
         if relatedids['GOLD_Analysis_ID']:
             curr['project'] = GOLD[GOLD['GOLD Analysis Project ID'] == relatedids['GOLD_Analysis_ID']].iloc[0]['Project / Study Name']
+            dist_compl[curr['project']] = (round(curr['dist'], 3), round(curr['completeness'], 2))
         else:
             curr['project'] = 'Unknown'
+            dist_compl['Unknown'] = (round(curr['dist'], 3), round(curr['completeness'], 2))
 
         output.append(curr)
 
-    return output
+    return output, dist_compl
 
 
 def ids_to_info(ids):
@@ -80,34 +84,42 @@ def ids_to_info(ids):
     curr_GOLD = GOLD[GOLD['GOLD Analysis Project ID'].isin(gold_id_to_id.keys())]
     tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
-    tree = create_tree(curr_GOLD, [], tree_cols)
+    # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
+    stats, dist_compl = get_statistics(ids, curr_GOLD)
+    tree = create_tree(curr_GOLD, tree_cols, dist_compl)
     tree_wrapper = {"name":"", "count":"({})".format(str(len(ids))), "children":tree}
-
     markers = get_location_markers(gold_id_to_id.values())
-    stats = get_statistics(ids, curr_GOLD)
     return stats, tree_wrapper, markers
 
 name_max_len = 130
 
-def create_tree(GOLD, tree, tree_cols):
+def create_tree(GOLD, tree_cols, dist_compl):
     '''
-    '''    
+    '''
+    tree = []
     if len(tree_cols) == 0:
         return tree
     col = tree_cols[0]
     type_count = GOLD[col].value_counts().to_dict()
+
     for t in type_count:
         if len(t) > name_max_len:
             name = t[:name_max_len] + '...'
         else:
             name = t
         count = "({})".format(type_count[t])
-        leaf = create_tree(GOLD[GOLD[col]==t], [], tree_cols[1:])
+        leaf = create_tree(GOLD[GOLD[col]==t], tree_cols[1:], dist_compl)
         if leaf == []:
+            if col == "Project / Study Name":
+                dist, compl = dist_compl[t]
+            else:
+                dist, compl =  "",""
             # is terminal node/actually a leaf
             tree.append({
-                'name':name,
-                'count':""
+                'name' : name,
+                'count': "",
+                'compl': str(compl),
+                'dist' : str(dist)
             })
         else:
             tree.append({
