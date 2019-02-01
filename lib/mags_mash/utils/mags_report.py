@@ -82,6 +82,7 @@ def ids_to_info(ids):
     stats = get_statistics(ids, curr_GOLD)
     return stats, tree_wrapper, markers
 
+name_max_len = 130
 
 def create_tree(GOLD, tree, tree_cols):
     '''
@@ -91,17 +92,21 @@ def create_tree(GOLD, tree, tree_cols):
     col = tree_cols[0]
     type_count = GOLD[col].value_counts().to_dict()
     for t in type_count:
+        if len(t) > name_max_len:
+            name = t[:name_max_len] + '...'
+        else:
+            name = t
         count = "({})".format(type_count[t])
         leaf = create_tree(GOLD[GOLD[col]==t], [], tree_cols[1:])
         if leaf == []:
             # is terminal node/actually a leaf
             tree.append({
-                'name':t,
+                'name':name,
                 'count':""
             })
         else:
             tree.append({
-                'name':t,
+                'name':name,
                 'count':count,
                 'children':leaf
             })
