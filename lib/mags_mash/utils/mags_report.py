@@ -92,7 +92,7 @@ def ids_to_info(ids):
     markers = get_location_markers(gold_id_to_id.values())
     return stats, tree_wrapper, markers
 
-name_max_len = 120
+name_max_len = 115
 
 def create_tree(GOLD, tree_cols, dist_compl):
     '''

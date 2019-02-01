@@ -282,7 +282,7 @@
                 .style("fill", color)
                 .on("click", click)
                 .on("mouseover", show_dist_text)
-                .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
+                .on("mousemove", function(d){return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
                 .on("mouseout", function(d){return tooltip.style("visibility", "hidden");})
 
 
@@ -305,7 +305,7 @@
                 .style("fill", color)
                 .on("click", click)
                 .on("mouseover",show_compl_text)
-                .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
+                .on("mousemove", function(d){return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
                 .on("mouseout", function(d){return tooltip.style("visibility", "hidden");})
 
             nodeEnter.append("text")
