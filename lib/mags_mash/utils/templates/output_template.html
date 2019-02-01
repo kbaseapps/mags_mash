@@ -273,7 +273,7 @@
 
             nodeEnter.append("text")
                 .attr('dy', 5)
-                .attr('dx', function(d){return barWidth - 30 - d.depth * margin.left})
+                .attr('dx', function(d){return barWidth - 40 - d.depth * margin.left})
                 .style("fill", "#9b9b9b")
                 .text(function(d) {return d.data.count})
 
