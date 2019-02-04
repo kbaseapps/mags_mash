@@ -283,7 +283,7 @@
                 .on("click", click)
                 .on("mouseover", show_dist_text)
                 .on("mousemove", function(d){return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
-                .on("mouseout", function(d){return tooltip.style("visibility", "hidden");})
+                .on("mouseout", function(d){return tooltip.style("visibility", "hidden").style("opacity","0");})
 
 
             nodeEnter.append("text")
@@ -306,7 +306,7 @@
                 .on("click", click)
                 .on("mouseover",show_compl_text)
                 .on("mousemove", function(d){return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
-                .on("mouseout", function(d){return tooltip.style("visibility", "hidden");})
+                .on("mouseout", function(d){return tooltip.style("visibility", "hidden").style("opacity","0");})
 
             nodeEnter.append("text")
                 .attr("dy", 5)
@@ -325,7 +325,6 @@
                 .attr("height", barHeight)
                 .attr("transform", leaf_transform_2)
                 .attr("width", function(d){
-                    console.log(d)
                     return barWidth - d.depth * margin.left - leaf_width(d) * 2
                 })
                 .style("fill", color)
@@ -372,11 +371,11 @@
         }
 
         function show_compl_text(d){
-            return tooltip.style("visibility", "visible").text("Completeness");
+            return tooltip.style("visibility", "visible").style("opacity","1").text("Completeness");
         }
 
         function show_dist_text(d){
-            return tooltip.style("visibility", "visible").text("Distance")
+            return tooltip.style("visibility", "visible").style("opacity","1").text("Distance")
         }
 
         function leaf_transform(d){
