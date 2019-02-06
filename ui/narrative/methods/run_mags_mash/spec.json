@@ -31,7 +31,7 @@
                 "valid_ws_types":[],
                 "validate_as":"int",
                 "min_int":1,
-                "max_int":100
+                "max_int":500
             }
         }
     ],
