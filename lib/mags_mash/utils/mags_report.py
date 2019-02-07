@@ -172,7 +172,7 @@ def generate_report(cb_url, scratch, workspace_name, query_results) # id_to_dist
     report_name = 'Mags_Mash_'+str(uuid.uuid4())
     report_file = os.path.join(scratch, report_name)
     os.mkdir(report_file)
-    html_path = os.path.join(report_file, 'output.html')
+    html_path = os.path.join(report_file, 'index.html')
 
     html_output = htmlify(query_results)
 
@@ -181,7 +181,7 @@ def generate_report(cb_url, scratch, workspace_name, query_results) # id_to_dist
     
     html_link = {
         'path': report_file,
-        'name': 'output.html',
+        'name': 'index.html',
         'description':"MAG Mash output html report"
     }
     report = KBaseReport(cb_url)
