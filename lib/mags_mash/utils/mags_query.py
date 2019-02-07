@@ -3,7 +3,15 @@ import json
 
 search_db = 'JGI_MAGS'
 
-def query_ahs_mags(sw_url, ws_ref, n_max_results, auth_token):
+def query_sketch_mags(sw_url, ws_ref, n_max_results, auth_token):
+    '''
+    Query the sketch service for items related to the workspace reference.
+
+    sw_url: service wizard url
+    ws_ref: workspace reference
+    n_max_results: number of results to return
+    auth_token: authorization token
+    '''
     payload = {
         "method":"get_homologs",
         "params": {
@@ -18,6 +26,11 @@ def query_ahs_mags(sw_url, ws_ref, n_max_results, auth_token):
     return parse_response(resp.json())
     
 def parse_response(resp):
+    '''
+    parse the resonse from the sketch service.
+
+    resp: json response body from sketch service
+    '''
     if resp.get('error'):
         raise RuntimeError("Sketch Service Error: "+resp['error'])
     if not resp.get('result'): 
@@ -36,6 +49,11 @@ def parse_response(resp):
 
 
 def get_sketch_service_url(sw_url):
+    '''
+    get the most recent sketch_service url from the service wizard. 
+
+    sw_url: service wizard url
+    '''
     json_obj = {
         "method":"ServiceWizard.get_service_status",
         "id":"",

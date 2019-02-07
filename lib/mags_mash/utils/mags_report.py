@@ -7,9 +7,9 @@ import os
 def get_location_markers(ids):
     '''
     For now this simply returns 1 marker with
-    the location of LBL
+    the location of LBL. Returns list of markers
 
-    returns list of markers
+    ids: list of ids
 
     marker format:
     {
@@ -29,6 +29,10 @@ def get_location_markers(ids):
 
 def get_statistics(ids, GOLD):
     '''
+    get statistics from the GOLD and statitics csvs
+
+    ids:
+    GOLD: 
     '''
     dist_compl = {}
 
