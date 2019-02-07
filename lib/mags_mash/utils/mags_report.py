@@ -163,10 +163,10 @@ def htmlify(query_results):
         template = env.get_template("index_multi.html")
         return template.render(tree=tree, stats=stats, markers=markers)
     else:
-        raise ValueError('Error in query result handling')
+        raise ValueError("Error in query result handling")
 
 
-def generate_report(cb_url, scratch, workspace_name, query_results) # id_to_dist_and_kbid_and_relatedids):
+def generate_report(cb_url, scratch, workspace_name, query_results): # id_to_dist_and_kbid_and_relatedids):
     """
     """
     report_name = 'Mags_Mash_'+str(uuid.uuid4())
