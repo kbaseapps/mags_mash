@@ -140,11 +140,17 @@
     Statistics List view
     -->
     <div id='stats' class="tabcontent">
-        <p><label>Distance Filter</label><input type="text" id="live_range_dist" readonly style="border:0; color:#f6931f; font-weight:bold;"></p>
+        <p>
+            <label>Distance Filter</label><input type="text" id="live_range_dist" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        </p>
         <div id="dist_range" style="width:200px"></div>
-        <p><label>Completeness Filter</label><input type="text" id="live_range_compl" readonly style="border:0; color:#f6931f; font-weight:bold;"></p>        
+        <p>
+            <label>Completeness Filter</label><input type="text" id="live_range_compl" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        </p>        
         <div id="compl_range" style="width:200px"></div>
-        <p><label>Contamination Filter</label><input type="text" id="live_range_cont" readonly style="border:0; color:#f6931f; font-weight:bold;"></p>
+        <p>
+            <label>Contamination Filter</label><input type="text" id="live_range_cont" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        </p>
         <div id="cont_range" style="width:200px"></div>
 
         <table id='stats_table' class='table table-striped table-bordered'>
@@ -223,7 +229,7 @@
                     return true;
                 }
                 return false;
-            }
+            },
             function( settings, data, dataIndex ) {
                 var min = parseFloat(cont_range.slider( "values", 0 ));
                 var max = parseFloat(cont_range.slider( "values", 1 ));
