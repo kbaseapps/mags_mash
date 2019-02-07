@@ -36,9 +36,9 @@ parameters :
         ui-name: |
             Maximum number of results
         short-hint: |
-            Maximum number of similar sequence results to return, limit 100
+            Maximum number of similar sequence results to return, limit 500
         long-hint: |
-            Maximum number of similar sequence results to return, limit 100
+            Maximum number of similar sequence results to return, limit 500
 
 description : |
 
