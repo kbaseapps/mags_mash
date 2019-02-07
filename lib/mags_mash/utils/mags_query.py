@@ -3,28 +3,32 @@ import json
 
 search_db = 'JGI_MAGS'
 
-def query_sketch_mags(sw_url, ws_ref, n_max_results, auth_token):
+def query_sketch_mags(sw_url, input_upas, n_max_results, auth_token):
     '''
     Query the sketch service for items related to the workspace reference.
 
     sw_url: service wizard url
-    ws_ref: workspace reference
+    input_upas: list of workspace references
     n_max_results: number of results to return
     auth_token: authorization token
     '''
-    payload = {
-        "method":"get_homologs",
-        "params": {
-            'ws_ref': ws_ref,
-            'search_db': search_db,
-            'n_max_results': n_max_results
-        }
-    }
     sketch_url = get_sketch_service_url(sw_url)
-    resp = requests.post(url=sketch_url, data=json.dumps(payload),
-                         headers={'content-type':'application/json', 'authorization':auth_token})
-    return parse_response(resp.json())
-    
+
+    results = {}
+    for upa in input_upas:
+        payload = {
+            "method":"get_homologs",
+            "params": {
+                'ws_ref': upa,
+                'search_db': search_db,
+                'n_max_results': n_max_results
+            }
+        }
+        resp = requests.post(url=sketch_url, data=json.dumps(payload),
+                             headers={'content-type':'application/json', 'authorization':auth_token})
+        results[upa] = parse_response(resp.json())
+    return results
+
 def parse_response(resp):
     '''
     parse the resonse from the sketch service.

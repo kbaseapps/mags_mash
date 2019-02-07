@@ -140,6 +140,13 @@
     Statistics List view
     -->
     <div id='stats' class="tabcontent">
+        <p><label>Distance Filter</label><input type="text" id="live_range_dist" readonly style="border:0; color:#f6931f; font-weight:bold;"></p>
+        <div id="dist_range" style="width:200px"></div>
+        <p><label>Completeness Filter</label><input type="text" id="live_range_compl" readonly style="border:0; color:#f6931f; font-weight:bold;"></p>        
+        <div id="compl_range" style="width:200px"></div>
+        <p><label>Contamination Filter</label><input type="text" id="live_range_cont" readonly style="border:0; color:#f6931f; font-weight:bold;"></p>
+        <div id="cont_range" style="width:200px"></div>
+
         <table id='stats_table' class='table table-striped table-bordered'>
             <thead>
                 <tr>
@@ -186,8 +193,103 @@
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.js"></script>
 
     <script>
+        var dist_range;
+        var compl_range;
+        var cont_range;
+
+        $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex ) {
+                var min = parseFloat(dist_range.slider( "values", 0 ));
+                var max = parseFloat(dist_range.slider( "values", 1 ));
+                var col = parseFloat( data[0] ) || 0; // data[number] = column number
+                if ( ( isNaN( min ) && isNaN( max ) ) ||
+                    ( isNaN( min ) && col <= max ) ||
+                    ( min <= col   && isNaN( max ) ) ||
+                    ( min <= col   && col <= max ) )
+                {
+                    return true;
+                }
+                return false;
+            },
+            function( settings, data, dataIndex ) {
+                var min = parseFloat(compl_range.slider( "values", 0 ));
+                var max = parseFloat(compl_range.slider( "values", 1 ));
+                var col = parseFloat( data[6] ) || 0; // data[number] = column number
+                if ( ( isNaN( min ) && isNaN( max ) ) ||
+                    ( isNaN( min ) && col <= max ) ||
+                    ( min <= col   && isNaN( max ) ) ||
+                    ( min <= col   && col <= max ) )
+                {
+                    return true;
+                }
+                return false;
+            }
+            function( settings, data, dataIndex ) {
+                var min = parseFloat(cont_range.slider( "values", 0 ));
+                var max = parseFloat(cont_range.slider( "values", 1 ));
+                var col = parseFloat( data[7] ) || 0; // data[number] = column number
+                if ( ( isNaN( min ) && isNaN( max ) ) ||
+                    ( isNaN( min ) && col <= max ) ||
+                    ( min <= col   && isNaN( max ) ) ||
+                    ( min <= col   && col <= max ) )
+                {
+                    return true;
+                }
+                return false;
+            }
+        );
+
         $(document).ready( function () {
-            $('.table').DataTable({
+            dist_range  = $("#dist_range")
+            compl_range = $("#compl_range")
+            cont_range  = $("#cont_range")
+            var live_range_cont  = $("#live_range_cont")
+            var live_range_dist  = $("#live_range_dist")
+            var live_range_compl = $("#live_range_compl")
+            dist_range.slider({
+                    range: true,
+                    min: 0,
+                    max: 1,
+                    step: 0.01,
+                    values: [ 0, 1 ],
+                    slide: function( event, ui ) {
+                      live_range_dist.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                    },
+                    stop: function( event, ui ) {
+                      table.draw();
+                    }
+            });
+            compl_range.slider({
+                range: true,
+                min: 0,
+                max: 100,
+                step: 1,
+                values: [ 0, 10000 ],
+                slide: function( event, ui ) {
+                    live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                },
+                stop: function( event, ui ) {
+                    table.draw();
+                }
+            });
+            cont_range.slider({
+                range: true,
+                min: 0,
+                max: 100,
+                step: 1,
+                values: [ 0, 10000 ],
+                slide: function( event, ui ) {
+                    live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                },
+                stop: function( event, ui ) {
+                    table.draw();
+                }
+            });
+            live_range_dist.val(dist_range.slider( "values", 0 ) + " - " + dist_range.slider( "values", 1 ) );
+            live_range_compl.val(compl_range.slider( "values", 0 ) + " - " + compl_range.slider( "values", 1 ) );
+            live_range_cont.val(cont_range.slider( "values", 0 ) + " - " + cont_range.slider( "values", 1 ) );
+
+            var table = $('.table').DataTable({
                 'dom': "<'row'<'col-sm-6'B><'col-sm-6'f>>t<'row'<'col-sm-4'i><'col-sm-8'p>>",
                 'buttons': ['copy', 'csv', 'print', 'colvis'],
             });

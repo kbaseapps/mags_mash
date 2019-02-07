@@ -27,7 +27,7 @@ def get_location_markers(ids):
         {'name':"Mount Diablo", "lat": 37.881523, "lng": -121.914325, "details":"This is Mount Diablo."}
     ]
 
-def get_statistics(ids, GOLD):
+def get_statistics(ids, GOLD, upa=None):
     '''
     get statistics from the GOLD and statitics csvs
 
@@ -45,6 +45,8 @@ def get_statistics(ids, GOLD):
     for id_ in ids:
         curr = {}
         dist, kb_id, relatedids = ids[id_]
+        if upa != None:
+            curr['Input Upa'] = upa
         curr['dist'] = dist
         if kb_id:
             curr['kb_id'] = kb_id
@@ -74,11 +76,13 @@ def get_statistics(ids, GOLD):
     return output, dist_compl
 
 
-def ids_to_info(ids):
+def ids_to_info(ids, upa=None):
     '''    
     '''
     # fill this in when we actually have acess to GOLD data
     # we're going to use pandas to read in the csv files we have
+
+
     gold_id_to_id = {val[2]['GOLD_Analysis_ID']:key for key, val in ids.items()}
     currdir = os.path.dirname(__file__)
     gold_path = os.path.join(currdir,'data','GOLD-metadata.csv')
@@ -90,7 +94,8 @@ def ids_to_info(ids):
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
     curr_GOLD = curr_GOLD.fillna({col:"Unknown" for col in tree_cols})
     # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
-    stats, dist_compl = get_statistics(ids, curr_GOLD)
+
+    stats, dist_compl = get_statistics(ids, curr_GOLD, upa=upa)
     tree = create_tree(curr_GOLD, tree_cols, dist_compl)
     tree_wrapper = {"name":"", "count":"({})".format(str(len(ids))), "children":tree}
     markers = get_location_markers(gold_id_to_id.values())
@@ -138,24 +143,38 @@ env = Environment(loader=PackageLoader('mags_mash','utils/templates'),
                   autoescape=select_autoescape(['html']))
 
 
-def htmlify(id_to_dist_and_kbid_and_relatedids):
+def htmlify(query_results):
     '''
     '''
-    stats, tree, markers = ids_to_info(id_to_dist_and_kbid_and_relatedids)
-    # for now convert IDs we have to report
-    template = env.get_template('output_template.html')
-    return template.render(tree=tree, stats=stats, markers=markers)
+    if len(query_results) == 1:
+        key = query_results.keys()[0]
+        id_to_dist_and_kbid_and_relatedids = query_results[key]
 
-    
-def generate_report(cb_url, scratch, workspace_name, id_to_dist_and_kbid_and_relatedids):
-    '''
-    '''
+        stats, tree, markers = ids_to_info(id_to_dist_and_kbid_and_relatedids)
+        # for now convert IDs we have to report
+        template = env.get_template("index.html")
+        return template.render(tree=tree, stats=stats, markers=markers)
+    elif len(query_results) > 1:
+        for upa in query_results:
+            id_to_dist_and_kbid_and_relatedids = query_results[key]
+            stats, tree, markers = ids_to_info(id_to_dist_and_kbid_and_relatedids, upa=upa)
+
+
+        template = env.get_template("index_multi.html")
+        return template.render(tree=tree, stats=stats, markers=markers)
+    else:
+        raise ValueError('Error in query result handling')
+
+
+def generate_report(cb_url, scratch, workspace_name, query_results) # id_to_dist_and_kbid_and_relatedids):
+    """
+    """
     report_name = 'Mags_Mash_'+str(uuid.uuid4())
-
-    html_output = htmlify(id_to_dist_and_kbid_and_relatedids)
     report_file = os.path.join(scratch, report_name)
     os.mkdir(report_file)
     html_path = os.path.join(report_file, 'output.html')
+
+    html_output = htmlify(query_results)
 
     with open(html_path, 'w') as f:
         f.write(html_output)
@@ -176,5 +195,3 @@ def generate_report(cb_url, scratch, workspace_name, id_to_dist_and_kbid_and_rel
         'report_name':report_info['name'],
         'report_ref':report_info['ref']
     }
-
-

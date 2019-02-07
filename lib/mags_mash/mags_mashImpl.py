@@ -2,7 +2,8 @@
 #BEGIN_HEADER
 import os
 from .utils.mags_query import query_sketch_mags
-from .utils.mags_report import generate_report 
+from .utils.mags_report import generate_report
+from .utils.mags_input import parse_input_upa
 #END_HEADER
 
 
@@ -59,9 +60,13 @@ class mags_mash:
         else:
             raise ValueError("n_max_results was not set properly")
 
-        id_to_dist_and_kbid_and_relatedids = query_sketch_mags(self.sw_url, ws_ref, n_max_results, self.auth_token)
+        input_upas = parse_input_upa(self.callback_url, ws_ref)
+
+        # id_to_dist_and_kbid_and_relatedids = query_sketch_mags(self.sw_url, input_upas, n_max_results, self.auth_token)
+        query_results = query_sketch_mags(self.sw_url, input_upas, n_max_results, self.auth_token)
+
         output = generate_report(self.callback_url, self.shared_folder,\
-                                  params.get('workspace_name'), id_to_dist_and_kbid_and_relatedids)
+                                  params.get('workspace_name'), query_results)
 
         #END run_mags_mash
 
