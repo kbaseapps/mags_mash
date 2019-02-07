@@ -147,7 +147,7 @@ def htmlify(query_results):
     '''
     '''
     if len(query_results) == 1:
-        key = query_results.keys()[0]
+        key = list(query_results.keys())[0]
         id_to_dist_and_kbid_and_relatedids = query_results[key]
 
         stats, tree, markers = ids_to_info(id_to_dist_and_kbid_and_relatedids)
