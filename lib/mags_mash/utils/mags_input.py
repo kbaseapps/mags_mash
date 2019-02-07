@@ -10,7 +10,7 @@ def parse_input_upa(cb_url, upa):
         upas = [gsi['ref'] for gsi in gs_obj['items']]
     elif 'KBaseSearch.GenomeSet' in obj_type:
         upas = [gse['ref'] for gse in gs_obj['elements'].values()]
-    elif "KBaseGenomes.ContigSet" in obj_type or "KBaseGenomeAnnotations.Assembly" in obj_type or "KBaseGenomes.Genome" in obj_type
+    elif "KBaseGenomes.ContigSet" in obj_type or "KBaseGenomeAnnotations.Assembly" in obj_type or "KBaseGenomes.Genome" in obj_type:
         upas = [upa]
     else:
         raise TypeError("provided input must of type 'KBaseSets.GenomeSet','KBaseSearch.GenomeSet','KBaseGenomes.ContigSet','KBaseGenomeAnnotations.Assembly' or 'KBaseGenomes.Genome' not " +str(obj_type))        
