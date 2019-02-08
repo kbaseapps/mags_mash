@@ -5,11 +5,11 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.js"></script>
 
-
+<!-- 
     <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" />
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
-    
+    --> 
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="http://yadcf-showcase.appspot.com/resources/js/jquery.dataTables.yadcf.js"></script>
     <link href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
@@ -91,6 +91,12 @@
         color: #1e1e1e;
     }
 
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr; /* fraction*/
+    }
+
+
     </style>
 
 </head>
@@ -115,19 +121,26 @@
     Statistics List view
     -->
     <div id='stats' class="tabcontent">
-        <p>
-            <label>Distance Filter</label><input type="text" id="live_range_dist" readonly style="border:0; color:#f6931f; font-weight:bold;">
-        </p>
-        <div id="dist_range" style="width:200px"></div>
-        <p>
-            <label>Completeness Filter</label><input type="text" id="live_range_compl" readonly style="border:0; color:#f6931f; font-weight:bold;">
-        </p>        
-        <div id="compl_range" style="width:200px"></div>
-        <p>
-            <label>Contamination Filter</label><input type="text" id="live_range_cont" readonly style="border:0; color:#f6931f; font-weight:bold;">
-        </p>
-        <div id="cont_range" style="width:200px"></div>
-
+        <div class="container" id="sliders">
+            <div id="dist_slider">
+                <p>
+                    <label>Distance Filter: </label><input type="text" id="live_range_dist" readonly style="border:0; color:#f6931f; font-weight:bold; width: 80px;">
+                </p>
+                <div id="dist_range" style="width:200px"></div>
+            </div>
+            <div id="compl_slider">
+                <p>
+                    <label>Completeness Filter: </label><input type="text" id="live_range_compl" readonly style="border:0; color:#f6931f; font-weight:bold; width: 80px;">
+                </p>        
+                <div id="compl_range" style="width:200px"></div>
+            </div>
+            <div id="cont_slider">
+                <p>
+                    <label>Contamination Filter: </label><input type="text" id="live_range_cont" readonly style="border:0; color:#f6931f; font-weight:bold; width: 80px;">
+                </p>
+                <div id="cont_range" style="width:200px; margin-bottom: 20px;"></div>
+            </div>
+        </div>
         <table id='stats_table' class='table table-striped table-bordered'>
             <thead>
                 <tr>
@@ -257,7 +270,7 @@
                 step: 1,
                 values: [ 0, 10000 ],
                 slide: function( event, ui ) {
-                    live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                    live_range_cont.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 },
                 stop: function( event, ui ) {
                     table.draw();
