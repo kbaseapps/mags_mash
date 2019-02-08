@@ -2,6 +2,10 @@
 <head>
     <meta charset="UTF-8">
 
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.js"></script>
+
+
     <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" />
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
@@ -165,9 +169,6 @@
     <div id="maptab" class="tabcontent">
         <div id="mapid" style="height: 900px; width: 1200px;"></div>
     </div>
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.js"></script>
 
     <script>
         var dist_range;
@@ -396,8 +397,8 @@
                   if(d.children){return ""
                   }else{return d.data.compl}
                 })
-            // ========================================================================
-            // ------------------------------------------------------------------------
+            // ============================================================================
+            // ----------------------------------------------------------------------------
             // Enter any new nodes at the parent's previous position.
             nodeEnter.append("rect")
                 .attr("y", -barHeight / 2)
