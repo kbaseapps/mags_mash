@@ -124,19 +124,19 @@
         <div class="container" id="sliders">
             <div id="dist_slider">
                 <p>
-                    <label>Distance Filter: </label><input type="text" id="live_range_dist" readonly style="border:0; color:#f6931f; font-weight:bold; width: 80px;">
+                    <label style="border-right: 5px">Distance Filter:</label><input type="text" id="live_range_dist" readonly style="border:0; color:#6dacff; font-weight:bold; width: 80px;">
                 </p>
                 <div id="dist_range" style="width:200px"></div>
             </div>
             <div id="compl_slider">
                 <p>
-                    <label>Completeness Filter: </label><input type="text" id="live_range_compl" readonly style="border:0; color:#f6931f; font-weight:bold; width: 80px;">
+                    <label style="border-right: 5px">Completeness Filter:</label><input type="text" id="live_range_compl" readonly style="border:0; color:#6dacff; font-weight:bold; width: 80px;">
                 </p>        
                 <div id="compl_range" style="width:200px"></div>
             </div>
             <div id="cont_slider">
                 <p>
-                    <label>Contamination Filter: </label><input type="text" id="live_range_cont" readonly style="border:0; color:#f6931f; font-weight:bold; width: 80px;">
+                    <label style="border-right: 5px">Contamination Filter:</label><input type="text" id="live_range_cont" readonly style="border:0; color:#6dacff; font-weight:bold; width: 80px;">
                 </p>
                 <div id="cont_range" style="width:200px; margin-bottom: 20px;"></div>
             </div>
@@ -240,9 +240,9 @@
             dist_range.slider({
                     range: true,
                     min: 0,
-                    max: 1,
-                    step: 0.01,
-                    values: [ 0, 1 ],
+                    max: 0.1,
+                    step: 0.001,
+                    values: [ 0, 0.1],
                     slide: function( event, ui ) {
                       live_range_dist.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                     },
@@ -255,7 +255,7 @@
                 min: 0,
                 max: 100,
                 step: 1,
-                values: [ 0, 10000 ],
+                values: [ 0, 100 ],
                 slide: function( event, ui ) {
                     live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 },
@@ -268,7 +268,7 @@
                 min: 0,
                 max: 100,
                 step: 1,
-                values: [ 0, 10000 ],
+                values: [ 0, 100 ],
                 slide: function( event, ui ) {
                     live_range_cont.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 },
