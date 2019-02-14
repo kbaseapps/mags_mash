@@ -90,6 +90,9 @@ def ids_to_info(ids, upa=None):
     GOLD = pd.read_csv(gold_path)
     
     curr_GOLD = GOLD[GOLD['GOLD Analysis Project ID'].isin(gold_id_to_id.keys())]
+    tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
+                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
+
     curr_GOLD = curr_GOLD.fillna({col:"Unknown" for col in tree_cols})
     # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
 
