@@ -106,9 +106,13 @@ def ids_to_info_multi(query_results):
 
     GOLD = []
     upas = []
+    dist_compl = {}
     for upa in query_results:
         id_to_dist_and_kbid_and_relatedids = query_results[key]
         upa_stats, upa_dist_compl, upa_markers, upa_GOLD = ids_to_info(id_to_dist_and_kbid_and_relatedids, upa=upa)
+        for key in upa_dist_compl:
+            dist_compl[key] = upa_dist_compl[key]
+
         stats += upa_stats
         upa_GOLD['upa'] = upa
         GOLD.append(curr_GOLD)
@@ -119,9 +123,9 @@ def ids_to_info_multi(query_results):
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
 
     # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
-    tree = create_tree(curr_GOLD, tree_cols, dist_compl, len(curr_GOLD), source_order=upas)
+    tree = create_tree(GOLD, tree_cols, dist_compl, len(curr_GOLD), source_order=upas)
     tree_wrapper = {"name":"", "count":"({})".format(str(len(ids))), "children":tree}
-    markers = get_location_markers(gold_id_to_id.values())
+
     return stats, tree_wrapper, markers
 
 
