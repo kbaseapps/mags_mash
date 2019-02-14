@@ -1,15 +1,14 @@
 <html>
 <head>
     <meta charset="UTF-8">
-
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.js"></script>
 
-<!-- 
-    <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" />
+
+<!--     <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" />
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
-    --> 
+    <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script> -->
+    
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="http://yadcf-showcase.appspot.com/resources/js/jquery.dataTables.yadcf.js"></script>
     <link href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
@@ -59,10 +58,18 @@
         background-color: #ccc;
     }
 
+    .tree_rect {
+      cursor: pointer;
+      fill: #fff;
+      fill-opacity: 0.8;
+      stroke: #3182bd; /* 3182bd */
+      stroke-width: 1.5px;
+    }
+
     .node rect {
         cursor: pointer;
         fill: #fff;
-        fill-opacity: 0.5;
+        fill-opacity: 0.6;
         stroke: #3182bd;
         stroke-width: 1.5px;
     }
@@ -82,7 +89,6 @@
         font-family: 'Oxygen', Helvetica, sans-serif;
         position: absolute;
         z-index: 10;
-        visibility: hidden;
         background-color: #7ab9ff;
         text-align: center;
         padding: 4px;
@@ -91,11 +97,35 @@
         color: #1e1e1e;
     }
 
+    .legendTitle {
+        font-size: 14px;
+        fill: black;
+        font-weight: 300;
+    }
+
+    #treegroup {
+      display: flex;
+      flex-direction: row;
+    }
+    #treeid {
+      display: flex;
+      flex-direction: column;
+    }
+    #treemap {
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+    }
+
+    #treelegend{
+      display: flex;
+      display: row
+    }
+
     .container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr; /* fraction*/
     }
-
 
     </style>
 
@@ -115,8 +145,26 @@
     going to replace this tree thing with html 
     -->
     <div id="treetab" class="tabcontent" style="width: 100%; height: 100%;">
-        <div id="treeid" style="width: 100%; height: 88%;"></div>
+        <div id="tree_group" class="grouping">
+          <div id="treegroup">
+            <div id="treeid"></div>
+            <div id="treemap"></div>
+          </div>
+          <div id="treelegend"></div>
+        </div>
+<!--         <div id="treeid" style="width: 100%; height: 88%;"></div>
+ -->    
     </div>
+    <!--{%- for t in tree recursive %}
+            {%- if t.children -%}
+            <li><span class="caret">{{t.name}}</span>
+                <ul class="nested">{{ loop(t.children) }} </ul>
+            </li>
+            {%- else -%}
+            <li>{{t.name}}</li>
+            {%- endif %}
+        {%- endfor %}
+    </div> -->
     <!--
     Statistics List view
     -->
@@ -124,19 +172,19 @@
         <div class="container" id="sliders">
             <div id="dist_slider">
                 <p>
-                    <label style="border-right: 5px">Distance Filter:</label><input type="text" id="live_range_dist" readonly style="border:0; color:#6dacff; font-weight:bold; width: 80px;">
+                    <label style="border-right: 5px">Distance Filter:</label><input type="text" id="live_range_dist" readonly style="border:0; color:#f6931f; font-weight:bold; width: 80px;">
                 </p>
                 <div id="dist_range" style="width:200px"></div>
             </div>
             <div id="compl_slider">
                 <p>
-                    <label style="border-right: 5px">Completeness Filter:</label><input type="text" id="live_range_compl" readonly style="border:0; color:#6dacff; font-weight:bold; width: 80px;">
+                    <label style="border-right: 5px">Completeness Filter:</label><input type="text" id="live_range_compl" readonly style="border:0; color:#f6931f; font-weight:bold; width: 80px;">
                 </p>        
                 <div id="compl_range" style="width:200px"></div>
             </div>
             <div id="cont_slider">
                 <p>
-                    <label style="border-right: 5px">Contamination Filter:</label><input type="text" id="live_range_cont" readonly style="border:0; color:#6dacff; font-weight:bold; width: 80px;">
+                    <label style="border-right: 5px">Contamination Filter:</label><input type="text" id="live_range_cont" readonly style="border:0; color:#f6931f; font-weight:bold; width: 80px;">
                 </p>
                 <div id="cont_range" style="width:200px; margin-bottom: 20px;"></div>
             </div>
@@ -144,6 +192,7 @@
         <table id='stats_table' class='table table-striped table-bordered'>
             <thead>
                 <tr>
+                    <td>Input Upa</td>
                     <td>Distance</td>
                     <td>MAG ID</td>
                     <td>KBase ID</td>
@@ -159,6 +208,7 @@
             <tbody>
                 {% for item in stats %}
                 <tr>
+                    <td>{{item.input_upa}}</td>
                     <td class="sorting_1">{{item.dist}}</td>
                     <td>{{item.mag_id}}</td>
                     <td>{{item.kb_id}}</td>
@@ -192,7 +242,7 @@
             function( settings, data, dataIndex ) {
                 var min = parseFloat(dist_range.slider( "values", 0 ));
                 var max = parseFloat(dist_range.slider( "values", 1 ));
-                var col = parseFloat( data[0] ) || 0; // data[number] = column number
+                var col = parseFloat( data[1] ) || 0; // data[number] = column number
                 if ( ( isNaN( min ) && isNaN( max ) ) ||
                     ( isNaN( min ) && col <= max ) ||
                     ( min <= col   && isNaN( max ) ) ||
@@ -205,7 +255,7 @@
             function( settings, data, dataIndex ) {
                 var min = parseFloat(compl_range.slider( "values", 0 ));
                 var max = parseFloat(compl_range.slider( "values", 1 ));
-                var col = parseFloat( data[6] ) || 0; // data[number] = column number
+                var col = parseFloat( data[7] ) || 0; // data[number] = column number
                 if ( ( isNaN( min ) && isNaN( max ) ) ||
                     ( isNaN( min ) && col <= max ) ||
                     ( min <= col   && isNaN( max ) ) ||
@@ -218,7 +268,7 @@
             function( settings, data, dataIndex ) {
                 var min = parseFloat(cont_range.slider( "values", 0 ));
                 var max = parseFloat(cont_range.slider( "values", 1 ));
-                var col = parseFloat( data[7] ) || 0; // data[number] = column number
+                var col = parseFloat( data[8] ) || 0; // data[number] = column number
                 if ( ( isNaN( min ) && isNaN( max ) ) ||
                     ( isNaN( min ) && col <= max ) ||
                     ( min <= col   && isNaN( max ) ) ||
@@ -242,7 +292,7 @@
                     min: 0,
                     max: 0.1,
                     step: 0.001,
-                    values: [ 0, 0.1],
+                    values: [ 0, 0.1 ],
                     slide: function( event, ui ) {
                       live_range_dist.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                     },
@@ -283,6 +333,7 @@
             var table = $('.table').DataTable({
                 'dom': "<'row'<'col-sm-6'B><'col-sm-6'f>>t<'row'<'col-sm-4'i><'col-sm-8'p>>",
                 'buttons': ['copy', 'csv', 'print', 'colvis'],
+                'bFilter': true
             });
         } );
     </script>
@@ -304,10 +355,12 @@
     </script> 
 
     <script>
-        var tree = {{tree | safe}}
+        var tree = {{tree|safe}}
+        var sources = {{sources|safe}}
+        var number_of_points = {{number_of_points|safe}}
     </script>
 
-    <script type="tree_script.js"></script>
+    <script src="multi_tree_script.js"></script>
 
     <script>
         function openTab(evt, name) {
