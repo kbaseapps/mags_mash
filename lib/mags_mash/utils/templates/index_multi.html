@@ -280,7 +280,8 @@
             }
         );
 
-        var ranges = [0,0.5,0,100,0,100]
+        var ranges = {{ranges|safe}}
+        // var ranges = [0,0.5,0,100,0,100]
         var num_steps = 100
 
         $(document).ready( function () {
@@ -352,7 +353,7 @@
         var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib}).addTo(mymap);
 
         for (i=0;i<markers.length;i++) {
-            var marker = new L.marker([markers[i].lat, markers[i].lng]).addTo(mymap).bindPopup("<h3>"+markers[i].name+"</h3>"+markers[i].details);
+            var marker = new L.marker([markers[i].lat, markers[i].lng]).addTo(mymap).bindPopup("<h3>"+markers[i].name+"</h3><p>"+markers[i].source+"</p><p>"+markers[i].details+"</p>");
         }
         
     </script> 

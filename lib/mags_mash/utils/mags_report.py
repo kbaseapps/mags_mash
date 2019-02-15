@@ -6,7 +6,7 @@ import subprocess
 import uuid
 import os
 
-def get_location_markers(ids):
+def get_location_markers(ids, source=None):
     '''
     For now this simply returns 1 marker with
     the location of LBL. Returns list of markers
@@ -22,12 +22,18 @@ def get_location_markers(ids):
 
     }
     '''
-    return [
+    markers = [
         {'name':"LBL", "lat":37.877344, "lng":-122.250694, "details":"This is Lawrence Berkeley National Laboratory."},
         {'name':"Golden Gate Bridge", "lat": 37.817060, "lng": -122.478206, "details":"This is the Golden Gate Bridge."},
         {'name':"SFO Airport", 'lat':37.616310, 'lng': -122.386793, 'details':"This is San Francisco International Airport."},
         {'name':"Mount Diablo", "lat": 37.881523, "lng": -121.914325, "details":"This is Mount Diablo."}
     ]
+    if source!= None:
+        for m in markers:
+            m['source'] = "Input source:"+source
+
+    return markers
+
 
 def get_statistics(ids, GOLD, upa=None):
     '''
@@ -111,6 +117,7 @@ def ids_to_info_multi(query_results):
     GOLD = []
     upas = []
     stats = []
+    markers = []
     dist_compl = {}
     for upa in query_results:
         id_to_dist_and_kbid_and_relatedids = query_results[upa]
@@ -122,6 +129,9 @@ def ids_to_info_multi(query_results):
         upa_GOLD['upa'] = upa
         GOLD.append(upa_GOLD)
         upas.append(upa)
+
+        # for now we just set markers to upa_markers 
+        markers=upa_markers
 
     GOLD = pd.concat(GOLD, ignore_index=True)
     tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
@@ -213,9 +223,16 @@ def htmlify(cb_url, query_results):
         tree = create_tree(curr_GOLD, tree_cols, dist_compl, len(curr_GOLD))
         tree = {"truncated_name":"", "count":"({})".format(str(len(id_to_dist_and_kbid_and_relatedids))), "count_num":len(id_to_dist_and_kbid_and_relatedids), "children":tree}
 
+        min_dist  = min([s['dist'] for s in stats])
+        max_dist  = max([s['dist'] for s in stats])
+        min_compl = min([s['completeness'] for s in stats])
+        max_compl = max([s['completeness'] for s in stats])
+        min_cont  = min([s['contamination'] for s in stats])
+        max_cont  = max([s['contamination'] for s in stats])
+
         # for now convert IDs we have to report
         template = env.get_template("index.html")
-        return template.render(tree=tree, stats=stats, markers=markers), 'templates/tree_script.js'
+        return template.render(tree=tree, stats=stats, markers=markers, ranges=[min_dist, max_dist, min_compl, max_compl, min_cont, max_cont]), 'templates/tree_script.js'
     elif len(query_results) > 1:
         stats = []
         stats, tree, markers = ids_to_info_multi(query_results)
@@ -223,8 +240,16 @@ def htmlify(cb_url, query_results):
         sources = get_upa_names(cb_url, list(query_results.keys()))
         number_of_points = max(tree['sources'])
 
+        min_dist  = min([s['dist'] for s in stats])
+        max_dist  = max([s['dist'] for s in stats])
+        min_compl = min([s['completeness'] for s in stats])
+        max_compl = max([s['completeness'] for s in stats])
+        min_cont  = min([s['contamination'] for s in stats])
+        max_cont  = max([s['contamination'] for s in stats])
+
         template = env.get_template("index_multi.html")
-        return template.render(tree=tree, stats=stats, markers=markers, number_of_points=number_of_points, sources=sources), 'templates/multi_tree_script.js'
+        return template.render(tree=tree, stats=stats, markers=markers, number_of_points=number_of_points, sources=sources,
+                ranges=[min_dist, max_dist, min_compl, max_compl, min_cont, max_cont]), 'templates/multi_tree_script.js'
     else:
         raise ValueError("Error in query result handling")
 
