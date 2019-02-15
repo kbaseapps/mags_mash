@@ -36,7 +36,7 @@ def parse_response(resp):
     resp: json response body from sketch service
     '''
     if resp.get('error'):
-        raise RuntimeError("Sketch Service Error: "+resp['error'])
+        raise RuntimeError("Sketch Service Error: ",resp['error'])
     if not resp.get('result'): 
         raise ValueError("No results in JSON response body")
     if not resp['result'].get('distances'):

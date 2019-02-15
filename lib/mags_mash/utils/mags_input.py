@@ -7,9 +7,9 @@ def parse_input_upa(cb_url, upa):
     obj_type  = obj_data['info'][2]
     
     if 'KBaseSets.GenomeSet' in obj_type:
-        upas = [gsi['ref'] for gsi in gs_obj['items']]
+        upas = [gsi['ref'] for gsi in obj_data['data']['items']]
     elif 'KBaseSearch.GenomeSet' in obj_type:
-        upas = [gse['ref'] for gse in gs_obj['elements'].values()]
+        upas = [gse['ref'] for gse in obj_data['data']['elements'].values()]
     elif "KBaseGenomes.ContigSet" in obj_type or "KBaseGenomeAnnotations.Assembly" in obj_type or "KBaseGenomes.Genome" in obj_type:
         upas = [upa]
     else:
