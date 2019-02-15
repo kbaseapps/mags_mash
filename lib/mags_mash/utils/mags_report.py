@@ -112,7 +112,7 @@ def ids_to_info_multi(query_results):
     upas = []
     dist_compl = {}
     for upa in query_results:
-        id_to_dist_and_kbid_and_relatedids = query_results[key]
+        id_to_dist_and_kbid_and_relatedids = query_results[upa]
         upa_stats, upa_dist_compl, upa_markers, upa_GOLD = ids_to_info(id_to_dist_and_kbid_and_relatedids, upa=upa)
         for key in upa_dist_compl:
             dist_compl[key] = upa_dist_compl[key]
