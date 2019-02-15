@@ -3,6 +3,7 @@ from installed_clients.DataFileUtilClient import DataFileUtil
 from jinja2 import Environment, PackageLoader, select_autoescape
 import pandas as pd
 import subprocess
+import math
 import uuid
 import os
 
@@ -165,7 +166,7 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
         # else:
         #     name = t
         count = "({})".format(type_count[t])
-        leaf = create_tree(GOLD[GOLD[col]==t], tree_cols[1:], dist_compl, max_num)
+        leaf = create_tree(GOLD[GOLD[col]==t], tree_cols[1:], dist_compl, max_num, source_order=source_order)
         if leaf == []:
             if col == "Project / Study Name":
                 dist, compl = dist_compl[t]
@@ -174,14 +175,14 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
             trunc_name = GOLD[GOLD["Project / Study Name"] == t].iloc[0]['IMG Genome ID ']
             # is terminal node/actually a leaf
             tree.append({
-                'truncated_name': trunc_name,
+                'truncated_name': str(trunc_name),
                 'name' : t,
                 'count': "",
                 'count_num':max_num,
                 'compl': str(compl),
                 'dist' : str(dist)
             })
-        else:           
+        else:  
             tree.append({
                 'truncated_name':t,
                 'count':count,
@@ -223,16 +224,22 @@ def htmlify(cb_url, query_results):
         tree = create_tree(curr_GOLD, tree_cols, dist_compl, len(curr_GOLD))
         tree = {"truncated_name":"", "count":"({})".format(str(len(id_to_dist_and_kbid_and_relatedids))), "count_num":len(id_to_dist_and_kbid_and_relatedids), "children":tree}
 
-        min_dist  = min([s['dist'] for s in stats])
-        max_dist  = max([s['dist'] for s in stats])
-        min_compl = min([s['completeness'] for s in stats])
-        max_compl = max([s['completeness'] for s in stats])
-        min_cont  = min([s['contamination'] for s in stats])
-        max_cont  = max([s['contamination'] for s in stats])
+        minimum_step = 0.001
+        num_steps = 100
+
+        min_dist   = math.floor(100*min([s['dist'] for s in stats]))/100.0
+        max_dist   = math.ceil(100*max([s['dist'] for s in stats]))/100.0
+        step_dist  = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
+        min_compl  = math.floor(100*min([s['completeness'] for s in stats]))/100.0
+        max_compl  = math.ceil(100*max([s['completeness'] for s in stats]))/100.0
+        step_compl = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
+        min_cont   = math.floor(100*min([s['contamination'] for s in stats]))/100.0
+        max_cont   = math.ceil(100*max([s['contamination'] for s in stats]))/100.0
+        step_cont  = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
 
         # for now convert IDs we have to report
         template = env.get_template("index.html")
-        return template.render(tree=tree, stats=stats, markers=markers, ranges=[min_dist, max_dist, min_compl, max_compl, min_cont, max_cont]), 'templates/tree_script.js'
+        return template.render(tree=tree, stats=stats, markers=markers, ranges=[min_dist, max_dist, step_dist, min_compl, max_compl, step_compl, min_cont, max_cont, step_cont])
     elif len(query_results) > 1:
         stats = []
         stats, tree, markers = ids_to_info_multi(query_results)
@@ -240,16 +247,23 @@ def htmlify(cb_url, query_results):
         sources = get_upa_names(cb_url, list(query_results.keys()))
         number_of_points = max(tree['sources'])
 
-        min_dist  = min([s['dist'] for s in stats])
-        max_dist  = max([s['dist'] for s in stats])
-        min_compl = min([s['completeness'] for s in stats])
-        max_compl = max([s['completeness'] for s in stats])
-        min_cont  = min([s['contamination'] for s in stats])
-        max_cont  = max([s['contamination'] for s in stats])
+        minimum_step = 0.001
+        num_steps = 100
+
+        min_dist   = math.floor(100*min([s['dist'] for s in stats]))/100.0
+        max_dist   = math.ceil(100*max([s['dist'] for s in stats]))/100.0
+        step_dist  = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
+        min_compl  = math.floor(100*min([s['completeness'] for s in stats]))/100.0
+        max_compl  = math.ceil(100*max([s['completeness'] for s in stats]))/100.0
+        step_compl = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
+        min_cont   = math.floor(100*min([s['contamination'] for s in stats]))/100.0
+        max_cont   = math.ceil(100*max([s['contamination'] for s in stats]))/100.0
+        step_cont  = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
+
 
         template = env.get_template("index_multi.html")
         return template.render(tree=tree, stats=stats, markers=markers, number_of_points=number_of_points, sources=sources,
-                ranges=[min_dist, max_dist, min_compl, max_compl, min_cont, max_cont]), 'templates/multi_tree_script.js'
+                ranges=[min_dist, max_dist, step_dist, min_compl, max_compl, step_compl, min_cont, max_cont, step_cont])
     else:
         raise ValueError("Error in query result handling")
 
@@ -263,7 +277,7 @@ def generate_report(cb_url, scratch, workspace_name, query_results): # id_to_dis
     html_path = os.path.join(report_file, 'index.html')
     # js_path = os.path.join(report_file, 'tree_script.js')
 
-    html_output, js_output = htmlify(cb_url, query_results)
+    html_output = htmlify(cb_url, query_results)
 
     # subprocess.check_output(['cp',js_output, js_path])
 

@@ -95,15 +95,18 @@ class mags_mashTest(unittest.TestCase):
             refs.append(ref)
         return refs
 
+    def get_genome_set(self):
+        return "22385/60/1"
+
     def validate_report_is_populated(self, ret):
         self.assertTrue('report_ref' in ret)
 
 
-    def iteration_of_test(self, ref, ws_name):
+    def iteration_of(self, ref, ws_name):
         ret = self.getImpl().run_mags_mash(self.getContext(), {'workspace_name': ws_name,
                                                                 'ws_ref': ref,
                                                                 'n_max_results':10})
-        validate_report_is_populated(ret)
+        self.validate_report_is_populated(ret)
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
     def test_your_method(self):
@@ -111,7 +114,12 @@ class mags_mashTest(unittest.TestCase):
         simple test to see if the 5 files run.
         '''
         ws_name = self.getWsName()
+
+        gs_ref = self.get_genome_set()
+        self.iteration_of(gs_ref, ws_name)
+
         refs = self.upload_data_and_get_refs(ws_name)
         for ref in refs:
-            self.iteration_of_test(ref, ws_name)
+            self.iteration_of(ref, ws_name)
+
 

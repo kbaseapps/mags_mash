@@ -124,19 +124,19 @@
         <div class="container" id="sliders">
             <div id="dist_slider">
                 <p>
-                    <label style="border-right: 5px">Distance Filter:</label><input type="text" id="live_range_dist" readonly style="border:0; color:#6dacff; font-weight:bold; width: 80px;">
+                    <label style="border-right: 5px">Distance Filter:</label><input type="text" id="live_range_dist" readonly style="border:0; color:#6dacff; font-weight:bold; width: 200px;">
                 </p>
                 <div id="dist_range" style="width:200px"></div>
             </div>
             <div id="compl_slider">
                 <p>
-                    <label style="border-right: 5px">Completeness Filter:</label><input type="text" id="live_range_compl" readonly style="border:0; color:#6dacff; font-weight:bold; width: 80px;">
+                    <label style="border-right: 5px">Completeness Filter:</label><input type="text" id="live_range_compl" readonly style="border:0; color:#6dacff; font-weight:bold; width: 200px;">
                 </p>        
                 <div id="compl_range" style="width:200px"></div>
             </div>
             <div id="cont_slider">
                 <p>
-                    <label style="border-right: 5px">Contamination Filter:</label><input type="text" id="live_range_cont" readonly style="border:0; color:#6dacff; font-weight:bold; width: 80px;">
+                    <label style="border-right: 5px">Contamination Filter:</label><input type="text" id="live_range_cont" readonly style="border:0; color:#6dacff; font-weight:bold; width: 200px;">
                 </p>
                 <div id="cont_range" style="width:200px; margin-bottom: 20px;"></div>
             </div>
@@ -245,7 +245,7 @@
                     range: true,
                     min: ranges[0],
                     max: ranges[1],
-                    step: (ranges[1] - ranges[0])/num_steps,
+                    step: ranges[2],
                     values: [ ranges[0], ranges[1]],
                     slide: function( event, ui ) {
                       live_range_dist.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
@@ -256,10 +256,10 @@
             });
             compl_range.slider({
                 range: true,
-                min: ranges[2],
-                max: ranges[3],
-                step: (ranges[3] - ranges[2])/num_steps,
-                values: [ ranges[2], ranges[3] ],
+                min: ranges[3],
+                max: ranges[4],
+                step: ranges[5],
+                values: [ ranges[3], ranges[4] ],
                 slide: function( event, ui ) {
                     live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 },
@@ -269,10 +269,10 @@
             });
             cont_range.slider({
                 range: true,
-                min: ranges[4],
-                max: ranges[5],
-                step: (ranges[5] - ranges[4])/num_steps,
-                values: [ ranges[4], ranges[5] ],
+                min: ranges[6],
+                max: ranges[7],
+                step: ranges[8],
+                values: [ ranges[6], ranges[7] ],
                 slide: function( event, ui ) {
                     live_range_cont.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 },
