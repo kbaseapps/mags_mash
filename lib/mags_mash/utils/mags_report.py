@@ -2,6 +2,7 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
 from jinja2 import Environment, PackageLoader, select_autoescape
 import pandas as pd
+import subprocess
 import uuid
 import os
 
