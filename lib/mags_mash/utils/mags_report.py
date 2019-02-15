@@ -176,7 +176,7 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
                 'children':leaf
             })
         if source_order!=None:
-            source_count = GOLD['upa']
+            source_count = GOLD['upa'].value_counts().to_dict()
             sources = []
             for s in source_order:
                 if s in source_count:

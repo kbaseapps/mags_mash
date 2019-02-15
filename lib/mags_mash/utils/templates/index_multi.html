@@ -295,7 +295,7 @@
                     min: ranges[0],
                     max: ranges[1],
                     step: (ranges[1] - ranges[0])/num_steps,
-                    values: [ 0, 0.1 ],
+                    values: [ ranges[0], ranges[1] ],
                     slide: function( event, ui ) {
                       live_range_dist.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                     },
@@ -308,7 +308,7 @@
                 min: ranges[2],
                 max: ranges[3],
                 step: (ranges[3] - ranges[2])/num_steps,
-                values: [ 0, 100 ],
+                values: [ ranges[2], ranges[3] ],
                 slide: function( event, ui ) {
                     live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 },
@@ -321,7 +321,7 @@
                 min: ranges[4],
                 max: ranges[5],
                 step: (ranges[5] - ranges[4])/num_steps,
-                values: [ 0, 100 ],
+                values: [ ranges[4], ranges[5] ],
                 slide: function( event, ui ) {
                     live_range_cont.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 },
