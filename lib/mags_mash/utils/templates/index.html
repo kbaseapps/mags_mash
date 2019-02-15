@@ -426,7 +426,7 @@
                     return barWidth - d.depth * margin.left - leaf_width(d) * 2
                 })
                 .style("fill", color)
-                .on("click", click);
+                .on("click", click)
                 .on("mouseover", function(d){ if(d.data.dist){return tooltip.text(d.data.name); }})
                 .on("mousemove", function(d){ if(d.data.dist){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
                 .on("mouseout", function(d){ if(d.data.dist){return tooltip.style("top", "-9999px"); }});
