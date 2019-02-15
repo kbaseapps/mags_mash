@@ -130,9 +130,8 @@ def ids_to_info_multi(query_results):
     # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
     tree = create_tree(GOLD, tree_cols, dist_compl, len(GOLD), source_order=upas)
     sources = [0 for _ in range(len(upas))]
-    sources = [t['sources'] for t in tree['children']]
     for i in range(len(upas)):
-        sources[i]+= sum([t['sources'][i] for t in tree['children']])
+        sources[i]+= sum([t['sources'][i] for t in tree])
     total_num = sum(sources)
     tree_wrapper = {"truncated_name":"", "count":"({})".format(str(total_num)), 'count_num':total_num, 'sources':sources, "children":tree, }
 
