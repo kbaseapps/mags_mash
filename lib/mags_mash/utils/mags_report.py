@@ -120,7 +120,7 @@ def ids_to_info_multi(query_results):
 
         stats += upa_stats
         upa_GOLD['upa'] = upa
-        GOLD.append(curr_GOLD)
+        GOLD.append(upa_GOLD)
         upas.append(upa)
 
     GOLD = pd.concat(GOLD, ignore_index=True)
@@ -128,8 +128,9 @@ def ids_to_info_multi(query_results):
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
 
     # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
-    tree = create_tree(GOLD, tree_cols, dist_compl, len(curr_GOLD), source_order=upas)
-    tree_wrapper = {"name":"", "count":"({})".format(str(len(ids))), "children":tree}
+    tree = create_tree(GOLD, tree_cols, dist_compl, len(GOLD), source_order=upas)
+    total_num = sum(tree['sources'])
+    tree_wrapper = {"name":"", "count":"({})".format(str(total_num)), "children":tree}
 
     return stats, tree_wrapper, markers
 
