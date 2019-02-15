@@ -177,7 +177,11 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
             })
         if source_order!=None:
             source_count = GOLD['upa']
-            sources = [source_count[s] for s in source_order]
+            for s in source_order:
+                if s in source_count:
+                    sources.append(source_count[s])
+                else:
+                    sources.append(0)
             tree[-1]['sources'] = sources
     return tree
 
