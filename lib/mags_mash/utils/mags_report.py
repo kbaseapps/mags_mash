@@ -159,7 +159,7 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
             # is terminal node/actually a leaf
             tree.append({
                 'truncated_name': trunc_name,
-                'name' : name,
+                'name' : t,
                 'count': "",
                 'count_num':max_num,
                 'compl': str(compl),
@@ -167,7 +167,7 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
             })
         else:           
             tree.append({
-                'truncated_name':name,
+                'truncated_name':t,
                 'count':count,
                 'count_num':type_count[t],
                 'children':leaf
