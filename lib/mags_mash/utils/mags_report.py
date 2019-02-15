@@ -143,7 +143,7 @@ def ids_to_info_multi(query_results):
     sources = [0 for _ in range(len(upas))]
     for i in range(len(upas)):
         sources[i]+= sum([t['sources'][i] for t in tree])
-    total_num = sum(sources)
+    total_num = max(sources)
     tree_wrapper = {"truncated_name":"", "count":"({})".format(str(total_num)), 'count_num':total_num, 'sources':sources, "children":tree, }
 
     return stats, tree_wrapper, markers
@@ -178,7 +178,6 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
                 'truncated_name': str(trunc_name),
                 'name' : t,
                 'count': "",
-                'count_num':max_num,
                 'compl': str(compl),
                 'dist' : str(dist)
             })
@@ -186,17 +185,18 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
             tree.append({
                 'truncated_name':t,
                 'count':count,
-                'count_num':type_count[t],
                 'children':leaf
             })
         if source_order!=None:
-            source_count = GOLD['upa'].value_counts().to_dict()
+            source_count = GOLD[GOLD[col]==t]['upa'].value_counts().to_dict()
             sources = []
             for s in source_order:
                 if s in source_count:
                     sources.append(source_count[s])
                 else:
                     sources.append(0)
+            if leaf = []:
+                sources = sources * max_num
             tree[-1]['sources'] = sources
     return tree
 
