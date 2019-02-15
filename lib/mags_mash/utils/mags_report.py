@@ -195,7 +195,7 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
                     sources.append(source_count[s])
                 else:
                     sources.append(0)
-            if leaf = []:
+            if leaf == []:
                 sources = sources * max_num
             tree[-1]['sources'] = sources
     return tree
