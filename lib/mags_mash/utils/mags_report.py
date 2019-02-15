@@ -227,11 +227,11 @@ def generate_report(cb_url, scratch, workspace_name, query_results): # id_to_dis
     report_file = os.path.join(scratch, report_name)
     os.mkdir(report_file)
     html_path = os.path.join(report_file, 'index.html')
-    js_path = os.path.join(report_file, 'tree_script.js')
+    # js_path = os.path.join(report_file, 'tree_script.js')
 
     html_output, js_output = htmlify(cb_url, query_results)
 
-    subprocess.check_output(['cp',js_output, js_path])
+    # subprocess.check_output(['cp',js_output, js_path])
 
     with open(html_path, 'w') as f:
         f.write(html_output)
