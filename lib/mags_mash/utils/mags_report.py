@@ -129,8 +129,12 @@ def ids_to_info_multi(query_results):
 
     # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
     tree = create_tree(GOLD, tree_cols, dist_compl, len(GOLD), source_order=upas)
-    total_num = sum(tree['sources'])
-    tree_wrapper = {"name":"", "count":"({})".format(str(total_num)), "children":tree}
+    sources = [0 for _ in range(len(upas))]
+    sources = [t['sources'] for t in tree['children']]
+    for i in range(len(upas)):
+        sources[i]+= sum([t['sources'][i] for t in tree['children']])
+    total_num = sum(sources)
+    tree_wrapper = {"truncated_name":"", "count":"({})".format(str(total_num)), 'count_num':total_num, 'sources':sources, "children":tree, }
 
     return stats, tree_wrapper, markers
 
@@ -208,7 +212,7 @@ def htmlify(cb_url, query_results):
         tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
                     'Ecosystem Type','Specific Ecosystem','Project / Study Name']
         tree = create_tree(curr_GOLD, tree_cols, dist_compl, len(curr_GOLD))
-        tree = {"name":"", "count":"({})".format(str(len(id_to_dist_and_kbid_and_relatedids))), "children":tree}
+        tree = {"truncated_name":"", "count":"({})".format(str(len(id_to_dist_and_kbid_and_relatedids))), "count_num":len(id_to_dist_and_kbid_and_relatedids), "children":tree}
 
         # for now convert IDs we have to report
         template = env.get_template("index.html")
