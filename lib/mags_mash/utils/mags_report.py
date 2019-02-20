@@ -1,5 +1,5 @@
 from installed_clients.KBaseReportClient import KBaseReport
-from installed_clients.DataFileUtilClient import DataFileUtil
+from installed_clients.WorkspaceClient import Workspace
 from jinja2 import Environment, PackageLoader, select_autoescape
 import pandas as pd
 import subprocess
@@ -208,9 +208,12 @@ env = Environment(loader=PackageLoader('mags_mash','utils/templates'),
 def get_upa_names(cb_url, upas):
     """
     """
-    dfu = DataFileUtil(cb_url)
-    objs = dfu.get_objects({'object_refs':upas})['data']
-    return [obj['info'][1] for obj in objs]
+    ws = Workspace(cb_url)
+    objs = ws.get_object_info({
+        'objects': [{'ref':upa} for upa in upas],
+        'includeMetadata': False
+    })
+    return [obj[1] for obj in objs['infos']]
 
 def htmlify(cb_url, query_results):
     """
