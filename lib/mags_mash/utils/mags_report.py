@@ -120,6 +120,7 @@ def ids_to_info_multi(query_results):
     stats = []
     markers = []
     dist_compl = {}
+    max_num = 0
     for upa in query_results:
         id_to_dist_and_kbid_and_relatedids = query_results[upa]
         upa_stats, upa_dist_compl, upa_markers, upa_GOLD = ids_to_info(id_to_dist_and_kbid_and_relatedids, upa=upa)
@@ -131,6 +132,7 @@ def ids_to_info_multi(query_results):
         GOLD.append(upa_GOLD)
         upas.append(upa)
 
+        max_num += len(id_to_dist_and_kbid_and_relatedids)
         # for now we just set markers to upa_markers 
         markers=upa_markers
 
@@ -139,7 +141,7 @@ def ids_to_info_multi(query_results):
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
 
     # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
-    tree = create_tree(GOLD, tree_cols, dist_compl, len(GOLD), source_order=upas)
+    tree = create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=upas)
     sources = [0 for _ in range(len(upas))]
     for i in range(len(upas)):
         sources[i]+= sum([t['sources'][i] for t in tree])
@@ -265,9 +267,17 @@ def htmlify(cb_url, query_results):
         max_cont   = math.ceil(100*max([s['contamination'] for s in stats]))/100.0
         step_cont  = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
 
-
         template = env.get_template("index_multi.html")
-        return template.render(tree=tree, stats=stats, markers=markers, number_of_points=number_of_points, sources=sources,
+
+        short_sources = []
+        sources_len = 18
+        for s in sources:
+            if len(s) <= sources_len:
+                short_sources.append(s)
+            else:
+                short_sources.append(s[:sources_len-3] + '...')
+
+        return template.render(tree=tree, stats=stats, markers=markers, number_of_points=number_of_points, sources=sources, short_sources=short_sources,
                 ranges=[min_dist, max_dist, step_dist, min_compl, max_compl, step_compl, min_cont, max_cont, step_cont])
     else:
         raise ValueError("Error in query result handling")

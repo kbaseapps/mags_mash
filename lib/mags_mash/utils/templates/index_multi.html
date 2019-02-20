@@ -98,6 +98,18 @@
         color: #1e1e1e;
     }
 
+    .title_text {
+        font-family: monospace;
+        width: 75;
+        height: 75;
+        text-anchor: middle;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-weight: bold;
+        fill: black;
+    }
+
     .legendTitle {
         font-size: 14px;
         fill: black;
@@ -362,7 +374,9 @@
     <script>
         var tree = {{tree|safe}}
         var sources = {{sources|safe}}
+        var short_sources = {{short_sources|safe}}
         var number_of_points = {{number_of_points|safe}}
+
     </script>
 
     <script>
@@ -414,24 +428,28 @@
         }
 
         for (i = 0; i < sources.length; i++){
-          var titles = mapsvg.append('rect')
-             .attr("y", 0)
-             .attr("x", (i * barHeight) + tree_map_gap)
-             .attr("height", title_height)
-             .attr("width", barHeight)
-             .attr("fill" , '#7ab9ff')
-             .attr("stroke", "#3182bd")
-             // .attr("stroke", "white")
+            var titles = mapsvg.append('rect')
+                .attr("y", 0)
+                .attr("x", (i * barHeight) + tree_map_gap)
+                .attr("height", title_height)
+                .attr("width", barHeight)
+                .attr("fill" , '#7ab9ff')
+                // .attr("stroke", "#3182bd")
+                .attr("stroke", "white")
 
-          mapsvg.append("text")
-             .style("font-weight", "bold")
-             .attr("transform", "translate("+((i * barHeight) + tree_map_gap + (barHeight/4))+","+(-(i * barHeight) - barWidth - tree_map_gap +(title_height/2) )+") rotate(90)")
-             // .attr("transform", "translate("+ (barHeight/2) +","+ (title_height/2) +") " + "rotate(90)")
-             .style("fill", "black")
-             .style("text-anchor", "middle")
-             .attr("y", 0)
-             .attr("x", (i * barHeight) + barWidth + tree_map_gap)
-             .text(sources[i]);
+            mapsvg.append("text")
+                .attr("class", "title_text")
+                .attr("transform", "translate("+((i * barHeight) + tree_map_gap + (barHeight/4))+","+(-(i * barHeight) - barWidth - tree_map_gap +(title_height/2) )+") rotate(90)")
+                // .attr("transform", "translate("+ (barHeight/2) +","+ (title_height/2) +") " + "rotate(90)")
+                .attr("y", 0)
+                .attr("x", (i * barHeight) + barWidth + tree_map_gap)
+                .text(short_sources[i])
+                .on("mouseover", function(d){ if(d.data.dist){return tooltip.text(sources[i]); }})
+                .on("mousemove", function(d){ if(d.data.dist){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
+                .on("mouseout", function(d){ if(d.data.dist){return tooltip.style("top", "-9999px"); }});
+                .text(sources[i]);
+
+
         }
 
         var colorScale = d3.scaleLinear()
