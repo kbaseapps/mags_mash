@@ -439,6 +439,7 @@
                 // .attr("stroke", "#3182bd")
                 .attr("stroke", "white")
                 .on("mouseover", function(d){
+                    tooltip.style("color", "#1e1e1e")
                     tooltip.style("background-color", "#7ab9ff")
                     tooltip.text(sources[i].toString())
                 })
@@ -461,7 +462,7 @@
             .range(["#2c7bb6","#00a6ca","#00ccbc","#90eb9d","#ffff8c","#f9d057","#f29e2e","#e76818","#d7191c"]);
 
         var grayScale = d3.scaleLinear()
-                .domain([0,number_of_points])
+                .domain([0,1])
                 .range(["#d6d6d6", "#4f4f4f"])
 
         var countScale = d3.scaleLinear()
@@ -605,8 +606,15 @@
                 .on("mouseover", function(d){
                     if (d.children){
                         tooltip.style("background-color",colorScale(d.data.sources[i]))
+                        tooltip.style("color", "#1e1e1e")
                     }else{
                         tooltip.style("background-color",grayScale(d.data.sources[i]))
+                        if (d.data.sources[i] >= 1){
+                            tooltip.style("color", "white")
+                        }
+                        else{
+                            tooltip.style("color", "#1e1e1e")
+                        }
                     }
                     tooltip.text(d.data.sources[i].toString())
                 })
@@ -681,6 +689,7 @@
               .style("fill", color)
               .on("click", click)
               .on("mouseover", function(d){ if(d.data.dist){
+                tooltip.style("color", "#1e1e1e")
                 tooltip.style("background-color", "#7ab9ff")
                 return tooltip.text(d.data.name); }})
               .on("mousemove", function(d){ if(d.data.dist){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
@@ -764,11 +773,13 @@
         }
 
         function show_compl_text(d){
+            tooltip.style("color", "#1e1e1e")
             tooltip.style("background-color", "#7ab9ff")    
             return tooltip.text("Completeness");
         }
 
         function show_dist_text(d){
+            tooltip.style("color", "#1e1e1e")
             tooltip.style("background-color", "#7ab9ff")
             return tooltip.text("Distance")
         }

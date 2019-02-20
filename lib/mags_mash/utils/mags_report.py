@@ -193,16 +193,10 @@ def create_tree(GOLD, tree_cols, dist_compl, max_num, source_order=None):
             source_count = GOLD[GOLD[col]==t]['upa'].value_counts().to_dict()
             sources = []
             for s in source_order:
-                if leaf == []:
-                    if s in source_count:
-                        sources.append(max_num)
-                    else:
-                        sources.append(0)
+                if s in source_count:
+                    sources.append(source_count[s])
                 else:
-                    if s in source_count:
-                        sources.append(source_count[s])
-                    else:
-                        sources.append(0)
+                    sources.append(0)
 
             tree[-1]['sources'] = sources
     return tree
