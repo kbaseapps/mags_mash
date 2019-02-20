@@ -463,7 +463,7 @@
 
         var grayScale = d3.scaleLinear()
                 .domain([0,1])
-                .range(["#d6d6d6", "#4f4f4f"])
+                .range(["#d6d6d6", "#1e1e1e"])
 
         var countScale = d3.scaleLinear()
           .domain([0, number_of_points])
@@ -599,12 +599,12 @@
                 .style("stroke-opacity", 0.6)
                 //.style("fill", "#f8d9039")
                 .style("fill", function(d) {
-                    if (d.children){
+                    if (d.data.dist){
                         return colorScale(d.data.sources[i])
                     }else{ return grayScale(d.data.sources[i])}
                 })
                 .on("mouseover", function(d){
-                    if (d.children){
+                    if (d.data.dist){
                         tooltip.style("background-color",colorScale(d.data.sources[i]))
                         tooltip.style("color", "#1e1e1e")
                     }else{
