@@ -411,7 +411,9 @@
           .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var mapsvg = d3.select("#treemap").style("width",map_width).append("svg")
+        var mapsvg = d3.select("#treemap").style("width",map_width + tree_map_gap)
+            .append("svg")
+            .attr("id","treemap_svg")
             .attr("width", map_width + tree_map_gap)
             .append("g")
             .attr("transform", "translate(0," + margin.top + ")");
@@ -544,19 +546,11 @@
 
           var height = Math.max(50, (nodes.length * barHeight) + margin.top + margin.bottom + title_height);
 
-          // d3.select("svg2").transition()
-          //     .duration(duration)
-          //     .attr("height",height)
-
           d3.select("svg").transition()
               .duration(duration)
               .attr("height", height);
 
-          // d3.select(self.frameElement).transition()
-          //     .duration(duration)
-          //     .style("height", height + "px");
-
-          d3.select("mapsvg").transition()
+          d3.select("#treemap_svg").transition()
             .duration(duration)
             .attr("height", height);
 
