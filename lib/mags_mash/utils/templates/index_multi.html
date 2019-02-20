@@ -404,7 +404,7 @@
             .x(function(d) { return d.y; })
             .y(function(d) { return d.x; });
 
-        var tooltip = d3.select("#treeid").append("div").attr("class", 'tooltip').style("pointer-events","none");
+        var tooltip = d3.select("#tree_group").append("div").attr("class", 'tooltip').style("pointer-events","none");
 
         var svg = d3.select("#treeid").append("svg")
             .attr("width", tree_width + tree_map_gap)// + margin.left + margin.right)
@@ -428,7 +428,7 @@
           domainList.push((number_of_points/8) * i)
         }
 
-        for (i = 0; i < sources.length; i++){
+        for (let i = 0; i < sources.length; i++){
             var titles = mapsvg.append('rect')
                 .attr("y", 0)
                 .attr("x", (i * barHeight) + tree_map_gap)
@@ -437,6 +437,13 @@
                 .attr("fill" , '#7ab9ff')
                 // .attr("stroke", "#3182bd")
                 .attr("stroke", "white")
+                .on("mouseover", function(d){
+                    tooltip.style("background-color", "#7ab9ff")
+                    tooltip.text(sources[i].toString())
+                })
+                .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
+                .on("mouseout", function(d){ return tooltip.style("top", "-9999px"); })
+
 
             mapsvg.append("text")
                 .attr("class", "title_text")
@@ -444,19 +451,17 @@
                 // .attr("transform", "translate("+ (barHeight/2) +","+ (title_height/2) +") " + "rotate(90)")
                 .attr("y", 0)
                 .attr("x", (i * barHeight) + barWidth + tree_map_gap)
+                .style("pointer-events", "none")
                 .text(short_sources[i])
-                .on("mouseover", function(d){ if(d.data.dist){return tooltip.text(sources[i]); }})
-                .on("mousemove", function(d){ if(d.data.dist){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
-                .on("mouseout", function(d){ if(d.data.dist){return tooltip.style("top", "-9999px"); }})
-
-
         }
 
         var colorScale = d3.scaleLinear()
             .domain(domainList)
             .range(["#2c7bb6","#00a6ca","#00ccbc","#90eb9d","#ffff8c","#f9d057","#f29e2e","#e76818","#d7191c"]);
 
-
+        var grayScale = d3.scaleLinear()
+                .domain([0,number_of_points])
+                .range(["#d6d6d6", "#4f4f4f"])
 
         var countScale = d3.scaleLinear()
           .domain([0, number_of_points])
@@ -487,13 +492,6 @@
               return colorScale( countPoint[i] ); 
             });
          
-        // //Append multiple color stops by using D3's data/enter step
-        // linearGradient.selectAll("stop")
-        //     .data( colorScale.range() )
-        //     .enter().append("stop")
-        //     .attr("offset", function(d,i) { return i/(colorScale.range().length-1); })
-        //     .attr("stop-color", function(d) { return d; });
-
         var legendY_pos = -45
         var legendWidth = 220;
         var legendHeight = 15
@@ -586,14 +584,9 @@
               .attr("transform", function(d) { return "translate(0," + source.x0 + ")"; })
               .style("opacity", 0);
 
-          // var map_nodeEnter = map_node.enter().append("g")
-          //     .attr("class", "node")
-          //     .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-          //     .style("opacity", 0);
-
           // ========================================================================
           // do the heat map thing here.
-          for (i = 0; i < sources.length; i++){
+          for (let i = 0; i < sources.length; i++){
             map_nodeEnter.append("rect")
                 .attr("y", (-barHeight/2) + title_height + tree_map_gap)
                 .attr("height", barHeight)
@@ -603,7 +596,21 @@
                 .style("stroke","white")
                 .style("stroke-opacity", 0.6)
                 //.style("fill", "#f8d9039")
-                .style("fill", function(d) {return colorScale(d.data.sources[i])})
+                .style("fill", function(d) {
+                    if (d.children){
+                        return colorScale(d.data.sources[i])
+                    }else{ return grayScale(d.data.sources[i])}
+                })
+                .on("mouseover", function(d){
+                    if (d.children){
+                        tooltip.style("background-color",colorScale(d.data.sources[i]))
+                    }else{
+                        tooltip.style("background-color",grayScale(d.data.sources[i]))
+                    }
+                    tooltip.text(d.data.sources[i].toString())
+                })
+                .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
+                .on("mouseout", function(d){ return tooltip.style("top", "-9999px");});
           }
             
           // ========================================================================
@@ -672,7 +679,9 @@
               })
               .style("fill", color)
               .on("click", click)
-              .on("mouseover", function(d){ if(d.data.dist){return tooltip.text(d.data.name); }})
+              .on("mouseover", function(d){ if(d.data.dist){
+                tooltip.style("background-color", "#7ab9ff")
+                return tooltip.text(d.data.name); }})
               .on("mousemove", function(d){ if(d.data.dist){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
               .on("mouseout", function(d){ if(d.data.dist){return tooltip.style("top", "-9999px"); }});
 
@@ -754,11 +763,13 @@
         }
 
         function show_compl_text(d){
-          return tooltip.text("Completeness");
+            tooltip.style("background-color", "#7ab9ff")    
+            return tooltip.text("Completeness");
         }
 
         function show_dist_text(d){
-          return tooltip.text("Distance")
+            tooltip.style("background-color", "#7ab9ff")
+            return tooltip.text("Distance")
         }
 
         function leaf_transform(d){
