@@ -205,17 +205,17 @@ env = Environment(loader=PackageLoader('mags_mash','utils/templates'),
                   autoescape=select_autoescape(['html']))
 
 
-def get_upa_names(cb_url, upas):
+def get_upa_names(ws_url, upas):
     """
     """
-    ws = Workspace(cb_url)
+    ws = Workspace(ws_url)
     objs = ws.get_object_info3({
         'objects': [{'ref':upa} for upa in upas],
         'includeMetadata': False
     })
     return [obj[1] for obj in objs['infos']]
 
-def htmlify(cb_url, query_results):
+def htmlify(ws_url, query_results):
     """
     """
     if len(query_results) == 1:
@@ -248,7 +248,7 @@ def htmlify(cb_url, query_results):
         stats = []
         stats, tree, markers = ids_to_info_multi(query_results)
 
-        sources = get_upa_names(cb_url, list(query_results.keys()))
+        sources = get_upa_names(ws_url, list(query_results.keys()))
         number_of_points = max(tree['sources'])
 
         minimum_step = 0.001
@@ -280,7 +280,7 @@ def htmlify(cb_url, query_results):
         raise ValueError("Error in query result handling")
 
 
-def generate_report(cb_url, scratch, workspace_name, query_results): # id_to_dist_and_kbid_and_relatedids):
+def generate_report(ws_url, cb_url, scratch, workspace_name, query_results): # id_to_dist_and_kbid_and_relatedids):
     """
     """
     report_name = 'Mags_Mash_'+str(uuid.uuid4())
@@ -289,7 +289,7 @@ def generate_report(cb_url, scratch, workspace_name, query_results): # id_to_dis
     html_path = os.path.join(report_file, 'index.html')
     # js_path = os.path.join(report_file, 'tree_script.js')
 
-    html_output = htmlify(cb_url, query_results)
+    html_output = htmlify(ws_url, query_results)
 
     # subprocess.check_output(['cp',js_output, js_path])
 

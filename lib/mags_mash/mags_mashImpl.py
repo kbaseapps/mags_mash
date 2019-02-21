@@ -37,6 +37,7 @@ class mags_mash:
         self.shared_folder = config['scratch']
         self.sw_url = config['srv-wiz-url']
         self.auth_token = os.environ['KB_AUTH_TOKEN']
+        self.ws_url = config["workspace-url"]
         #END_CONSTRUCTOR
         pass
 
@@ -65,7 +66,7 @@ class mags_mash:
         # id_to_dist_and_kbid_and_relatedids = query_sketch_mags(self.sw_url, input_upas, n_max_results, self.auth_token)
         query_results = query_sketch_mags(self.sw_url, input_upas, n_max_results, self.auth_token)
 
-        output = generate_report(self.callback_url, self.shared_folder,\
+        output = generate_report(self.ws_url, self.callback_url, self.shared_folder,\
                                   params.get('workspace_name'), query_results)
 
         #END run_mags_mash
