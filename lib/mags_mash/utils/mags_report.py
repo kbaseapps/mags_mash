@@ -221,9 +221,10 @@ def get_upa_names(ws_url, cb_url, upas):
 
     upa_to_name = {'/'.join([str(info[6]), str(info[0]), str(info[4])]):info[1] for info in objs['infos']}
     missing_upas = list(set(upas) - set(upa_to_name.keys()))
+    if len(missing_upas) < 1:
+        return upa_to_name
 
     dfu = DataFileUtil(cb_url)
-
     objs = dfu.get_objects({'object_refs':missing_upas})
     if len(objs) != len(missing_upas):
         raise ValueError("Could not find all input names. len upas: %s  len objs: %s"%(len(upas), len(objs)), upas, objs['infos'])
