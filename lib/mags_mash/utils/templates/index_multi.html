@@ -267,7 +267,7 @@
             function( settings, data, dataIndex ) {
                 var min = parseFloat(compl_range.slider( "values", 0 ));
                 var max = parseFloat(compl_range.slider( "values", 1 ));
-                var col = parseFloat( data[7] ) || 0; // data[number] = column number
+                var col = parseFloat( data[6] ) || 0; // data[number] = column number
                 if ( ( isNaN( min ) && isNaN( max ) ) ||
                     ( isNaN( min ) && col <= max ) ||
                     ( min <= col   && isNaN( max ) ) ||
@@ -280,7 +280,7 @@
             function( settings, data, dataIndex ) {
                 var min = parseFloat(cont_range.slider( "values", 0 ));
                 var max = parseFloat(cont_range.slider( "values", 1 ));
-                var col = parseFloat( data[8] ) || 0; // data[number] = column number
+                var col = parseFloat( data[7] ) || 0; // data[number] = column number
                 if ( ( isNaN( min ) && isNaN( max ) ) ||
                     ( isNaN( min ) && col <= max ) ||
                     ( min <= col   && isNaN( max ) ) ||
