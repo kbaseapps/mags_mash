@@ -58,10 +58,10 @@ def get_statistics(ids, GOLD, upa_name=None):
         if upa_name != None:
             curr['input_name'] = upa_name
         curr['dist'] = dist
-        if kb_id:
-            curr['kb_id'] = kb_id
-        else:
-            curr['kb_id'] = ''
+        # if kb_id:
+        #     curr['kb_id'] = kb_id
+        # else:
+        #     curr['kb_id'] = ''
         id_stats = curr_stats[curr_stats.binid == id_]
         curr['completeness'] = id_stats.iloc[0]['completeness']
         curr['contamination'] = id_stats.iloc[0]['contamination']
@@ -69,6 +69,8 @@ def get_statistics(ids, GOLD, upa_name=None):
         curr['mag_id'] = id_
         curr['IMG_Genome_ID'] = id_.split('_')[0]
 
+        img_link = "https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=MetaDetail&page=metagenomeBinScaffolds&taxon_oid=%s&bin_name=%s"%(id_.split('_')[0], id_)
+        curr['IMG_link'] = img_link
         if relatedids:
             for key in relatedids:
                 if relatedids[key]:
@@ -264,7 +266,7 @@ def htmlify(ws_url, cb_url, query_results):
         template = env.get_template("index.html")
         return template.render(tree=tree, stats=stats, markers=markers, ranges=[min_dist, max_dist, step_dist, min_compl, max_compl, step_compl, min_cont, max_cont, step_cont])
     elif len(query_results) > 1:
-        stats = []
+
         upa_to_name = get_upa_names(ws_url, cb_url, list(query_results.keys()))
         # sources = upa_to_name.values()
         stats, tree, markers, sources = ids_to_info_multi(query_results, upa_to_name)
@@ -274,14 +276,14 @@ def htmlify(ws_url, cb_url, query_results):
         minimum_step = 0.001
         num_steps = 100
 
-        min_dist   = (math.floor(100*min([s['dist'] for s in stats]))/100.0) - 0.01
-        max_dist   = (math.ceil(100*max([s['dist'] for s in stats]))/100.0) + 0.01
+        min_dist   = math.floor(100*min([s['dist'] for s in stats]))/100.0
+        max_dist   = math.ceil(100*max([s['dist'] for s in stats]))/100.0
         step_dist  = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
-        min_compl  = (math.floor(100*min([s['completeness'] for s in stats]))/100.0) - 0.01
-        max_compl  = (math.ceil(100*max([s['completeness'] for s in stats]))/100.0) + 0.01
+        min_compl  = math.floor(100*min([s['completeness'] for s in stats]))/100.0
+        max_compl  = math.ceil(100*max([s['completeness'] for s in stats]))/100.0
         step_compl = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
-        min_cont   = (math.floor(100*min([s['contamination'] for s in stats]))/100.0) - 0.01
-        max_cont   = (math.ceil(100*max([s['contamination'] for s in stats]))/100.0) + 0.01
+        min_cont   = math.floor(100*min([s['contamination'] for s in stats]))/100.0
+        max_cont   = math.ceil(100*max([s['contamination'] for s in stats]))/100.0
         step_cont  = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
 
         template = env.get_template("index_multi.html")
