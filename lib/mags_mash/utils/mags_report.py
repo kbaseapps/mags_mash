@@ -274,14 +274,14 @@ def htmlify(ws_url, cb_url, query_results):
         minimum_step = 0.001
         num_steps = 100
 
-        min_dist   = math.floor(100*min([s['dist'] for s in stats]))/100.0
-        max_dist   = math.ceil(100*max([s['dist'] for s in stats]))/100.0
+        min_dist   = (math.floor(100*min([s['dist'] for s in stats]))/100.0) - 0.01
+        max_dist   = (math.ceil(100*max([s['dist'] for s in stats]))/100.0) + 0.01
         step_dist  = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
-        min_compl  = math.floor(100*min([s['completeness'] for s in stats]))/100.0
-        max_compl  = math.ceil(100*max([s['completeness'] for s in stats]))/100.0
+        min_compl  = (math.floor(100*min([s['completeness'] for s in stats]))/100.0) - 0.01
+        max_compl  = (math.ceil(100*max([s['completeness'] for s in stats]))/100.0) + 0.01
         step_compl = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
-        min_cont   = math.floor(100*min([s['contamination'] for s in stats]))/100.0
-        max_cont   = math.ceil(100*max([s['contamination'] for s in stats]))/100.0
+        min_cont   = (math.floor(100*min([s['contamination'] for s in stats]))/100.0) - 0.01
+        max_cont   = (math.ceil(100*max([s['contamination'] for s in stats]))/100.0) + 0.01
         step_cont  = max( round((max_dist-min_dist)/num_steps, 3), minimum_step)
 
         template = env.get_template("index_multi.html")
