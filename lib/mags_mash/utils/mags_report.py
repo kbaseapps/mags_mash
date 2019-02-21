@@ -1,5 +1,6 @@
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.WorkspaceClient import Workspace
+from installed_clients.DataFileUtilClient import DataFileUtil
 from jinja2 import Environment, PackageLoader, select_autoescape
 import pandas as pd
 import subprocess
@@ -210,18 +211,29 @@ env = Environment(loader=PackageLoader('mags_mash','utils/templates'),
                   autoescape=select_autoescape(['html']))
 
 
-def get_upa_names(ws_url, upas):
+def get_upa_names(ws_url, cb_url, upas):
     """
     """
     ws = Workspace(ws_url)
     objs = ws.get_object_info3({
         'objects': [{'ref':upa} for upa in upas]
     })
-    if len(objs) != len(upas):
-        raise ValueError("Could not find all input names. len upas: %s  len objs: %s"%(len(upas), len(objs)), upas, objs['infos'])
-    return {'/'.join([str(info[6]), str(info[0]), str(info[4])]) :info[1] for info in objs['infos']}
 
-def htmlify(ws_url, query_results):
+    upa_to_name = {'/'.join([str(info[6]), str(info[0]), str(info[4])]):info[1] for info in objs['infos']}
+    missing_upas = list(set(upas) - set(upa_to_name.keys()))
+
+    dfu = DataFileUtil(cb_url)
+
+    objs = dfu.get_objects({'object_refs':missing_upas})
+    if len(objs) != len(missing_upas):
+        raise ValueError("Could not find all input names. len upas: %s  len objs: %s"%(len(upas), len(objs)), upas, objs['infos'])
+    for obj in objs:
+        info = obj['info']
+        upa = '/'.join([str(info[6]), str(info[0]), str(info[4])])
+        upa_to_name[upa] = info[1]
+    return upa_to_name
+
+def htmlify(ws_url, cb_url, query_results):
     """
     """
     if len(query_results) == 1:
@@ -252,7 +264,7 @@ def htmlify(ws_url, query_results):
         return template.render(tree=tree, stats=stats, markers=markers, ranges=[min_dist, max_dist, step_dist, min_compl, max_compl, step_compl, min_cont, max_cont, step_cont])
     elif len(query_results) > 1:
         stats = []
-        upa_to_name = get_upa_names(ws_url, list(query_results.keys()))
+        upa_to_name = get_upa_names(ws_url, cb_url, list(query_results.keys()))
         # sources = upa_to_name.values()
         stats, tree, markers, sources = ids_to_info_multi(query_results, upa_to_name)
 
@@ -296,7 +308,7 @@ def generate_report(ws_url, cb_url, scratch, workspace_name, query_results): # i
     html_path = os.path.join(report_file, 'index.html')
     # js_path = os.path.join(report_file, 'tree_script.js')
 
-    html_output = htmlify(ws_url, query_results)
+    html_output = htmlify(ws_url, cb_url, query_results)
 
     # subprocess.check_output(['cp',js_output, js_path])
 
