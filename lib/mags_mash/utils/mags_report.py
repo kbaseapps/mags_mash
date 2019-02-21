@@ -123,10 +123,10 @@ def ids_to_info_multi(query_results, upa_to_name):
     markers = []
     dist_compl = {}
     max_num = 0
-    sources = []
+    upa_names = []
     for upa in query_results:
         upa_name = upa_to_name[upa]
-        sources.append(upa_name)
+        upa_names.append(upa_name)
 
         id_to_dist_and_kbid_and_relatedids = query_results[upa]
         upa_stats, upa_dist_compl, upa_markers, upa_GOLD = ids_to_info(id_to_dist_and_kbid_and_relatedids, upa_name=upa_name)
@@ -154,7 +154,7 @@ def ids_to_info_multi(query_results, upa_to_name):
     total_num = sum(sources)
     tree_wrapper = {"truncated_name":"", "count":"({})".format(str(total_num)), 'count_num':total_num, 'sources':sources, "children":tree, }
 
-    return stats, tree_wrapper, markers, sources
+    return stats, tree_wrapper, markers, upa_names
 
 
 name_max_len = 115
@@ -289,6 +289,7 @@ def htmlify(ws_url, cb_url, query_results):
         short_sources = []
         sources_len = 18
         for s in sources:
+            s = str(s)
             if len(s) <= sources_len:
                 short_sources.append(s)
             else:
