@@ -122,8 +122,10 @@ def ids_to_info_multi(query_results, upa_to_name):
     markers = []
     dist_compl = {}
     max_num = 0
+    sources = []
     for upa in query_results:
         upa_name = upa_to_name[upa]
+        sources.append(upa_name)
 
         id_to_dist_and_kbid_and_relatedids = query_results[upa]
         upa_stats, upa_dist_compl, upa_markers, upa_GOLD = ids_to_info(id_to_dist_and_kbid_and_relatedids, upa_name=upa_name)
@@ -151,7 +153,7 @@ def ids_to_info_multi(query_results, upa_to_name):
     total_num = sum(sources)
     tree_wrapper = {"truncated_name":"", "count":"({})".format(str(total_num)), 'count_num':total_num, 'sources':sources, "children":tree, }
 
-    return stats, tree_wrapper, markers
+    return stats, tree_wrapper, markers, sources
 
 
 name_max_len = 115
@@ -216,7 +218,7 @@ def get_upa_names(ws_url, upas):
         'objects': [{'ref':upa} for upa in upas]
     })
     if len(objs) != len(upas):
-        raise ValueError("Could not find all input names. len upas: %s  len objs: %s"%(len(upas), len(objs)))
+        raise ValueError("Could not find all input names. len upas: %s  len objs: %s"%(len(upas), len(objs)), upas, objs['infos'])
     return {'/'.join([str(info[6]), str(info[0]), str(info[4])]) :info[1] for info in objs['infos']}
 
 def htmlify(ws_url, query_results):
@@ -251,8 +253,8 @@ def htmlify(ws_url, query_results):
     elif len(query_results) > 1:
         stats = []
         upa_to_name = get_upa_names(ws_url, list(query_results.keys()))
-        sources = upa_to_name.values()
-        stats, tree, markers = ids_to_info_multi(query_results, upa_to_name)
+        # sources = upa_to_name.values()
+        stats, tree, markers, sources = ids_to_info_multi(query_results, upa_to_name)
 
         number_of_points = max(tree['sources'])
 
