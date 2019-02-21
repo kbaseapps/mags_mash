@@ -217,7 +217,7 @@ def get_upa_names(ws_url, upas):
     })
     if len(objs) != len(upas):
         raise ValueError("Could not find all input names")
-    return ['/'.join([str(info[6]), str(info[0]), str(info[4])]) :info[1] for info in objs['infos']]
+    return {'/'.join([str(info[6]), str(info[0]), str(info[4])]) :info[1] for info in objs['infos']}
 
 def htmlify(ws_url, query_results):
     """
