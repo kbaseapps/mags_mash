@@ -210,8 +210,7 @@ def get_upa_names(ws_url, upas):
     """
     ws = Workspace(ws_url)
     objs = ws.get_object_info3({
-        'objects': [{'ref':upa} for upa in upas],
-        'includeMetadata': False
+        'objects': [{'ref':upa} for upa in upas]
     })
     return [obj[1] for obj in objs['infos']]
 
