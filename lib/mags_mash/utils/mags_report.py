@@ -36,7 +36,7 @@ def get_location_markers(ids, source=None):
     return markers
 
 
-def get_statistics(ids, GOLD, upa=None):
+def get_statistics(ids, GOLD, upa_name=None):
     '''
     get statistics from the GOLD and statitics csvs
 
@@ -54,8 +54,8 @@ def get_statistics(ids, GOLD, upa=None):
     for id_ in ids:
         curr = {}
         dist, kb_id, relatedids = ids[id_]
-        if upa != None:
-            curr['input_upa'] = upa
+        if upa_name != None:
+            curr['input_name'] = upa_name
         curr['dist'] = dist
         if kb_id:
             curr['kb_id'] = kb_id
@@ -66,6 +66,7 @@ def get_statistics(ids, GOLD, upa=None):
         curr['contamination'] = id_stats.iloc[0]['contamination']
         curr['MIMAG'] = id_stats.iloc[0]['MIMAG']
         curr['mag_id'] = id_
+        curr['IMG_Genome_ID'] = id_.split('_')[0]
 
         if relatedids:
             for key in relatedids:
@@ -85,7 +86,7 @@ def get_statistics(ids, GOLD, upa=None):
     return output, dist_compl
 
 
-def ids_to_info(ids, upa=None):
+def ids_to_info(ids, upa_name=None):
     """
     """
     # fill this in when we actually have acess to GOLD data
@@ -104,12 +105,12 @@ def ids_to_info(ids, upa=None):
     curr_GOLD = curr_GOLD.fillna({col:"Unknown" for col in tree_cols})
     # dist_compl = dictionary from 'Project / Study Name' -> (Distance, Completeness)
 
-    stats, dist_compl = get_statistics(ids, curr_GOLD, upa=upa)
+    stats, dist_compl = get_statistics(ids, curr_GOLD, upa_name=upa_name)
     markers = get_location_markers(gold_id_to_id.values())
 
     return stats, dist_compl, markers, curr_GOLD
 
-def ids_to_info_multi(query_results):
+def ids_to_info_multi(query_results, upa_to_name):
     """
     """
     # fill this in when we actually have acess to GOLD data
@@ -122,8 +123,10 @@ def ids_to_info_multi(query_results):
     dist_compl = {}
     max_num = 0
     for upa in query_results:
+        upa_name = upa_to_name[upa]
+
         id_to_dist_and_kbid_and_relatedids = query_results[upa]
-        upa_stats, upa_dist_compl, upa_markers, upa_GOLD = ids_to_info(id_to_dist_and_kbid_and_relatedids, upa=upa)
+        upa_stats, upa_dist_compl, upa_markers, upa_GOLD = ids_to_info(id_to_dist_and_kbid_and_relatedids, upa_name=upa_name)
         for key in upa_dist_compl:
             dist_compl[key] = upa_dist_compl[key]
 
@@ -212,7 +215,9 @@ def get_upa_names(ws_url, upas):
     objs = ws.get_object_info3({
         'objects': [{'ref':upa} for upa in upas]
     })
-    return [obj[1] for obj in objs['infos']]
+    if len(objs) != len(upas):
+        raise ValueError("Could not find all input names")
+    return ['/'.join([str(info[6]), str(info[0]), str(info[4])]) :info[1] for info in objs['infos']]
 
 def htmlify(ws_url, query_results):
     """
@@ -245,9 +250,10 @@ def htmlify(ws_url, query_results):
         return template.render(tree=tree, stats=stats, markers=markers, ranges=[min_dist, max_dist, step_dist, min_compl, max_compl, step_compl, min_cont, max_cont, step_cont])
     elif len(query_results) > 1:
         stats = []
-        stats, tree, markers = ids_to_info_multi(query_results)
+        upa_to_name = get_upa_names(ws_url, list(query_results.keys()))
+        sources = upa_to_name.values()
+        stats, tree, markers = ids_to_info_multi(query_results, upa_to_name)
 
-        sources = get_upa_names(ws_url, list(query_results.keys()))
         number_of_points = max(tree['sources'])
 
         minimum_step = 0.001

@@ -105,7 +105,7 @@
     <div class='tab'>
         <button class="tablinks" onclick="openTab(event, 'stats')" id="defaultOpen">List View</button>
         <button class="tablinks" onclick="openTab(event, 'treetab')">Ecosystem Tree</button>
-        <button class="tablinks" onclick="openTab(event, 'maptab')">Map</button>
+        <!-- <button class="tablinks" onclick="openTab(event, 'maptab')">Map</button> -->
     </div>
 
     <!--
@@ -146,7 +146,7 @@
                 <tr>
                     <td>Distance</td>
                     <td>MAG ID</td>
-                    <td>KBase ID</td>
+                    <!-- <td>KBase ID</td> -->
                     <td>GOLD Analysis Project ID</td>
                     <td>GOLD Sequencing Project ID</td>
                     <td>IMG Genome ID</td>
@@ -161,14 +161,16 @@
                 <tr>
                     <td class="sorting_1">{{item.dist}}</td>
                     <td>{{item.mag_id}}</td>
-                    <td>{{item.kb_id}}</td>
+                    <!-- <td>{{item.kb_id}}</td> -->
                     <td>
                         <a href="{{ 'https://gold.jgi.doe.gov/analysis_project?id=%s'%item.GOLD_Analysis_ID }}" target="_blank">{{item.GOLD_Analysis_ID}}</a>
                     </td>
                     <td>
                         <a href="{{ 'https://gold.jgi.doe.gov/project?id=%s'%item.GOLD_Sequencing_ID }}" target="_blank">{{item.GOLD_Sequencing_ID}}</a>
                     </td>
-                    <td>{{item.IMG_Genome_ID}}</td>
+                    <td>
+                        <a href="{{ 'https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=MetaDetail&page=metagenomeBinScaffolds&taxon_oid=%s&bin_name=%s'%(item.IMG_Genome_ID, item.mag_id)}}">{{item.IMG_Genome_ID}}</a>
+                    </td>
                     <td>{{item.completeness}}</td>
                     <td>{{item.contamination}}</td>
                     <td>{{item.MIMAG}}</td>
@@ -179,10 +181,10 @@
         </table>    
     </div>
 
-    <div id="maptab" class="tabcontent">
+<!--     <div id="maptab" class="tabcontent">
         <div id="mapid" style="height: 900px; width: 1200px;"></div>
     </div>
-
+ -->
     <script>
         var dist_range;
         var compl_range;
@@ -291,7 +293,7 @@
         } );
     </script>
 
-    <script>
+<!--     <script>
 
         var markers={{ markers|safe }};
         var mymap = new L.map("mapid").setView([37.87, -122.25],8);
@@ -305,7 +307,7 @@
             var marker = new L.marker([markers[i].lat, markers[i].lng]).addTo(mymap).bindPopup("<h3>"+markers[i].name+"</h3>"+markers[i].details);
         }
         
-    </script> 
+    </script>  -->
 
     <script>
         var tree = {{tree | safe}}
