@@ -600,14 +600,12 @@
                 //.style("fill", "#f8d9039")
                 .style("fill", function(d) {
                     if (d.data.dist){
-                        return colorScale(d.data.sources[i])
-                    }else{ return grayScale(d.data.sources[i])}
+                        return grayScale(d.data.sources[i])
+                    }else{ return colorScale(d.data.sources[i])}
                 })
                 .on("mouseover", function(d){
+
                     if (d.data.dist){
-                        tooltip.style("background-color",colorScale(d.data.sources[i]))
-                        tooltip.style("color", "#1e1e1e")
-                    }else{
                         tooltip.style("background-color",grayScale(d.data.sources[i]))
                         if (d.data.sources[i] >= 1){
                             tooltip.style("color", "white")
@@ -615,6 +613,9 @@
                         else{
                             tooltip.style("color", "#1e1e1e")
                         }
+                    }else{
+                        tooltip.style("background-color",colorScale(d.data.sources[i]))
+                        tooltip.style("color", "#1e1e1e")
                     }
                     tooltip.text(d.data.sources[i].toString())
                 })
