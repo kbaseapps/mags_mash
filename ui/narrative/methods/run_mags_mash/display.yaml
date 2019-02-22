@@ -6,7 +6,9 @@ name: Search JGI Metagenome-Assembled Genomes (MAGs)
 tooltip: |
     Searches Metagenome-Assembled Genomes (MAGs) from JGI using MASH and returns GOLD environmental context.
 
-screenshots: []
+screenshots:
+    - mags_mash_table_view.png
+    - mags_mash_ecosystem_tree_view.png
 
 icon: JGI_logo.png
 
