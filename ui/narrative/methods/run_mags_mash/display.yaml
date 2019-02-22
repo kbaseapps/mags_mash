@@ -40,6 +40,31 @@ parameters :
         long-hint: |
             Maximum number of similar sequence results to return, limit 500
 
+    distance :
+        ui-name : |
+            Maximum distance
+        short-hint : |
+            Maximum distance for mags
+        long-hint  : |
+            Maximum distance for mags
+
+    completeness :
+        ui-name : |
+            Minimum Completeness
+        short-hint : |
+            Minimum completeness for mags
+        long-hint  : |
+            Minimum completeness for mags
+
+    contamination :
+        ui-name : |
+            Maximum contamination
+        short-hint : |
+            Maximum contamination for mags
+        long-hint  : |
+            Maximum contamination for mags
+
+
 description : |
 
     <p> Mash utility to compare genome assembly to JGI GOLD Metagenomic Assembled Genomes data. </p>

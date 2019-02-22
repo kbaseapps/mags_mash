@@ -61,6 +61,16 @@ class mags_mash:
         else:
             raise ValueError("n_max_results was not set properly")
 
+        max_distance, min_completeness, max_contamination = None, None, None
+        if params.get('distance'):
+            max_distance = params.get('distance')
+        if params.get('completeness'):
+            min_completeness = params.get('completeness')
+        if params.get('contamination'):
+            max_contamination = params.get('contamination')
+
+
+
         input_upas = parse_input_upa(self.callback_url, ws_ref)
 
         # id_to_dist_and_kbid_and_relatedids = query_sketch_mags(self.sw_url, input_upas, n_max_results, self.auth_token)

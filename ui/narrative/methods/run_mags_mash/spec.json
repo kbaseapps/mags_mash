@@ -22,7 +22,7 @@
             }
         },{
             "id": "n_max_results",
-            "optional": true,
+            "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [10],
@@ -32,6 +32,45 @@
                 "validate_as":"int",
                 "min_int":1,
                 "max_int":500
+            }
+        },{
+            "id": "completeness",
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types":[],
+                "validate_as":"float",
+                "min_float":1,
+                "max_float":100.0
+            }
+        },{
+            "id": "contamination",
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types":[],
+                "validate_as":"float",
+                "min_float":0.0,
+                "max_float":100.0
+            }
+        },{
+            "id": "distance",
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types":[],
+                "validate_as":"float",
+                "min_float":0.0,
+                "max_float":1.0
             }
         }
     ],
@@ -54,6 +93,15 @@
                 },{
                     "input_parameter": "n_max_results",
                     "target_property": "n_max_results"
+                },{
+                    "input_parameter": "completeness",
+                    "target_property": "completeness"
+                },{
+                    "input_parameter": "contamination",
+                    "target_property": "contamination"
+                },{
+                    "input_parameter": "distance",
+                    "target_property": "distance"
                 }
             ],
             "output_mapping": [
