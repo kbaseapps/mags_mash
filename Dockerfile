@@ -9,7 +9,7 @@ MAINTAINER KBase Developer
 # RUN apt-get update
 
 RUN pip install -U pip \
-	&& pip install pandas jinja2
+	&& pip install pandas jinja2 scipy
 
 # -----------------------------------------
 

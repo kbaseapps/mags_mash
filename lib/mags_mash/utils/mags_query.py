@@ -3,7 +3,7 @@ import json
 
 search_db = 'JGI_MAGS'
 
-def query_sketch_mags(sw_url, input_upas, n_max_results, auth_token):
+def query_sketch_mags(sw_url, input_upas, auth_token):
     '''
     Query the sketch service for items related to the workspace reference.
 
@@ -21,9 +21,10 @@ def query_sketch_mags(sw_url, input_upas, n_max_results, auth_token):
             "params": {
                 'ws_ref': upa,
                 'search_db': search_db,
-                'n_max_results': n_max_results
+                'n_max_results': 500
             }
         }
+
         resp = requests.post(url=sketch_url, data=json.dumps(payload),
                              headers={'content-type':'application/json', 'authorization':auth_token})
         results[upa] = parse_response(resp.json())

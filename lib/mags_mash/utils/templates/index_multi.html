@@ -397,7 +397,8 @@
 
         var i = 0,
             duration = 200,
-            root;
+            root,
+            total_root;
 
         var diagonal = d3.linkHorizontal()
             .x(function(d) { return d.y; })
@@ -531,10 +532,12 @@
           .call(xAxis);
 
         root = d3.hierarchy(tree);
+        total_root = d3.hierarchy(tree);
         root.x0 = 0;
+        total_root.x0 = 0;
         root.y0 = 0;
+        total_root.y0 = 0;
         update_tree(root)
-
 
 
         function update_tree(source) {
@@ -598,21 +601,34 @@
                 //.style("fill", "#f8d9039")
                 .style("fill", function(d) {
                     if (d.data.dist){
-                        return grayScale(d.data.sources[i])
-                    }else{ return colorScale(d.data.sources[i])}
+                        if (i in d.data.sources){
+                            return grayScale(d.data.sources[i])
+                        }else{
+                            return grayScale(0)
+                        }
+                    }else{ 
+                        if (i in d.data.sources){
+                            return colorScale(d.data.sources[i])}
+                        }else{
+                            return colorScale(0)
+                        }
                 })
                 .on("mouseover", function(d){
-
                     if (d.data.dist){
-                        tooltip.style("background-color",grayScale(d.data.sources[i]))
-                        if (d.data.sources[i] >= 1){
+                        if (i in d.data.sources){
+                            tooltip.style("background-color",grayScale(d.data.sources[i]))
                             tooltip.style("color", "white")
                         }
                         else{
+                            tooltip.style("background-color",grayScale(0))
                             tooltip.style("color", "#1e1e1e")
                         }
                     }else{
-                        tooltip.style("background-color",colorScale(d.data.sources[i]))
+                        if (i in d.data.sources){
+                            tooltip.style("background-color",colorScale(d.data.sources[i]))
+                        }else{
+                            tooltip.style("background-color",colorScale(0))
+                        }
                         tooltip.style("color", "#1e1e1e")
                     }
                     tooltip.text(d.data.sources[i].toString())

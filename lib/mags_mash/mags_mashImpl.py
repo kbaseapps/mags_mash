@@ -4,6 +4,7 @@ import os
 from .utils.mags_query import query_sketch_mags
 from .utils.mags_report import generate_report
 from .utils.mags_input import parse_input_upa
+from .utils.mags_filter import filter_results
 #END_HEADER
 
 
@@ -69,15 +70,16 @@ class mags_mash:
         if params.get('contamination'):
             max_contamination = params.get('contamination')
 
-
-
         input_upas = parse_input_upa(self.callback_url, ws_ref)
 
         # id_to_dist_and_kbid_and_relatedids = query_sketch_mags(self.sw_url, input_upas, n_max_results, self.auth_token)
-        query_results = query_sketch_mags(self.sw_url, input_upas, n_max_results, self.auth_token)
+        query_results = query_sketch_mags(self.sw_url, input_upas, self.auth_token)
+        stats, upa_names, tree, markers = filter_results(self.ws_url, self.callback_url, query_results, n_max_results, max_distance, min_completeness, max_contamination)
+        output = generate_report(self.callback_url, self.shared_folder, params.get('workspace_name'), stats, upa_names, tree, markers)
 
-        output = generate_report(self.ws_url, self.callback_url, self.shared_folder,\
-                                  params.get('workspace_name'), query_results)
+        # output = generate_report(self.ws_url, self.callback_url, self.shared_folder,\
+        #                          params.get('workspace_name'), query_results, n_max_results,\
+        #                          max_distance, min_completeness, max_contamination)
 
         #END run_mags_mash
 

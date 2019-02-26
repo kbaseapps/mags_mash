@@ -102,11 +102,16 @@ class mags_mashTest(unittest.TestCase):
         self.assertTrue('report_ref' in ret)
 
 
-    def iteration_of(self, ref, ws_name):
-        ret = self.getImpl().run_mags_mash(self.getContext(), {'workspace_name': ws_name,
-                                                                'ws_ref': ref,
-                                                                'n_max_results':10})
-        self.validate_report_is_populated(ret)
+    def iteration_of(self, ref, ws_name, extras):#distance=None, completeness=None, contamination=None):
+        params = {'workspace_name': ws_name, 'ws_ref': ref, 'n_max_results':10}
+        if extras.get("distance"):
+            params['distance']=extras.get('distance')
+        if extras.get("completeness"):
+            params['completeness']=extras.get('completeness')
+        if extras.get("contamination"):
+            params['contamination']=extras.get('contamination')
+        ret = self.getImpl().run_mags_mash(self.getContext(), params)
+        self.validate_report_is_populated(ret[0])
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
     def test_your_method(self):
@@ -116,10 +121,18 @@ class mags_mashTest(unittest.TestCase):
         ws_name = self.getWsName()
 
         gs_ref = self.get_genome_set()
-        self.iteration_of(gs_ref, ws_name)
-
+        self.iteration_of(gs_ref, ws_name, {})
+        self.iteration_of(gs_ref, ws_name, {'distance':0.15,'completeness':96.0,"contamination":5.0})
         refs = self.upload_data_and_get_refs(ws_name)
-        for ref in refs:
-            self.iteration_of(ref, ws_name)
+        print('how long it is:', len(refs))
+        dcc = [
+            {},
+            {"distance": 0.13},
+            {"completeness": 96.0},
+            {"contamination": 3.0},
+            {"completeness": 95.0,"distance": 0.3, "contamination": 5.0}
+        ]
+        for i, ref in enumerate(refs):
+            self.iteration_of(ref, ws_name, dcc[i])
 
 
