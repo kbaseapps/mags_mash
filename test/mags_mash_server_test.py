@@ -120,6 +120,9 @@ class mags_mashTest(unittest.TestCase):
         '''
         ws_name = self.getWsName()
 
+        ref_1 = "23594/2/1"
+        self.iteration_of(ref_1, ws_name, {})
+
         gs_ref = self.get_genome_set()
         self.iteration_of(gs_ref, ws_name, {})
         self.iteration_of(gs_ref, ws_name, {'distance':0.15,'completeness':96.0,"contamination":5.0})
@@ -134,5 +137,3 @@ class mags_mashTest(unittest.TestCase):
         ]
         for i, ref in enumerate(refs):
             self.iteration_of(ref, ws_name, dcc[i])
-
-

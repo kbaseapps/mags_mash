@@ -132,7 +132,7 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
     the outputs according to the provided inputs, and staging some of the outputs for the templates.
     """
 
-    upa_to_name = get_upa_names(ws_url, cb_url, query_results.keys())
+    upa_to_name = get_upa_names(ws_url, cb_url, list(query_results.keys()))
     currdir = os.path.dirname(__file__)
     gold_path = os.path.join(currdir,'data','GOLD-metadata.csv')
     GOLD = pd.read_csv(gold_path)
@@ -221,6 +221,8 @@ def get_upa_names(ws_url, cb_url, upas):
     })
 
     upa_to_name = {'/'.join([str(info[6]), str(info[0]), str(info[4])]):info[1] for info in objs['infos']}
+    print('upas',upas)
+    print('upa to name',upa_to_name)
     missing_upas = list(set(upas) - set(upa_to_name.keys()))
     if len(missing_upas) < 1:
         return upa_to_name
@@ -230,6 +232,7 @@ def get_upa_names(ws_url, cb_url, upas):
     if len(objs) != len(missing_upas):
         raise ValueError("Could not find all input names. len upas: %s  len objs: %s"%(len(upas), len(objs)), upas, objs['infos'])
     for obj in objs:
+        print('obj',obj)
         info = obj['info']
         upa = '/'.join([str(info[6]), str(info[0]), str(info[4])])
         upa_to_name[upa] = info[1]
