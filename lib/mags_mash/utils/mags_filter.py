@@ -180,6 +180,7 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
     if len(upas) == 1:
         tree = create_tree(all_GOLD, tree_cols, dist_compl)
+        tree = {"truncated_name":"", "count":"({})".format(str(sum(tree['sources']))), "count_num":sum(tree['sources']), "children":tree}
     else:
         tree = create_tree(all_GOLD, tree_cols, dist_compl, source_order=upas)
         sources = [0 for _ in range(len(upa_names))]
@@ -195,7 +196,6 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         for i in upa_order:
             new_upa_names.append(upa_names[i])
         upa_names = new_upa_names
-
 
     # TEMPORARY MARKER SET UP
     markers = get_location_markers(set([s['mag_id'] for s in stats]))
