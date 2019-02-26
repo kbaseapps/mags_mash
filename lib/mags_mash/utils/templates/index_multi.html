@@ -345,9 +345,9 @@
                     table.draw();
                 }
             });
-            live_range_dist.val(dist_range.slider( "values", 0 ) + " - " + dist_range.slider( "values", 1 ) );
-            live_range_compl.val(compl_range.slider( "values", 0 ) + " - " + compl_range.slider( "values", 1 ) );
-            live_range_cont.val(cont_range.slider( "values", 0 ) + " - " + cont_range.slider( "values", 1 ) );
+            live_range_dist.val(dist_range.slider("values", 0) + " - " + dist_range.slider( "values", 1 ) );
+            live_range_compl.val(compl_range.slider("values", 0) + " - " + compl_range.slider( "values", 1 ) );
+            live_range_cont.val(cont_range.slider("values", 0) + " - " + cont_range.slider( "values", 1 ) );
 
             var table = $('.table').DataTable({
                 'dom': "<'row'<'col-sm-6'B><'col-sm-6'f>>t<'row'<'col-sm-4'i><'col-sm-8'p>>",
@@ -639,7 +639,12 @@
                         }
                         tooltip.style("color", "#1e1e1e")
                     }
-                    tooltip.text(d.data.sources[i].toString())
+                    if (i in d.data.sources){
+                        tooltip.text(d.data.sources[i].toString())
+                    }else{
+                        tooltip.text("0")
+                    }
+                    
                 })
                 .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
                 .on("mouseout", function(d){ return tooltip.style("top", "-9999px");});
