@@ -131,7 +131,11 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
     Here we do a combiantion of getting all the relevant statistics from the data csv, filtering
     the outputs according to the provided inputs, and staging some of the outputs for the templates.
     """
-    upa_to_name = get_upa_names(ws_url, cb_url, list(query_results.keys()))
+    if len(query_results) > 1:
+        upa_to_name = get_upa_names(ws_url, cb_url, list(query_results.keys()))
+    else:
+        upa_to_name = {list(query_results.keys())[0]:""}
+
 
     currdir = os.path.dirname(__file__)
     gold_path = os.path.join(currdir,'data','GOLD-metadata.csv')
