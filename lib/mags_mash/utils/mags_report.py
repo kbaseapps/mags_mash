@@ -272,7 +272,7 @@ def htmlify(cb_url, stats, upa_names, tree, markers):
         # # sources = upa_to_name.values()
         # stats, tree, markers, sources = ids_to_info_multi(query_results, upa_to_name)
 
-        number_of_points = max(tree['sources'])
+        number_of_points = max(list(tree['sources'].values()))
 
         short_sources = []
         sources_len = 18

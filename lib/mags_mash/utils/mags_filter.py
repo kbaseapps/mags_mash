@@ -131,8 +131,8 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
     Here we do a combiantion of getting all the relevant statistics from the data csv, filtering
     the outputs according to the provided inputs, and staging some of the outputs for the templates.
     """
-
     upa_to_name = get_upa_names(ws_url, cb_url, list(query_results.keys()))
+
     currdir = os.path.dirname(__file__)
     gold_path = os.path.join(currdir,'data','GOLD-metadata.csv')
     GOLD = pd.read_csv(gold_path)
@@ -228,11 +228,10 @@ def get_upa_names(ws_url, cb_url, upas):
         return upa_to_name
 
     dfu = DataFileUtil(cb_url)
-    objs = dfu.get_objects({'object_refs':missing_upas})
+    objs = dfu.get_objects({'object_refs':missing_upas})['data']
     if len(objs) != len(missing_upas):
-        raise ValueError("Could not find all input names. len upas: %s  len objs: %s"%(len(upas), len(objs)), upas, objs['infos'])
+        raise ValueError("Could not find all input names. len upas: %s  len objs: %s"%(len(upas), len(objs)), upas, [obj['info'] for obj in objs])
     for obj in objs:
-        print('obj',obj)
         info = obj['info']
         upa = '/'.join([str(info[6]), str(info[0]), str(info[4])])
         upa_to_name[upa] = info[1]
