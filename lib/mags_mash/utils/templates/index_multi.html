@@ -539,6 +539,8 @@
         total_root.y0 = 0;
         update_tree(root)
 
+        function update_root(data)
+
 
         function update_tree(source) {
 
@@ -608,10 +610,11 @@
                         }
                     }else{ 
                         if (i in d.data.sources){
-                            return colorScale(d.data.sources[i])}
+                            return colorScale(d.data.sources[i])
                         }else{
                             return colorScale(0)
                         }
+                    }
                 })
                 .on("mouseover", function(d){
                     if (d.data.dist){
