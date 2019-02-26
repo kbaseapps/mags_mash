@@ -69,18 +69,19 @@ parameters :
 
 description : |
 
-    <p> Dr. Emiley Eloe-Fadrosh at the Joint Genome Institue led an effort to systematically identify 
-    metagenome-assembled genomes across all publicly available metagenome datasets. The process for producing these
-    MAGs will be fully described in an upcoming paper. Briefly, all publicly available whole genome shotgun 
-    metagenome projects from NCBI SRA and JGI were collected. Screened for common contaminants, trimmed for quality 
-    and assembled using the JGI's Metagenome Assembly Pipeline. MAGs were then identified using the JGI MetaBat2 program. 
-    Each MAG was assessed for Completeness, Contamination and MIMAG quality. Additionally, each metagenome sample has an entry 
-    in the Genomes Online Database (GOLD).</p>
-    
-    <p> This app allows you to search these ~66k MAGs with your assembly, genome or set of genomes and find all the closely 
-    matching MAGs using the MASH program. Sketches are made with a k-size of 21, which should allow for reasonable species level 
-    matches.</p>
-    
-    <p> This app allows for the results to be viewed as a downloadable table, with links to the GOLD and IMG websites, 
-    or as an interactive GOLD ecosystem browser. When searching with a set of genomes, the interactive GOLD ecosystem browser 
-    gives a heatmap view showing how many matches exist at each GOLD level across all input genomes.</p>
+    <p>The Prokaryote Super Program at the Joint Genome Institute is leading an effort to systematically identify 
+    metagenome-assembled genomes across all publicly available shotgun metagenome available in IMG/M (Chen et al., 2019, 
+    <a href="https://www.ncbi.nlm.nih.gov/pubmed/30289528">PMID:30289528</a>). The automated metagenome binning is described 
+    in the recent IMG/M publication (Chen et al., 2019, <a href="https://www.ncbi.nlm.nih.gov/pubmed/30289528">PMID:30289528</a>) and bin quality 
+    is available using the Minimum Information about a Metagenome-Assembled Genome (MIMAG) standards developed by the Genomic 
+    Standards Consortium (Bowers et al., 2017, <a href="https://www.ncbi.nlm.nih.gov/pubmed/28787424">PMID: 28787424</a>). Each MAG is associated with the rich, curated metagenome contextual 
+    data for describing habitat information and environmental parameters available in the Genomes Online (GOLD) database
+    (Mukherjee et al., 2019, PMID: <a href="https://www.ncbi.nlm.nih.gov/pubmed/30357420">30357420</a>).</p
+
+    <p>This app allows you to search these ~67,000 MAGs with your assembly, genome or set of genomes and find all the closely 
+    matching MAGs using the MASH program. Sketches are made with a k-size of 21, which should allow for reasonable species 
+    level matches.</p>
+
+    <p>This app allows for the results to be viewed as a downloadable table, with links to the GOLD and IMG/M websites, or as 
+    an interactive GOLD ecosystem browser. When searching with a set of genomes, the interactive GOLD ecosystem browser gives 
+    a heatmap view showing how many matches exist at each GOLD level across all input genomes.</p>
