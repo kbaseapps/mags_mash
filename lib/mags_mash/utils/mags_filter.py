@@ -25,9 +25,9 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
         leaf = create_tree(GOLD[GOLD[col]==t], tree_cols[1:], dist_compl, source_order=source_order)
         if leaf == []:
             if col == "Project / Study Name":
-                dist, compl = dist_compl[t]
+                dist, compl, cont = dist_compl[t]
             else:
-                dist, compl =  "",""
+                dist, compl, cont =  "",""
             trunc_name = GOLD[GOLD["Project / Study Name"] == t].iloc[0]['IMG Genome ID ']
             # is terminal node/actually a leaf
             tree.append({
@@ -35,6 +35,7 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
                 'name' : t,
                 'count': "",
                 'compl': str(compl),
+                'cont' :str(cont)
                 'dist' : str(dist)
             })
         else:  
@@ -214,7 +215,7 @@ def filter_stats(stats, n_max_results, max_distance, min_completeness, max_conta
     stats = sorted(stats, key=lambda s: s['dist'])
     if len(stats) > n_max_results:
         stats = stats[:n_max_results]
-    dist_compl = {s['project']:(round(s['dist'], 3), round(s['completeness'], 2)) for s in stats}
+    dist_compl = {s['project']:(round(s['dist'], 3), round(s['completeness'], 2), round(s['contamination'], 2)) for s in stats}
     return stats, dist_compl
 
 def get_upa_names(ws_url, cb_url, upas):
@@ -249,7 +250,6 @@ def get_statistics(ids, GOLD, upa_name=None):
     ids:
     GOLD: 
     '''
-    dist_compl = {}
     output = []
     currdir = os.path.dirname(__file__)
     stats_path = os.path.join(currdir, 'data', 'Stats-taxonomy.csv')
@@ -283,10 +283,8 @@ def get_statistics(ids, GOLD, upa_name=None):
                     curr[key] = 'Unknown'
         if relatedids['GOLD_Analysis_ID']:
             curr['project'] = GOLD[GOLD['GOLD Analysis Project ID'] == relatedids['GOLD_Analysis_ID']].iloc[0]['Project / Study Name']
-            dist_compl[curr['project']] = (round(curr['dist'], 3), round(curr['completeness'], 2))
         else:
             curr['project'] = 'Unknown'
-            dist_compl['Unknown'] = (round(curr['dist'], 3), round(curr['completeness'], 2))
 
         output.append(curr)
 

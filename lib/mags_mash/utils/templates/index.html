@@ -78,7 +78,7 @@
         stroke-width: 1.5px;
     }
 
-    .tooltip {
+    .mags_mash_tooltip {
         font-family: 'Oxygen', Helvetica, sans-serif;
         position: absolute;
         z-index: 10;
@@ -325,7 +325,7 @@
             .x(function(d) { return d.y; })
             .y(function(d) { return d.x; });
 
-        var tooltip = d3.select("#treeid").append("div").attr("class", 'tooltip').style("pointer-events","none");
+        var tooltip = d3.select("#treeid").append("div").attr("class", 'mags_mash_tooltip').style("pointer-events","none");
 
         var svg = d3.select("#treeid").append("svg")
             .attr("width", width) // + margin.left + margin.right)

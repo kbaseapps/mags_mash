@@ -543,8 +543,36 @@
         update_tree(root)
         /*
         function update_root(data){
+            var min_dist, max_dist
+            var min_compl, max_compl
+            var min_cont, max_cont
             
-
+            if (data.children){
+                children_len = data.children.length;
+                total_len = 0;
+                for t in data.children:
+                    if (t.dist){
+                        if (t.dist > max_dist || t.dist < min_dist){
+                            total_len++
+                        }
+                        if (t.compl > max_compl || t.compl < max_compl){
+                            total_len++
+                        }                    
+                        if (t.cont > max_cont || t.cont < max_cont){
+                            total_len++
+                        }
+                    }else{
+                        // here we remove the limb
+                        remove_limb = update_root(t)
+                        if (remove_limb){
+                               
+                        }
+                    } 
+                if (total_len == children_len){
+                    return True
+                }
+                return False
+            }
         }
         */
         function update_tree(source) {
