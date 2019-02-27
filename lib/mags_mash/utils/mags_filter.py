@@ -27,7 +27,7 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
             if col == "Project / Study Name":
                 dist, compl, cont = dist_compl[t]
             else:
-                dist, compl, cont =  "",""
+                dist, compl, cont =  "","", ""
             trunc_name = GOLD[GOLD["Project / Study Name"] == t].iloc[0]['IMG Genome ID ']
             # is terminal node/actually a leaf
             tree.append({
@@ -35,7 +35,7 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
                 'name' : t,
                 'count': "",
                 'compl': str(compl),
-                'cont' :str(cont)
+                'cont' :str(cont),
                 'dist' : str(dist)
             })
         else:  

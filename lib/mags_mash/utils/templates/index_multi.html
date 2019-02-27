@@ -542,7 +542,7 @@
         total_root.y0 = 0;
         update_tree(root)
         /*
-        function update_root(data){
+        function update_root(total_root){
             var min_dist, max_dist
             var min_compl, max_compl
             var min_cont, max_cont
@@ -550,6 +550,7 @@
             if (data.children){
                 children_len = data.children.length;
                 total_len = 0;
+                remove = 
                 for t in data.children:
                     if (t.dist){
                         if (t.dist > max_dist || t.dist < min_dist){
@@ -565,7 +566,7 @@
                         // here we remove the limb
                         remove_limb = update_root(t)
                         if (remove_limb){
-                               
+                            
                         }
                     } 
                 if (total_len == children_len){
