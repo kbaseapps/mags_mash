@@ -10,7 +10,7 @@
     <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script> -->
     
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <script src="http://yadcf-showcase.appspot.com/resources/js/jquery.dataTables.yadcf.js"></script>
+    <!-- <script src="http://yadcf-showcase.appspot.com/resources/js/jquery.dataTables.yadcf.js"></script> -->
     <link href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
     
 
@@ -97,6 +97,7 @@
         font-weight: bold;
         border-radius: 4px;
         color: #1e1e1e;
+        data-html: true;
     }
 
     .title_text {
@@ -160,7 +161,26 @@
     -->
     <div id="treetab" class="tabcontent" style="width: 100%; height: 100%;">
         <!-- insert sliders here -->
-
+        <div class="container" id="sliders_tree">
+            <div id="dist_slider_tree">
+                <p>
+                    <label style="border-right: 10px">Distance Filter: </label><input type="text" id="live_range_dist_tree" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
+                </p>
+                <div id="dist_range_tree" style="width:200px"></div>
+            </div>
+            <div id="compl_slider_tree">
+                <p>
+                    <label style="border-right: 10px">Completeness Filter: </label><input type="text" id="live_range_compl_tree" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
+                </p>        
+                <div id="compl_range_tree" style="width:200px"></div>
+            </div>
+            <div id="cont_slide_tree">
+                <p>
+                    <label style="border-right: 10px">Contamination Filter: </label><input type="text" id="live_range_cont_tree" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
+                </p>
+                <div id="cont_range_tree" style="width:200px; margin-bottom: 20px;"></div>
+            </div>
+        </div>
 
         <div id="tree_group" class="grouping">
           <div id="treegroup">
@@ -170,16 +190,7 @@
           <div id="treelegend"></div>
         </div>    
     </div>
-    <!--{%- for t in tree recursive %}
-            {%- if t.children -%}
-            <li><span class="caret">{{t.name}}</span>
-                <ul class="nested">{{ loop(t.children) }} </ul>
-            </li>
-            {%- else -%}
-            <li>{{t.name}}</li>
-            {%- endif %}
-        {%- endfor %}
-    </div> -->
+
     <!--
     Statistics List view
     -->
@@ -187,19 +198,19 @@
         <div class="container" id="sliders">
             <div id="dist_slider">
                 <p>
-                    <label style="border-right: 5px">Distance Filter:</label><input type="text" id="live_range_dist" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
+                    <label style="border-right: 10px">Distance Filter: </label><input type="text" id="live_range_dist" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
                 </p>
                 <div id="dist_range" style="width:200px"></div>
             </div>
             <div id="compl_slider">
                 <p>
-                    <label style="border-right: 5px">Completeness Filter:</label><input type="text" id="live_range_compl" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
+                    <label style="border-right: 10px">Completeness Filter: </label><input type="text" id="live_range_compl" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
                 </p>        
                 <div id="compl_range" style="width:200px"></div>
             </div>
             <div id="cont_slider">
                 <p>
-                    <label style="border-right: 5px">Contamination Filter:</label><input type="text" id="live_range_cont" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
+                    <label style="border-right: 10px">Contamination Filter: </label><input type="text" id="live_range_cont" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
                 </p>
                 <div id="cont_range" style="width:200px; margin-bottom: 20px;"></div>
             </div>
@@ -399,7 +410,8 @@
             // barWidth = (tree_width - margin.left - margin.right) * 0.8;
 
         var i = 0,
-            duration = 200,
+            duration = 250,
+            shorter_duration = 2.0*(duration/4.0),
             root,
             total_root;
 
@@ -426,13 +438,21 @@
           .append("g")
             .attr("transform", "translate(" + (margin.left + tree_map_gap + tree_width) + "," + margin.top + ")");
 
-        var domainList = [0]
-        for (i = 0; i<9; i++){
+        var domainList = []
+        for (i = 1; i<9; i++){
           domainList.push((number_of_points/8) * i)
         }
+        if (domainList[0] <= 1){
+            var temp = domainList[0]
+            domainList.splice(0,0, temp + (1.0 - temp)/2.0)
+        } else{
+            domainList.splice(0,0,1)
+        }
+
+        title_group = mapsvg.append('g')
 
         for (let i = 0; i < sources.length; i++){
-            var titles = mapsvg.append('rect')
+            var titles = title_group.append('rect')
                 .attr("y", 0)
                 .attr("x", (i * barHeight) + tree_map_gap)
                 .attr("height", title_height)
@@ -449,7 +469,7 @@
                 .on("mouseout", function(d){ return tooltip.style("top", "-9999px"); })
 
 
-            mapsvg.append("text")
+            title_group.append("text")
                 .attr("class", "title_text")
                 .attr("transform", "translate("+((i * barHeight) + tree_map_gap + (barHeight/4))+","+(-(i * barHeight) - barWidth - tree_map_gap +(title_height/2) )+") rotate(90)")
                 // .attr("transform", "translate("+ (barHeight/2) +","+ (title_height/2) +") " + "rotate(90)")
@@ -462,10 +482,13 @@
         var colorScale = d3.scaleLinear()
             .domain(domainList)
             .range(["#2c7bb6","#00a6ca","#00ccbc","#90eb9d","#ffff8c","#f9d057","#f29e2e","#e76818","#d7191c"]);
-
+        // 2c7bb6
         var grayScale = d3.scaleLinear()
                 .domain([0,1])
                 .range(["#d6d6d6", "#1e1e1e"])
+
+        var zeroGray = "#d6d6d6"
+        var oneBlack = "#1e1e1e"
 
         var countScale = d3.scaleLinear()
           .domain([0, number_of_points])
@@ -520,7 +543,7 @@
         //Set scale for x-axis
         var xScale = d3.scaleLinear()
            .range([-legendWidth/2, legendWidth/2])
-           .domain([ 0, number_of_points] );
+           .domain([ 1, number_of_points] );
 
         //Define x-axis
         var xAxis = d3.axisBottom()
@@ -534,54 +557,235 @@
           .attr("transform", "translate(0," + (legendY_pos + legendHeight) + ")")
           .call(xAxis);
 
+        var min_dist_value  = ranges[0];
+        var max_dist_value  = ranges[1];
+        var min_compl_value = ranges[3];
+        var max_compl_value = ranges[4];
+        var min_cont_value  = ranges[6];
+        var max_cont_value  = ranges[7];
+
         root = d3.hierarchy(tree);
-        total_root = d3.hierarchy(tree);
         root.x0 = 0;
-        total_root.x0 = 0;
         root.y0 = 0;
-        total_root.y0 = 0;
+        update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                          max_compl_value, min_cont_value, max_cont_value, true)
+        recount_sources(root)
         update_tree(root)
-        /*
-        function update_root(total_root){
-            var min_dist, max_dist
-            var min_compl, max_compl
-            var min_cont, max_cont
-            
+
+        dist_range_tree  = $("#dist_range_tree")
+        compl_range_tree = $("#compl_range_tree")
+        cont_range_tree  = $("#cont_range_tree")
+        var live_range_cont_tree  = $("#live_range_cont_tree")
+        var live_range_dist_tree  = $("#live_range_dist_tree")
+        var live_range_compl_tree = $("#live_range_compl_tree")
+        dist_range_tree.slider({
+            range: true,
+            min: ranges[0],
+            max: ranges[1],
+            step: ranges[2],
+            values: [ ranges[0], ranges[1] ],
+            slide: function( event, ui ) {
+                live_range_dist_tree.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            },
+            stop: function( event, ui ) {
+                min_dist_value = ui.values[0]
+                max_dist_value = ui.values[1]
+                update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                                   max_compl_value, min_cont_value, max_cont_value, false)
+                recount_sources(root)
+                update_tree(root)
+                recolor_rects()
+            }
+        });
+        compl_range_tree.slider({
+            range: true,
+            min: ranges[3],
+            max: ranges[4],
+            step: ranges[5],
+            values: [ ranges[3], ranges[4] ],
+            slide: function( event, ui ) {
+                live_range_compl_tree.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            },
+            stop: function( event, ui ) {
+                min_compl_value = ui.values[0]
+                max_compl_value = ui.values[1]
+                update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                                   max_compl_value, min_cont_value, max_cont_value, false)
+                recount_sources(root)
+                update_tree(root)
+                recolor_rects()
+            }
+        });
+        cont_range_tree.slider({
+            range: true,
+            min: ranges[6],
+            max: ranges[7],
+            step: ranges[8],
+            values: [ ranges[6], ranges[7] ],
+            slide: function( event, ui ) {
+                live_range_cont_tree.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            },
+            stop: function( event, ui ) {
+                min_cont_value = ui.values[0]
+                max_cont_value = ui.values[1]
+                update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                                   max_compl_value, min_cont_value, max_cont_value)
+                recount_sources(root)
+                update_tree(root)
+                recolor_rects()
+            }
+        });
+        live_range_dist_tree.val(dist_range_tree.slider("values", 0) + " - " + dist_range_tree.slider( "values", 1 ) );
+        live_range_compl_tree.val(compl_range_tree.slider("values", 0) + " - " + compl_range_tree.slider( "values", 1 ) );
+        live_range_cont_tree.val(cont_range_tree.slider("values", 0) + " - " + cont_range_tree.slider( "values", 1 ) );
+
+
+        function update_root(total_root, min_dist, max_dist, min_compl, max_compl, min_cont, max_cont, set){
+            // total_root should always contain all the data.
+            // root is what we would like to update to have only the data we are interested in.
+
+            total_root.bar_filter = false
+            var tree = recurse_root(total_root, min_dist, max_dist, min_compl, max_compl, min_cont, max_cont, set)
+            // if (tree.remove_limb){
+            //     were removing the tree root at this point. which means that there are no more valid 
+            //     data points in the ranges provided
+            //     do we want to filter out whole tree?
+            //
+            // }
+            return tree.payload
+        }
+
+
+        function recurse_root(data, min_dist, max_dist, min_compl, max_compl, min_cont, max_cont, set){
             if (data.children){
-                children_len = data.children.length;
-                total_len = 0;
-                remove = 
-                for t in data.children:
-                    if (t.dist){
-                        if (t.dist > max_dist || t.dist < min_dist){
-                            total_len++
+                var children_len = data.children.length;
+                var remove = new Array(children_len).fill(false);
+
+                var dist, compl, cont
+
+                for (let i = 0; i < children_len; i++){
+                    var t = data.children[i]
+                    if (t.data.compl){
+                        // we need to convert dist into a dict
+                        // so this then becomes
+
+                        compl = t.data.compl
+                        cont  = t.data.cont
+                        if (compl > max_compl || compl < min_compl || cont > max_cont || cont < min_cont){
+                            remove[i] = true
+                            data.children[i].data.bar_filter = true
+                        }else{
+                            remove[i] = false
+                            data.children[i].data.bar_filter = false                    
                         }
-                        if (t.compl > max_compl || t.compl < max_compl){
-                            total_len++
-                        }                    
-                        if (t.cont > max_cont || t.cont < max_cont){
-                            total_len++
+
+
+                        if (!remove[i]){
+                            if (set){
+                                t.data._dist = {}
+                            }
+                            // check if all dists have been filtered out for row.
+                            for (key in t.data.dist){
+                                if (set) {
+                                    t.data._dist[key] = t.data.dist[key]
+                                }
+                                dist = t.data._dist[key]
+                                if (dist > max_dist || dist < min_dist){
+                                    // t.data._dist[key] = t.data.dist[key]
+                                    t.data.dist[key] = null
+                                }else{
+                                    t.data.dist[key] = t.data._dist[key]
+                                    // t.data._dist[key] = null 
+                                }
+                            }
                         }
+
                     }else{
-                        // here we remove the limb
-                        remove_limb = update_root(t)
-                        if (remove_limb){
-                            
+                        remove_limb = recurse_root(t, min_dist, max_dist, min_compl, max_compl, min_cont, max_cont, set)
+
+                        remove[i] = remove_limb
+                        if (set){
+                            data.children[i].data.bar_filter = remove_limb
                         }
-                    } 
-                if (total_len == children_len){
-                    return True
+                    }
                 }
-                return False
+                var remove_curr = remove.reduce((sum, r) => sum && r, true);
+                if (remove_curr){
+                    return true
+                }else{
+                    return false
+                }
+            }
+            else{
+                console.log('wow so bad')
             }
         }
-        */
+
+        function bar_filtration(d){
+            return d.data.bar_filter == false
+        }
+
+        function data_sources(d){
+            return d.data.sources
+        }
+
+        function recount_sources(root){
+            var source_children = {}
+            root.eachAfter(function(n){
+                if (!n.data.bar_filter){
+                    if (!n.data.compl){
+                        source_children = {}
+                        leaf_nodes = n.leaves()
+                        leaf_nodes.forEach((ln) => {
+                            if (!ln.data.bar_filter){
+                                Object.keys(ln.data.sources).forEach((i) => {
+                                    var non_nulls = Object.values(ln.data.sources[i]).filter(key=>ln.data.dist[key]!=null).length
+                                    if (non_nulls > 0){
+                                        if (i in source_children){
+                                            source_children[i] = source_children[i] + non_nulls
+                                        }else{
+                                            source_children[i] = non_nulls
+                                        }
+                                    }
+                                    if (source_children[i] == 0){
+                                        delete source_children[i]
+                                    }
+                                })
+                            }
+                        });
+                        n.data.sources = source_children
+                    }
+                }
+            })
+        }
+
+        function recolor_rects(){
+            d3.selectAll('.map_rect').style('fill', function(d, i){
+                var idx = i % sources.length
+                // console.log("d", d)
+                if (d.data.compl){
+                    if (idx in d.data.sources){
+                        return oneBlack
+                    }else{
+                        return zeroGray
+                    }
+                }else{ 
+                    if (idx in d.data.sources){
+                        return colorScale(d.data.sources[idx])
+                    }else{
+                        return zeroGray
+                    }
+                }
+            })
+        }
+
+
         function update_tree(source) {
 
           // Compute the flattened node list.
-          var nodes = root.descendants();
+          var nodes = root.descendants().filter(bar_filtration);
 
-          var height = Math.max(50, (nodes.length * barHeight) + margin.top + margin.bottom + title_height);
+          var height = Math.max(50, (nodes.length * barHeight) + margin.top + margin.bottom + tree_map_gap +title_height);
 
           d3.select("svg").transition()
               .duration(duration)
@@ -597,26 +801,27 @@
 
           // Compute the "layout". TODO https://github.com/d3/d3-hierarchy/issues/67
           var index = -1;
-          root.eachBefore(function(n) {
-            n.x = ++index * barHeight;
-            n.y = n.depth * 20;
-          });
 
-          // update nodes for map
-          // var map_node = svg2.selectAll(".node")
-          //   .data(nodes, function(d) { return d.id || (d.id = ++i); });
+          root.eachBefore(function(n) {
+            if (!n.data.bar_filter){
+                n.x = ++index * barHeight;
+                n.y = n.depth * 20;
+            }
+          });
 
           // Update the nodes…
           var node = svg.selectAll(".node")
             .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
           var nodeEnter = node.enter().append("g")
-              .attr("class", "node")
-              .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+              .attr("class", "node")// "node")
+              .attr("transform", function(d) { return "translate(0,0)";}) //+ source.y0 + "," + source.x0 + ")"; })
               .style("opacity", 0);
 
           var map_node = mapsvg.selectAll(".node")
-            .data(nodes, function(d) {return d.id || (d.id = ++i);});
+            .data(nodes,function(d) {
+                return d.id || (d.id = ++i);
+            });
 
           var map_nodeEnter = map_node.enter().append("g")
               .attr("class", "node")
@@ -625,8 +830,16 @@
 
           // ========================================================================
           // do the heat map thing here.
+          // var map_rects = map_nodeEnter.selectAll("rect")
+          //       .data(nodes, function(d){
+          //           console.log('wingdings')
+          //           console.log(d.data.sources)
+          //           return d.data.sources
+          //       });
+
+          // i work down here
           for (let i = 0; i < sources.length; i++){
-            map_nodeEnter.append("rect")
+            map_nodeEnter.append("rect").attr("class","map_rect")
                 .attr("y", (-barHeight/2) + title_height + tree_map_gap)
                 .attr("height", barHeight)
                 .attr("width", barHeight)
@@ -634,53 +847,87 @@
                 .attr("border", 0)
                 .style("stroke","white")
                 .style("stroke-opacity", 0.6)
-                //.style("fill", "#f8d9039")
+                // .style("fill","#ff0571")
                 .style("fill", function(d) {
-                    if (d.data.dist){
+                    // console.log("i am an updated thing", i)
+                    // console.log("d", d)
+                    if (d.data.compl){
                         if (i in d.data.sources){
-                            return grayScale(d.data.sources[i])
+                            return d3.rgb(oneBlack)
                         }else{
-                            return grayScale(0)
+                            return d3.rgb(zeroGray)
                         }
                     }else{ 
                         if (i in d.data.sources){
-                            return colorScale(d.data.sources[i])
+                            return d3.rgb(colorScale(d.data.sources[i]))
                         }else{
-                            return colorScale(0)
+                            return d3.rgb(zeroGray)
                         }
                     }
                 })
                 .on("mouseover", function(d){
-                    if (d.data.dist){
-                        if (i in d.data.sources){
-                            tooltip.style("background-color",grayScale(d.data.sources[i]))
+                    // console.log(d)
+                    // console.log(i)
+                    if (i in d.data.sources){
+                        if (d.data.compl){
+                            // if (i in d.data.sources){
+                            tooltip.style("background-color",oneBlack)
                             tooltip.style("color", "white")
-                        }
-                        else{
-                            tooltip.style("background-color",grayScale(0))
+                            // }
+                            // else{
+                            //     tooltip.style("background-color",zeroGray)
+                            //     tooltip.style("color", "#1e1e1e")
+                            // }
+                        }else{
+                            // if (i in d.data.sources){
+                            tooltip.style("background-color",colorScale(d.data.sources[i]))
+                            // }else{
+                            //     tooltip.style("background-color",zeroGray)
+                            // }
                             tooltip.style("color", "#1e1e1e")
                         }
-                    }else{
-                        if (i in d.data.sources){
-                            tooltip.style("background-color",colorScale(d.data.sources[i]))
+
+                        if (d.data.compl){
+                            var st = ""
+                            var used = false
+                            d.data.sources[i].forEach((key) => {
+                                if (d.data.dist[key] != null){
+                                    if (!used) {
+                                        st = "<a style=\"text-decoration: underline\">Mag Id  --- Distance</a><br/>"
+                                    }
+                                    st = st + key + " : " + d.data.dist[key] + "<br/>"
+                                    used = true
+                                }else{
+                                    st+= "<a style=\"color:#828282;\">" + key + " : " + d.data._dist[key] + "</a>" + "<br/>"  
+                                }
+
+                            })
+                            if (used){
+                                tooltip.html(st)
+                            }
                         }else{
-                            tooltip.style("background-color",colorScale(0))
+                            tooltip.text(d.data.sources[i].toString())
+                            // we want to also update the rect color here
                         }
-                        tooltip.style("color", "#1e1e1e")
-                    }
-                    if (i in d.data.sources){
-                        tooltip.text(d.data.sources[i].toString())
                     }else{
-                        tooltip.text("0")
+                        tooltip.text("i am a tragic case")
                     }
-                    
                 })
-                .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
-                .on("mouseout", function(d){ return tooltip.style("top", "-9999px");});
+                .on("mousemove", function(d){
+                    if (i in d.data.sources){
+                        return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")
+                    }
+                })
+                .on("mouseout", function(d){
+                    if (i in d.data.sources){
+                        return tooltip.style("top", "-9999px");
+                    }
+                });
           }
+          
             
           // ========================================================================
-          // want to fork here and only include this if its a leaf...
+          // want only include this if its a leaf...
           nodeEnter.append("rect")
               .attr("class", "tree_rect")
               .attr("y", (-barHeight/2) + title_height + tree_map_gap)
@@ -692,7 +939,7 @@
               .on("click", click)
               // .append("svg:title")
               // .text("Distance")
-              .on("mouseover", show_dist_text)
+              .on("mouseover", show_compl_text)
               .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
               .on("mouseout", function(d){return tooltip.style("top", "-9999px");})
 
@@ -703,7 +950,7 @@
                 .style("font-weight", "bold")
                 .text(function(d){
                   if(d.children){return ""
-                  }else{return d.data.dist}
+                  }else{return d.data.compl}
                 })
 
           nodeEnter.append("rect")
@@ -718,7 +965,7 @@
                 .on("click", click)
                 // .append("svg:title")
                 // .text("Distance")
-                .on("mouseover",show_compl_text)
+                .on("mouseover",show_cont_text)
                 .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
                 .on("mouseout", function(d){return tooltip.style("top", "-9999px");})
 
@@ -730,7 +977,7 @@
                 .attr("transform", leaf_transform)
                 .text(function(d){
                   if(d.children){return ""
-                  }else{return d.data.compl}
+                  }else{return d.data.cont}
                 })
           // ========================================================================
           // ------------------------------------------------------------------------
@@ -745,12 +992,12 @@
               })
               .style("fill", color)
               .on("click", click)
-              .on("mouseover", function(d){ if(d.data.dist){
+              .on("mouseover", function(d){ if(d.data.compl){
                 tooltip.style("color", "#1e1e1e")
                 tooltip.style("background-color", "#7ab9ff")
                 return tooltip.text(d.data.name); }})
-              .on("mousemove", function(d){ if(d.data.dist){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
-              .on("mouseout", function(d){ if(d.data.dist){return tooltip.style("top", "-9999px"); }});
+              .on("mousemove", function(d){ if(d.data.compl){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
+              .on("mouseout", function(d){ if(d.data.compl){return tooltip.style("top", "-9999px"); }});
 
 
           nodeEnter.append("text")
@@ -768,12 +1015,10 @@
               .text(function(d) {return d.data.count})
           // ------------------------------------------------------------------------
 
-
-
           // Transition nodes to their new position.
           nodeEnter.transition()
               .duration(duration)
-              .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+              .attr("transform", function(d) { return "translate(" + d.y  + "," + d.x + ")"; })
               .style("opacity", 1);
 
           map_nodeEnter.transition()
@@ -790,6 +1035,7 @@
               .style("fill", color);
 
           map_node.transition()
+              .duration(duration)
               .attr("transform", function(d) { return "translate(0," + d.x + ")"; })
               .style("opacity", 1)
             .select("g.tree_rect")
@@ -797,13 +1043,13 @@
          
           // Transition exiting nodes to the parent's new position.
           node.exit().transition()
-              .duration(duration)
-              .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+              .duration(shorter_duration)
+              // .attr("transform", function(d) { return "translate("+ source.y + "," + source.x + ")"; })
               .style("opacity", 0)
               .remove();
 
           map_node.exit().transition()
-              .duration(duration)
+              .duration(shorter_duration)
               // .attr("transform", function(d) { return "translate(0," + source.x + ")"; })
               .style("opacity", 0)
               .remove();
@@ -815,6 +1061,13 @@
           });
 
         }
+
+
+        // function find_how_many_prev(d, i){
+        //     if nodes.data()[i-1].bar_filter == 0:
+        //         return i-1
+        //     return find_how_many_prev(d, i-1)
+        // }
 
 
         // Toggle children on click.
@@ -835,10 +1088,10 @@
             return tooltip.text("Completeness");
         }
 
-        function show_dist_text(d){
+        function show_cont_text(d){
             tooltip.style("color", "#1e1e1e")
             tooltip.style("background-color", "#7ab9ff")
-            return tooltip.text("Distance")
+            return tooltip.text("Contamination")
         }
 
         function leaf_transform(d){
@@ -863,7 +1116,7 @@
 
         function color(d) {
           return d._children ? "#badaff" : d.children ? "#badaff" : "#7ab9ff";
-        }        
+        }
     </script>
 
     <script>

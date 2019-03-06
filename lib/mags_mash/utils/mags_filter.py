@@ -27,17 +27,23 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
             if col == "Project / Study Name":
                 dist, compl, cont = dist_compl[t]
             else:
-                dist, compl, cont =  "","", ""
+                dist, compl, cont =  "", "", ""
             trunc_name = GOLD[GOLD["Project / Study Name"] == t].iloc[0]['IMG Genome ID ']
             # is terminal node/actually a leaf
+
+            # here we change the terminal nodes to have dists as a dict
+            # of IMG_id -> distance,
+            # and we include the list of img_id's for each 
+
             tree.append({
                 'truncated_name': str(trunc_name),
                 'name' : t,
                 'count': "",
                 'compl': str(compl),
                 'cont' :str(cont),
-                'dist' : str(dist)
+                'dist' : dist
             })
+
         else:  
             tree.append({
                 'truncated_name':t,
@@ -46,12 +52,11 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
             })
         if source_order!=None:
             source_count = GOLD[GOLD[col]==t]['upa'].value_counts().to_dict()
-            sources = []
-            for s in source_order:
+            sources = {}
+
+            for i, s in enumerate(source_order):
                 if s in source_count:
-                    sources.append(source_count[s])
-                else:
-                    sources.append(0)
+                    sources[i] = source_count[s]
 
             tree[-1]['sources'] = sources
     return tree
@@ -168,9 +173,20 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         all_GOLD.append(curr_GOLD)
 
         for key in curr_dist_compl:
+            if key in dist_compl:
+                dist_1, compl_1, cont_1 = dist_compl[key]
+                dist_2, compl_2, cont_2 = curr_dist_compl[key]
+                if compl_1 == compl_2 and cont_1 == cont_2:
+                    # check to see distance dictionary
+                    unincluded_keys = list(set(list(dist_2.keys())) - set(list(dist_1.keys())))
+                    for uinc_key in unincluded_keys:
+                        dist_1[uinc_key] = dist_2[uinc_key]
+                    dist_compl[key] = [dist_1, compl_1, cont_1]
+                else:
+                    raise ValueError('Same project ids but contamination and/or completeness do not match')
             # id_to_inputs[key].append(upa_name)
-            dist_compl[key] = curr_dist_compl[key]
-
+            else:
+                dist_compl[key] = curr_dist_compl[key]
 
         stats += curr_stats
         upa_names.append(upa_name)
@@ -215,7 +231,18 @@ def filter_stats(stats, n_max_results, max_distance, min_completeness, max_conta
     stats = sorted(stats, key=lambda s: s['dist'])
     if len(stats) > n_max_results:
         stats = stats[:n_max_results]
-    dist_compl = {s['project']:(round(s['dist'], 3), round(s['completeness'], 2), round(s['contamination'], 2)) for s in stats}
+
+    dist_compl = {}
+    for s in stats:
+        if s['project'] in dist_compl:
+            dist_compl[s['project']] = [{s['mag_id']:round(s['dict'], 3)}, round(s['completeness'],2), round(s['contamination'],2)]
+        else:
+            if round(s['completeness'],2) == dist_compl[s['project']][1] and round(s['contamination'],2) == dist_compl[s['project']][2]
+                dist_compl[s['project']][0][s['mag_id']] = (round(s['dict'], 3))
+            else:
+                raise ValueError('same project ids but contamination and/or completeness do not match')
+
+    # dist_compl = {s['project']:(round(s['dist'], 3), round(s['completeness'], 2), round(s['contamination'], 2)) for s in stats}
     return stats, dist_compl
 
 def get_upa_names(ws_url, cb_url, upas):
