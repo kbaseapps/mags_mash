@@ -200,13 +200,16 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         tree_cols = ['Ecosystem','Ecosystem Category','Ecosystem Subtype',\
                      'Ecosystem Type','Specific Ecosystem','Project / Study Name']
 
+        print("curr gold cols 1:",curr_GOLD.columns)
         curr_GOLD = curr_GOLD.fillna({col:"Unknown" for col in tree_cols})
+        print("curr gold cols 2:",curr_GOLD.columns)
 
         curr_stats = get_statistics(query_results[upa], curr_GOLD, upa_name=upa_name)
         curr_stats, curr_dist_compl = filter_stats(curr_stats, n_max_results, max_distance, min_completeness, max_contamination)
 
         curr_GOLD = curr_GOLD[curr_GOLD['GOLD Analysis Project ID'].isin([s['GOLD_Analysis_ID'] for s in curr_stats])]
         curr_GOLD['upa'] = upa
+        print("curr gold cols 3:",curr_GOLD.columns)
 
         # We want to get a row for each mag id in curr_GOLD,
         # right now we only have a row for each img id
@@ -217,6 +220,8 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         print(curr_stats)
         print('='*80)
         curr_GOLD.set_index('IMG Genome ID ', inplace=True)
+        print("curr gold cols 1:",curr_GOLD.columns)
+
         new_gold = defaultdict(lambda: [])
 
         for i, cs in enumerate(curr_stats):
