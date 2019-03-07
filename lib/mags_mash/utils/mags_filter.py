@@ -305,6 +305,7 @@ def filter_stats(stats, n_max_results, max_distance, min_completeness, max_conta
         if s['project'] not in dist_compl:
             dist_compl[s['project']] = [{s['mag_id']:round(s['dist'], 3)}, round(s['completeness'],2), round(s['contamination'],2)]
         else:
+            print("mapping the items:",s, dist_compl[s['project']])
             if round(s['completeness'],2) == dist_compl[s['project']][1] and round(s['contamination'],2) == dist_compl[s['project']][2]:
                 dist_compl[s['project']][0][s['mag_id']] = (round(s['dist'], 3))
             else:

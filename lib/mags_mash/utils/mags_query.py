@@ -25,6 +25,10 @@ def query_sketch_mags(sw_url, input_upas, auth_token):
             }
         }
 
+        print('='*80)
+        print('sketch_url:',sketch_url)
+        print('='*80)
+
         resp = requests.post(url=sketch_url, data=json.dumps(payload),
                              headers={'content-type':'application/json', 'authorization':auth_token})
         results[upa] = parse_response(resp.json())
