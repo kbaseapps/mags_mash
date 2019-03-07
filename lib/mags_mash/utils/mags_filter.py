@@ -185,8 +185,6 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         curr_GOLD = curr_GOLD[curr_GOLD['GOLD Analysis Project ID'].isin([s['GOLD_Analysis_ID'] for s in curr_stats])]
         curr_GOLD['upa'] = upa
 
-        curr_GOLD['mag_id'] = None
-
         # We want to get a row for each mag id in curr_GOLD,
         # right now we only have a row for each img id
 
@@ -195,33 +193,20 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         print('='*80)
         print(curr_stats)
         print('='*80)
-        for i in range(len(curr_stats)):
-            cs = curr_stats[i]
+        curr_GOLD.set_index('IMG Genome ID ', inplace=True)
+        new_gold = defaultdict(lambda: [])
 
+        for i, cs in enumerate(curr_stats):
             img_id = cs['IMG_Genome_ID']
             mag_id = cs['mag_id']
-            c_id = img_id
-            curr_GOLD[curr_GOLD['IMG Genome ID ']==img_id]['mag_id'] = mag_id
+            gold_info = curr_GOLD.loc[img_id,:]
+            new_gold['mag_id'].append(mag_id)
+            for key, val in gold_info.iteritems():
+                new_gold[key].append(val)
+        
+        new_gold = pd.from_dict(new_gold)
 
-            # Check the next item
-            i+=1
-            if i < len(curr_stats):
-                cs = curr_stats[i]
-                c_id = cs['IMG_Genome_ID']
-                while c_id == img_id and i < len(curr_stats):
-                    # if it has the same img_id, add a column for it
-                    mag_id = cs['mag_id']
-                    cg = curr_GOLD[curr_GOLD['IMG Genome ID ']==img_id].to_dict()
-                    cg['mag_id'] = {0:mag_id}
-                    curr_GOLD = curr_GOLD.append(cg, ignore_index=True, sort=True)
-
-                    # Iterate to next item
-                    i+=1
-                    if i < len(curr_stats):
-                        cs = curr_stats[i]
-                        c_id = cs['IMG_Genome_ID']
-
-        all_GOLD.append(curr_GOLD)
+        all_GOLD.append(new_gold)
 
         for key in curr_dist_compl:
             if key in dist_compl:
