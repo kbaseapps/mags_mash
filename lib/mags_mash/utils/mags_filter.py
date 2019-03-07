@@ -4,6 +4,7 @@ from installed_clients.DataFileUtilClient import DataFileUtil
 import numpy as np
 import pandas as pd
 import os
+from collections import defaultdict
 from scipy.cluster.hierarchy import linkage, leaves_list
 
 
@@ -30,7 +31,6 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
                 dist, compl, cont =  "", "", ""
             trunc_name = GOLD[GOLD["Project / Study Name"] == t].iloc[0]['IMG Genome ID ']
             # is terminal node/actually a leaf
-
             # here we change the terminal nodes to have dists as a dict
             # of IMG_id -> distance,
             # and we include the list of img_id's for each 
@@ -43,7 +43,7 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
                 'cont' :str(cont),
                 'dist' : dist
             })
-
+            # have to include to
         else:  
             tree.append({
                 'truncated_name':t,
@@ -51,12 +51,25 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
                 'children':leaf
             })
         if source_order!=None:
-            source_count = GOLD[GOLD[col]==t]['upa'].value_counts().to_dict()
+
             sources = {}
 
-            for i, s in enumerate(source_order):
-                if s in source_count:
-                    sources[i] = source_count[s]
+            if leaf == []:
+                g = GOLD[GOLD[col]==t][['upa','mag_id']]
+                upas = g['upa'].tolist()
+                ss = {}
+                for upa in upas:
+                    mag_ids = g[g['upa']==upa]['mag_id'].tolist()
+                    ss[upa] = mag_ids
+
+                for i, s in enumerate(source_order):
+                    if s in ss:
+                        sources[i] = ss[upa]
+            else:
+                source_count = GOLD[GOLD[col]==t]['upa'].value_counts().to_dict()
+                for i, s in enumerate(source_order):
+                    if s in source_count:
+                        sources[i] = source_count[s]
 
             tree[-1]['sources'] = sources
     return tree
@@ -102,6 +115,7 @@ def unwind_tree(X, tree):
 
 def remap_sources(sources, upa_order):
     new_sources = {}
+
     for j, i in enumerate(upa_order):
         val = sources[i]
         if val != 0:
@@ -170,6 +184,41 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
 
         curr_GOLD = curr_GOLD[curr_GOLD['GOLD Analysis Project ID'].isin([s['GOLD_Analysis_ID'] for s in curr_stats])]
         curr_GOLD['upa'] = upa
+
+        curr_GOLD['mag_id'] = None
+
+        # We want to get a row for each mag id in curr_GOLD,
+        # right now we only have a row for each img id
+
+        # group them by img_ids
+        curr_stats = sorted(curr_stats, key=lambda x: x['IMG_Genome_ID'])
+        print('='*80)
+        print(curr_stats)
+        print('='*80)
+        for i in range(len(curr_stats)):
+            cs = curr_stats[i]
+
+            img_id = cs['IMG_Genome_ID']
+            mag_id = cs['mag_id']
+            c_id = img_id
+            curr_GOLD[curr_GOLD['IMG Genome ID ']==img_id]['mag_id'] = mag_id
+
+            # Check the next item
+            i+=1
+            cs = curr_stats[i]
+            c_id = cs['IMG_Genome_ID']
+            while c_id == img_id:
+                # if it has the same img_id, add a column for it
+                mag_id = cs['mag_id']
+                cg = curr_GOLD[curr_GOLD['IMG Genome ID ']==img_id].to_dict()
+                cg['mag_id'] = {0:mag_id}
+                curr_GOLD = curr_GOLD.append(cg, ignore_index=True, sort=True)
+
+                # Iterate to next item
+                i+=1
+                cs = curr_stats[i]
+                c_id = cs['IMG_Genome_ID']
+
         all_GOLD.append(curr_GOLD)
 
         for key in curr_dist_compl:
@@ -201,9 +250,12 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         tree = {"truncated_name":"", "count":"({})".format(str(count)), "count_num":count, "children":tree}
     else:
         tree = create_tree(all_GOLD, tree_cols, dist_compl, source_order=upas)
-        sources = [0 for _ in range(len(upa_names))]
+        sources = defaultdict(lambda: 0)
         for i in range(len(upa_names)):
-            sources[i]+= sum([t['sources'][i] for t in tree])
+            for t in tree:
+                if i in t['sources']:
+                    sources[i]+= t['sources'][i]
+
         total_num = sum(sources)
         tree = {"truncated_name":"", "count":"({})".format(str(total_num)), 'count_num':total_num, 'sources':sources, "children":tree}
 
@@ -240,7 +292,9 @@ def filter_stats(stats, n_max_results, max_distance, min_completeness, max_conta
             if round(s['completeness'],2) == dist_compl[s['project']][1] and round(s['contamination'],2) == dist_compl[s['project']][2]:
                 dist_compl[s['project']][0][s['mag_id']] = (round(s['dist'], 3))
             else:
-                raise ValueError('same project ids but contamination and/or completeness do not match')
+                raise ValueError('same project ids but contamination and/or completeness do not match',\
+                                round(s['completeness'],2), dist_compl[s['project']][1],
+                                round(s['contamination'],2), dist_compl[s['project']][2])
 
     # dist_compl = {s['project']:(round(s['dist'], 3), round(s['completeness'], 2), round(s['contamination'], 2)) for s in stats}
     return stats, dist_compl
