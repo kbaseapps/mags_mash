@@ -380,9 +380,13 @@
                 //.style('stroke', "#7ab9ff")
                 .style("fill", color)
                 .on("click", click)
-                .on("mouseover", show_dist_text)
-                .on("mousemove", function(d){return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
-                .on("mouseout", function(d){return tooltip.style("top", "-9999px").style("opacity","0");})
+                .on("mouseover", show_dist_or_compl_text)
+                .on("mousemove", function(d){
+                    return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")
+                })
+                .on("mouseout", function(d){
+                    return tooltip.style("top", "-9999px").style("opacity","0");
+                })
 
 
             nodeEnter.append("text")
@@ -390,20 +394,24 @@
                 .attr("dx", 4.5)
                 .style("font-weight", "bold")
                 .text(function(d){
-                  if(d.children){return ""
-                  }else{return d.data.dist}
+                    if(d.children){
+                        if (d.data.compl){return d.data.compl}
+                        return ""
+                    }else{
+                        return d.data.dist
+                    }
                 })
 
             nodeEnter.append("rect")
                 .attr("y", -barHeight / 2)
                 .attr("height",barHeight)
-                .attr("width", leaf_width)
+                .attr("width", leaf_width_2)
                 .attr("border", 0)
                 .attr("transform", leaf_transform)
                 //.style('stroke', "#7ab9ff")
                 .style("fill", color)
                 .on("click", click)
-                .on("mouseover",show_compl_text)
+                .on("mouseover",show_cont_text)
                 .on("mousemove", function(d){return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px")})
                 .on("mouseout", function(d){return tooltip.style("top", "-9999px").style("opacity","0");})
 
@@ -413,8 +421,8 @@
                 .style("font-weight", "bold")
                 .attr("transform", leaf_transform)
                 .text(function(d){
-                  if(d.children){return ""
-                  }else{return d.data.compl}
+                    if (d.data.compl){return d.data.cont}
+                    return ""
                 })
             // ============================================================================
             // ----------------------------------------------------------------------------
@@ -428,9 +436,9 @@
                 })
                 .style("fill", color)
                 .on("click", click)
-                .on("mouseover", function(d){ if(d.data.dist){return tooltip.text(d.data.name); }})
-                .on("mousemove", function(d){ if(d.data.dist){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
-                .on("mouseout", function(d){ if(d.data.dist){return tooltip.style("top", "-9999px"); }});
+                .on("mouseover", function(d){ if(d.data.compl){return tooltip.text(d.data.name); }})
+                .on("mousemove", function(d){ if(d.data.compl){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
+                .on("mouseout", function(d){ if(d.data.compl){return tooltip.style("top", "-9999px"); }});
 
 
             nodeEnter.append("text")
@@ -473,11 +481,14 @@
             });
         }
 
-        function show_compl_text(d){
-            return tooltip.style("opacity","1").text("Completeness");
+        function show_cont_text(d){
+            return tooltip.style("opacity","1").text("Contamination");
         }
 
-        function show_dist_text(d){
+        function show_dist_or_compl_text(d){
+            if (d.data.compl){
+                return tooltip.style("opacity", "1").text("Completeness")
+            }
             return tooltip.style("opacity","1").text("Distance")
         }
 
@@ -490,11 +501,17 @@
         }
 
         function leaf_width(d){
+            if (d.data.compl || d.data.dist){
+                return 50
+            }
+            return 0
+        }
+
+        function leaf_width_2(d){
             if (d.data.compl){
                 return 50
-            }else{
-                return 0
             }
+            return 0
         }
 
         // Toggle children on click.
@@ -510,7 +527,14 @@
         }
 
         function color(d) {
-            return d._children ? "#badaff" : d.children ? "#badaff" : "#7ab9ff";
+            if (d.data.dist){
+                return "#7ab9ff"
+            }else if(d.data.compl){
+                return "#7ab9ff"
+            }else{
+                return "#badaff"
+            }
+            // return d._children ? "#badaff" : d.children ? "#badaff" : "#7ab9ff";
         }
 
 
@@ -539,5 +563,6 @@
         }
         document.getElementById("defaultOpen").click();
     </script>
+
 </body>
 </html>

@@ -38,12 +38,22 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
             tree.append({
                 'truncated_name': str(trunc_name),
                 'name' : t,
-                'count': "",
+                'count': "({})".format(),
                 'compl': str(compl),
                 'cont' :str(cont),
-                'dist' : dist
             })
-            # have to include to
+            if source_order!=None:
+                tree[-1]['dist'] = dist
+            else:
+                children = []
+                for key, val in dist.items():
+                    child = {}
+                    child['truncated_name'] = key
+                    child['count'] = ''
+                    child['dist'] = val
+                    children.append(child)
+
+                tree[-1]['children'] = children
         else:  
             tree.append({
                 'truncated_name':t,
@@ -53,7 +63,6 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
         if source_order!=None:
 
             sources = {}
-
             if leaf == []:
                 g = GOLD[GOLD[col]==t][['upa','mag_id']]
                 upas = g['upa'].tolist()
@@ -64,14 +73,21 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
 
                 for i, s in enumerate(source_order):
                     if s in ss:
-                        sources[i] = ss[upa]
+                        sources.append(ss[upa])
+                        # sources[i] = ss[upa]
+                    else:
+                        sources.append([])
             else:
                 source_count = GOLD[GOLD[col]==t]['upa'].value_counts().to_dict()
                 for i, s in enumerate(source_order):
                     if s in source_count:
-                        sources[i] = source_count[s]
+                        sources.append(source_count[s])
+                        # sources[i] = source_count[s]
+                    else:
+                        sources.append(0)
 
             tree[-1]['sources'] = sources
+
     return tree
 
 def get_location_markers(ids, source=None):
@@ -108,7 +124,10 @@ def unwind_tree(X, tree):
     """
     if tree.get('children'):
         for t in tree['children']:
-            X.append(t['sources'])
+            if 'compl' in t:
+                X.append([len(mag_ids) for mag_ids in t['sources']])
+            else:
+                X.append(t['sources'])
             X = unwind_tree(X, t)
     return X
 
