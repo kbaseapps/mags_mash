@@ -223,7 +223,7 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
             for key, val in gold_info.iteritems():
                 new_gold[key].append(val)
         
-        new_gold = pd.from_dict(new_gold)
+        new_gold = pd.DataFrame.from_dict(new_gold)
 
         all_GOLD.append(new_gold)
 
