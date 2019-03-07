@@ -218,7 +218,7 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         for i, cs in enumerate(curr_stats):
             img_id = cs['IMG_Genome_ID']
             mag_id = cs['mag_id']
-            gold_info = curr_GOLD.loc[img_id,:]
+            gold_info = curr_GOLD.loc[int(img_id),:]
             new_gold['mag_id'].append(mag_id)
             for key, val in gold_info.iteritems():
                 new_gold[key].append(val)
