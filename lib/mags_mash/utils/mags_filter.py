@@ -29,6 +29,9 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
                 dist, compl, cont = dist_compl[t]
             else:
                 dist, compl, cont =  "", "", ""
+            print("-"*90)
+            print("gold stuff:",GOLD[GOLD["Project / Study Name"]==t].iloc[0]["IMG Genome ID "])
+            print("-"*90)
             trunc_name = GOLD[GOLD["Project / Study Name"] == t].iloc[0]['IMG Genome ID ']
             # is terminal node/actually a leaf
             # here we change the terminal nodes to have dists as a dict
