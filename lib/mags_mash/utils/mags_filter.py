@@ -220,7 +220,7 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         print(curr_stats)
         print('='*80)
         curr_GOLD.set_index('IMG Genome ID ', inplace=True)
-        print("curr gold cols 1:",curr_GOLD.columns)
+        print("curr gold cols 4:",curr_GOLD.columns)
 
         new_gold = defaultdict(lambda: [])
 
@@ -229,6 +229,7 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
             mag_id = cs['mag_id']
             gold_info = curr_GOLD.loc[int(img_id),:]
             new_gold['mag_id'].append(mag_id)
+            new_gold['IMG Genome ID '].append(img_id)
             for key, val in gold_info.iteritems():
                 new_gold[key].append(val)
         
