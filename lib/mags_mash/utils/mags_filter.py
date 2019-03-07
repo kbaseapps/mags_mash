@@ -205,19 +205,21 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
 
             # Check the next item
             i+=1
-            cs = curr_stats[i]
-            c_id = cs['IMG_Genome_ID']
-            while c_id == img_id:
-                # if it has the same img_id, add a column for it
-                mag_id = cs['mag_id']
-                cg = curr_GOLD[curr_GOLD['IMG Genome ID ']==img_id].to_dict()
-                cg['mag_id'] = {0:mag_id}
-                curr_GOLD = curr_GOLD.append(cg, ignore_index=True, sort=True)
-
-                # Iterate to next item
-                i+=1
+            if i < len(curr_stats):
                 cs = curr_stats[i]
                 c_id = cs['IMG_Genome_ID']
+                while c_id == img_id and i < len(curr_stats):
+                    # if it has the same img_id, add a column for it
+                    mag_id = cs['mag_id']
+                    cg = curr_GOLD[curr_GOLD['IMG Genome ID ']==img_id].to_dict()
+                    cg['mag_id'] = {0:mag_id}
+                    curr_GOLD = curr_GOLD.append(cg, ignore_index=True, sort=True)
+
+                    # Iterate to next item
+                    i+=1
+                    if i < len(curr_stats):
+                        cs = curr_stats[i]
+                        c_id = cs['IMG_Genome_ID']
 
         all_GOLD.append(curr_GOLD)
 
