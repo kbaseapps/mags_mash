@@ -139,11 +139,11 @@ def unwind_tree(X, tree):
 
 def remap_sources(sources, upa_order):
     new_sources = {}
-
     for j, i in enumerate(upa_order):
         val = sources[i]
-        if val != 0:
+        if val != 0 or val != []:
             new_sources[j] = val
+
     return new_sources
 
 

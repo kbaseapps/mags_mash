@@ -834,15 +834,6 @@
               .style("opacity", 0);
 
           // ========================================================================
-          // do the heat map thing here.
-          // var map_rects = map_nodeEnter.selectAll("rect")
-          //       .data(nodes, function(d){
-          //           console.log('wingdings')
-          //           console.log(d.data.sources)
-          //           return d.data.sources
-          //       });
-
-          // i work down here
           for (let i = 0; i < sources.length; i++){
             map_nodeEnter.append("rect").attr("class","map_rect")
                 .attr("y", (-barHeight/2) + title_height + tree_map_gap)
@@ -852,21 +843,23 @@
                 .attr("border", 0)
                 .style("stroke","white")
                 .style("stroke-opacity", 0.6)
-                // .style("fill","#ff0571")
                 .style("fill", function(d) {
-                    // console.log("i am an updated thing", i)
-                    // console.log("d", d)
                     if (d.data.compl){
                         if (i in d.data.sources){
-                            return d3.rgb(oneBlack)
+                            var non_nulls = Object.values(d.data.sources[i]).filter(key=>d.data.dist[key]!=null).length
+                            if (non_nulls > 0){
+                                return oneBlack
+                            }else{
+                                return nullGray
+                            }
                         }else{
-                            return d3.rgb(zeroGray)
+                            return zeroGray
                         }
                     }else{ 
                         if (i in d.data.sources){
-                            return d3.rgb(colorScale(d.data.sources[i]))
+                            return colorScale(d.data.sources[i])
                         }else{
-                            return d3.rgb(zeroGray)
+                            return zeroGray
                         }
                     }
                 })
