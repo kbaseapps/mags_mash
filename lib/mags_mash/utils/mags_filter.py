@@ -274,7 +274,7 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
 
 
 
-        total_num = sum(sources.values())
+        total_num = sum(sources)
         tree = {"truncated_name":"", "count":"({})".format(str(total_num)), 'count_num':total_num, 'sources':sources, "children":tree}
 
         upa_order = get_source_order(tree, upa_names)
