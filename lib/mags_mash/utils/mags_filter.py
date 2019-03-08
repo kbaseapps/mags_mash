@@ -165,6 +165,9 @@ def get_source_order(tree, upa_names):
     """
     X = unwind_tree([tree['sources']], tree)
     X = np.transpose(np.array(X))
+    print("-"*80)
+    print("je suis here:",X)
+    print('-'*80)
     z = linkage(X, 'ward')
     upa_order = leaves_list(z)
     return upa_order
