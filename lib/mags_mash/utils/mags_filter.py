@@ -267,11 +267,12 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
         tree = {"truncated_name":"", "count":"({})".format(str(count)), "count_num":count, "children":tree}
     else:
         tree = create_tree(all_GOLD, tree_cols, dist_compl, source_order=upas)
-        sources = defaultdict(lambda: 0)
+        sources = [0 for _ in range()len(upa_names)]
         for i in range(len(upa_names)):
             for t in tree:
-                if i in t['sources']:
-                    sources[i]+= t['sources'][i]
+                sources[i]+=t['sources'][i]
+
+
 
         total_num = sum(sources.values())
         tree = {"truncated_name":"", "count":"({})".format(str(total_num)), 'count_num':total_num, 'sources':sources, "children":tree}
