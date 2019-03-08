@@ -490,6 +490,7 @@
 
         var zeroGray = "#d6d6d6"
         var oneBlack = "#1e1e1e"
+        var nullGray = "#919191"
 
         var countScale = d3.scaleLinear()
           .domain([0, number_of_points])
@@ -595,7 +596,7 @@
                                    max_compl_value, min_cont_value, max_cont_value, false)
                 recount_sources(root)
                 update_tree(root)
-                recolor_rects()
+                recolor_rects_and_counts()
             }
         });
         compl_range_tree.slider({
@@ -614,7 +615,7 @@
                                    max_compl_value, min_cont_value, max_cont_value, false)
                 recount_sources(root)
                 update_tree(root)
-                recolor_rects()
+                recolor_rects_and_counts()
             }
         });
         cont_range_tree.slider({
@@ -630,10 +631,10 @@
                 min_cont_value = ui.values[0]
                 max_cont_value = ui.values[1]
                 update_root(root, min_dist_value, max_dist_value, min_compl_value,
-                                   max_compl_value, min_cont_value, max_cont_value)
+                                   max_compl_value, min_cont_value, max_cont_value, false)
                 recount_sources(root)
                 update_tree(root)
-                recolor_rects()
+                recolor_rects_and_counts()
             }
         });
         live_range_dist_tree.val(dist_range_tree.slider("values", 0) + " - " + dist_range_tree.slider( "values", 1 ) );
@@ -646,14 +647,7 @@
             // root is what we would like to update to have only the data we are interested in.
 
             total_root.bar_filter = false
-            var tree = recurse_root(total_root, min_dist, max_dist, min_compl, max_compl, min_cont, max_cont, set)
-            // if (tree.remove_limb){
-            //     were removing the tree root at this point. which means that there are no more valid 
-            //     data points in the ranges provided
-            //     do we want to filter out whole tree?
-            //
-            // }
-            return tree.payload
+            remove_limb = recurse_root(total_root, min_dist, max_dist, min_compl, max_compl, min_cont, max_cont, set)
         }
 
 
@@ -667,9 +661,6 @@
                 for (let i = 0; i < children_len; i++){
                     var t = data.children[i]
                     if (t.data.compl){
-                        // we need to convert dist into a dict
-                        // so this then becomes
-
                         compl = t.data.compl
                         cont  = t.data.cont
                         if (compl > max_compl || compl < min_compl || cont > max_cont || cont < min_cont){
@@ -680,25 +671,30 @@
                             data.children[i].data.bar_filter = false                    
                         }
 
-
                         if (!remove[i]){
                             if (set){
                                 t.data._dist = {}
                             }
                             // check if all dists have been filtered out for row.
+                            var dist_len = t.data.dist.length
+                            var curr_len = 0
                             for (key in t.data.dist){
                                 if (set) {
                                     t.data._dist[key] = t.data.dist[key]
                                 }
                                 dist = t.data._dist[key]
                                 if (dist > max_dist || dist < min_dist){
-                                    // t.data._dist[key] = t.data.dist[key]
                                     t.data.dist[key] = null
                                 }else{
                                     t.data.dist[key] = t.data._dist[key]
-                                    // t.data._dist[key] = null 
+                                    curr_len = curr_len + 1
                                 }
                             }
+                            if (curr_len == 0){
+                                remove[i] = true
+                                t.data.bar_filter = true
+                            }
+
                         }
 
                     }else{
@@ -726,10 +722,6 @@
             return d.data.bar_filter == false
         }
 
-        function data_sources(d){
-            return d.data.sources
-        }
-
         function recount_sources(root){
             var source_children = {}
             root.eachAfter(function(n){
@@ -755,23 +747,31 @@
                             }
                         });
                         n.data.sources = source_children
-                        n.data.count = "(" + (Object.values(source_children).reduce((a,b) => a+b)).toString() + ")"
+                        if (Object.keys(source_children).length == 0){
+                            n.data.count = "(0)"
+                        }else{
+                            n.data.count = "(" + (Object.values(source_children).reduce((a,b) => a+b)) + ")"
+                        }
                     }
                 }
             })
         }
 
-        function recolor_rects(){
+        function recolor_rects_and_counts(){
             d3.selectAll('.map_rect').style('fill', function(d, i){
                 var idx = i % sources.length
-                // console.log("d", d)
                 if (d.data.compl){
                     if (idx in d.data.sources){
-                        return oneBlack
+                        var non_nulls = Object.values(d.data.sources[idx]).filter(key=>d.data.dist[key]!=null).length
+                        if (non_nulls > 0){
+                            return oneBlack
+                        }else{
+                            return nullGray
+                        }
                     }else{
                         return zeroGray
                     }
-                }else{ 
+                }else{
                     if (idx in d.data.sources){
                         return colorScale(d.data.sources[idx])
                     }else{
@@ -779,6 +779,9 @@
                     }
                 }
             })
+            d3.selectAll('.count_text').text(function(d){return d.data.count})
+                  .attr('dx', function(d){return barWidth - ((d.data.count.length - 1)*7) - 13 - d.depth * margin.left})
+
         }
 
 
@@ -868,35 +871,20 @@
                     }
                 })
                 .on("mouseover", function(d){
-                    // console.log(d)
-                    // console.log(i)
                     if (i in d.data.sources){
                         if (d.data.compl){
-                            // if (i in d.data.sources){
                             tooltip.style("background-color",oneBlack)
                             tooltip.style("color", "white")
-                            // }
-                            // else{
-                            //     tooltip.style("background-color",zeroGray)
-                            //     tooltip.style("color", "#1e1e1e")
-                            // }
                         }else{
-                            // if (i in d.data.sources){
                             tooltip.style("background-color",colorScale(d.data.sources[i]))
-                            // }else{
-                            //     tooltip.style("background-color",zeroGray)
-                            // }
                             tooltip.style("color", "#1e1e1e")
                         }
 
                         if (d.data.compl){
-                            var st = ""
+                            var st = "<a style=\"text-decoration: underline\">IMG id --- Distance</a><br/>"
                             var used = false
                             d.data.sources[i].forEach((key) => {
                                 if (d.data.dist[key] != null){
-                                    if (!used) {
-                                        st = "<a style=\"text-decoration: underline\">Mag Id  --- Distance</a><br/>"
-                                    }
                                     st = st + key + " : " + d.data.dist[key] + "<br/>"
                                     used = true
                                 }else{
@@ -912,17 +900,35 @@
                             // we want to also update the rect color here
                         }
                     }else{
-                        tooltip.text("i am a tragic case")
+                        tooltip.text("bird up!")
                     }
                 })
                 .on("mousemove", function(d){
                     if (i in d.data.sources){
-                        return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")
+                        if (!d.data.bar_filter){
+                            if (d.data.compl){
+                                var non_nulls = Object.values(d.data.sources[i]).filter(key=>d.data.dist[key]!=null).length
+                                if (non_nulls > 0){
+                                    return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")
+                                }
+                            }else{
+                                return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")
+                            }
+                        }
                     }
                 })
                 .on("mouseout", function(d){
                     if (i in d.data.sources){
-                        return tooltip.style("top", "-9999px");
+                        if (!d.data.bar_filter){
+                            if (d.data.compl){
+                                var non_nulls = Object.values(d.data.sources[i]).filter(key=>d.data.dist[key]!=null).length
+                                if (non_nulls > 0){
+                                    return tooltip.style("top", "-9999px");
+                                }
+                            }else{
+                                return tooltip.style("top", "-9999px");
+                            }
+                        }
                     }
                 });
           }
@@ -1010,9 +1016,11 @@
               .text(function(d) { return d.data.truncated_name; })
 
           nodeEnter.append("text")
+              .attr("class", "count_text")
               .attr('y', title_height + tree_map_gap)
               .attr('dy', 5)
-              .attr('dx', function(d){return barWidth - 40 - d.depth * margin.left})
+              .style("font-family","monospace")
+              .attr('dx', function(d){return barWidth - ((d.data.count.length - 1)*7) - 13 - d.depth * margin.left})
               .style("fill", "#9b9b9b")
               .text(function(d) {return d.data.count})
           // ------------------------------------------------------------------------
@@ -1119,6 +1127,7 @@
         function color(d) {
           return d._children ? "#badaff" : d.children ? "#badaff" : "#7ab9ff";
         }
+
     </script>
 
     <script>
