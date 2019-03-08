@@ -42,7 +42,7 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
             tree.append({
                 'truncated_name': str(trunc_name),
                 'name' : t,
-                'count': "({})".format(),
+                'count': "({})".format(len(dist)),
                 'compl': str(compl),
                 'cont' :str(cont)
             })
