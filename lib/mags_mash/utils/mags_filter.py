@@ -66,7 +66,8 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
             })
         if source_order!=None:
 
-            sources = {}
+            # sources = {}
+            sources = []
             if leaf == []:
                 g = GOLD[GOLD[col]==t][['upa','mag_id']]
                 upas = g['upa'].tolist()
@@ -213,12 +214,9 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
 
         # We want to get a row for each mag id in curr_GOLD,
         # right now we only have a row for each img id
+        stats += curr_stats
 
         # group them by img_ids
-        curr_stats = sorted(curr_stats, key=lambda x: x['IMG_Genome_ID'])
-        print('='*80)
-        print(curr_stats)
-        print('='*80)
         curr_GOLD.set_index('IMG Genome ID ', inplace=True)
         print("curr gold cols 4:",curr_GOLD.columns)
 
@@ -253,7 +251,6 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
             else:
                 dist_compl[key] = curr_dist_compl[key]
 
-        stats += curr_stats
         upa_names.append(upa_name)
 
     all_GOLD = pd.concat(all_GOLD, ignore_index=True)
@@ -262,7 +259,7 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
                 'Ecosystem Type','Specific Ecosystem','Project / Study Name']
     if len(upas) == 1:
         tree = create_tree(all_GOLD, tree_cols, dist_compl)
-        count = len(query_results[upas[0]])
+        count =  #len(query_results[upas[0]])
         tree = {"truncated_name":"", "count":"({})".format(str(count)), "count_num":count, "children":tree}
     else:
         tree = create_tree(all_GOLD, tree_cols, dist_compl, source_order=upas)
