@@ -130,9 +130,9 @@ def unwind_tree(X, tree):
     if tree.get('children'):
         for t in tree['children']:
             if 'compl' in t:
-                X.append([len(mag_ids) for mag_ids in t['sources']])
+                X.append(np.array([len(mag_ids) for mag_ids in t['sources']]))
             else:
-                X.append(t['sources'])
+                X.append(np.array(t['sources']))
             X = unwind_tree(X, t)
     return X
 
