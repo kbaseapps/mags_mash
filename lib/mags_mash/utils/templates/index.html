@@ -432,7 +432,7 @@
                 .attr("height", barHeight)
                 .attr("transform", leaf_transform_2)
                 .attr("width", function(d){
-                    return barWidth - d.depth * margin.left - leaf_width(d) * 2
+                    return barWidth - d.depth * margin.left - leaf_width(d) - leaf_width_2(d)
                 })
                 .style("fill", color)
                 .on("click", click)

@@ -255,7 +255,8 @@
         </table>    
     </div>
 
-<!--     <div id="maptab" class="tabcontent">
+<!--
+    <div id="maptab" class="tabcontent">
         <div id="mapid" style="height: 900px; width: 1200px;"></div>
     </div>
  -->
@@ -754,6 +755,7 @@
                             }
                         });
                         n.data.sources = source_children
+                        n.data.count = "(" + (Object.values(source_children).reduce((a,b) => a+b)).toString() + ")"
                     }
                 }
             })
