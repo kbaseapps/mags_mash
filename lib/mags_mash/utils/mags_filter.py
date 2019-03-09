@@ -141,7 +141,7 @@ def remap_sources(sources, upa_order):
     new_sources = {}
     for j, i in enumerate(upa_order):
         val = sources[i]
-        if val != 0 or val != []:
+        if val != 0 and val != []:
             new_sources[j] = val
 
     return new_sources
