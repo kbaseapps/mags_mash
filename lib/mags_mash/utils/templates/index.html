@@ -140,7 +140,7 @@
                 <div id="cont_range" style="width:200px; margin-bottom: 20px;"></div>
             </div>
         </div>
-        <table id='stats_table' class='table table-striped table-bordered'>
+        <table id='stats_table' style="width:98%;" class='table table-striped table-bordered'>
             <thead>
                 <tr>
                     <td>Distance</td>
@@ -210,7 +210,7 @@
                     ( min <= col   && isNaN( max ) ) ||
                     ( min <= col   && col <= max ) )
                 {
-                    return true;
+                    return true
                 }
                 return false;
             },
@@ -312,7 +312,7 @@
 
     <script>
         var margin = {top: 30, right: 20, bottom: 30, left: 20},
-            width = 1490,
+            width = document.body.clientWidth * 0.9,
             barHeight = 30,
             barWidth = (width - margin.left - margin.right) * 0.8;
 
