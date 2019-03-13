@@ -34,6 +34,12 @@
         list-style-type: none;
     }
 
+    .tabcontent {
+        overflow: auto;
+
+        height: calc(100% - 140px);
+    }
+
     .tab {
         overflow: hidden;
         border: 1px solid #ccc;
@@ -119,17 +125,19 @@
     }
 
     #treegroup {
-      display: flex;
-      flex-direction: row;
+        display: flex;
+        flex-direction: row;
+        overflow: auto;
     }
+
     #treeid {
-      display: flex;
-      flex-direction: column;
+        display: flex;
+        flex-direction: column;
     }
     #treemap {
-      display: flex;
-      flex-direction: column;
-      overflow: auto;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
     }
 
     #treelegend{
@@ -140,18 +148,45 @@
     .container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr; /* fraction*/
+        max-width: 100vh;
     }
 
     </style>
 
 </head>
 <!-- HTML below -->
-<body>
-    <div class='tab'>
-        <button class="tablinks" onclick="openTab(event, 'stats')" id="defaultOpen">List View</button>
-        <button class="tablinks" onclick="openTab(event, 'treetab')">Ecosystem Tree</button>
-        <!-- <button class="tablinks" onclick="openTab(event, 'maptab')">Map</button> -->
+<body style="height:100vh">
+    <div style="height: 140px;">
+        <div class='tab'>
+            <button class="tablinks" onclick="openTab(event, 'stats')" id="defaultOpen">List View</button>
+            <button class="tablinks" onclick="openTab(event, 'treetab')">Ecosystem Tree</button>
+            <!-- <button class="tablinks" onclick="openTab(event, 'maptab')">Map</button> -->
+        </div>
+
+        <div>
+            <div class="container" id="sliders">
+                <div id="dist_slider">
+                    <p>
+                        <label style="border-right: 10px">Distance Filter: </label><input type="text" id="live_range_dist" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
+                    </p>
+                    <div id="dist_range" style="width:200px"></div>
+                </div>
+                <div id="compl_slider">
+                    <p>
+                        <label style="border-right: 10px">Completeness Filter: </label><input type="text" id="live_range_compl" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
+                    </p>        
+                    <div id="compl_range" style="width:200px"></div>
+                </div>
+                <div id="cont_slider">
+                    <p>
+                        <label style="border-right: 10px">Contamination Filter: </label><input type="text" id="live_range_cont" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
+                    </p>
+                    <div id="cont_range" style="width:200px; margin-bottom: 20px;"></div>
+                </div>
+            </div>
+        </div>
     </div>
+
 
     <!--
     Recursive Tree structure below, fill in with tree
@@ -159,62 +194,8 @@
 
     going to replace this tree thing with html 
     -->
-    <div id="treetab" class="tabcontent" style="width: 100%; height: 100%;">
-        <!-- insert sliders here -->
-        <div class="container" id="sliders_tree">
-            <div id="dist_slider_tree">
-                <p>
-                    <label style="border-right: 10px">Distance Filter: </label><input type="text" id="live_range_dist_tree" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
-                </p>
-                <div id="dist_range_tree" style="width:200px"></div>
-            </div>
-            <div id="compl_slider_tree">
-                <p>
-                    <label style="border-right: 10px">Completeness Filter: </label><input type="text" id="live_range_compl_tree" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
-                </p>        
-                <div id="compl_range_tree" style="width:200px"></div>
-            </div>
-            <div id="cont_slide_tree">
-                <p>
-                    <label style="border-right: 10px">Contamination Filter: </label><input type="text" id="live_range_cont_tree" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
-                </p>
-                <div id="cont_range_tree" style="width:200px; margin-bottom: 20px;"></div>
-            </div>
-        </div>
-
-        <div id="tree_group" class="grouping">
-          <div id="treegroup">
-            <div id="treeid"></div>
-            <div id="treemap"></div>
-          </div>
-          <div id="treelegend"></div>
-        </div>    
-    </div>
-
-    <!--
-    Statistics List view
-    -->
     <div id='stats' class="tabcontent">
-        <div class="container" id="sliders">
-            <div id="dist_slider">
-                <p>
-                    <label style="border-right: 10px">Distance Filter: </label><input type="text" id="live_range_dist" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
-                </p>
-                <div id="dist_range" style="width:200px"></div>
-            </div>
-            <div id="compl_slider">
-                <p>
-                    <label style="border-right: 10px">Completeness Filter: </label><input type="text" id="live_range_compl" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
-                </p>        
-                <div id="compl_range" style="width:200px"></div>
-            </div>
-            <div id="cont_slider">
-                <p>
-                    <label style="border-right: 10px">Contamination Filter: </label><input type="text" id="live_range_cont" readonly style="border:0; color:#6dacff; font-weight:bold; width: 120px;">
-                </p>
-                <div id="cont_range" style="width:200px; margin-bottom: 20px;"></div>
-            </div>
-        </div>
+
         <table id='stats_table' style="width:98%;" class='table table-striped table-bordered'>
             <thead>
                 <tr>
@@ -255,12 +236,46 @@
         </table>    
     </div>
 
+
+    <div id="treetab" class="tabcontent" style="width: 100%;">
+        <div id="tree_group" class="grouping" style="height:100%">
+             <div id="treegroup" style="max-height:calc(100% - 65px)">
+                <div id="treeid"></div>
+                <div id="treemap"></div>
+            </div>
+            <div id="treelegend" style="height:65px"></div>
+        </div>
+        <div id="tree_table_wrapper" style="height:0%; width: 98%;">
+            <button type="button" style="margin-right: 15px; margin-top: 10px" class="close" onclick="$(this).parent().hide(); close_pop_up()">x</button>
+            <table id='tree_table' style="width:98% background-color: beige;" class='table table-striped table-bordered'>
+                <thead>
+                    <tr>
+                        <!-- <td>Input Name</td> -->
+                        <td>Distance</td>
+                        <td>MAG ID</td>
+                        <!-- <td>KBase ID</td> -->
+                        <!-- <td>GOLD Analysis Project ID</td> -->
+                        <!-- <td>GOLD Sequencing Project ID</td> -->
+                        <td>IMG Genome ID</td>
+                        <td>Completeness</td>
+                        <td>Contamination</td>
+                        <!-- <td>MIMAG</td> -->
+                        <td>Project/Study Name</td>
+                        <td>Shared Category</td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
 <!--
     <div id="maptab" class="tabcontent">
         <div id="mapid" style="height: 900px; width: 1200px;"></div>
     </div>
  -->
     <script>
+        $("#tree_table_wrapper").hide()
+
         var dist_range;
         var compl_range;
         var cont_range;
@@ -308,65 +323,95 @@
         );
 
         var ranges = {{ranges|safe}}
-        // var ranges = [0,0.5,0,100,0,100]
         var num_steps = 100
 
-        $(document).ready( function () {
-            dist_range  = $("#dist_range")
-            compl_range = $("#compl_range")
-            cont_range  = $("#cont_range")
-            var live_range_cont  = $("#live_range_cont")
-            var live_range_dist  = $("#live_range_dist")
-            var live_range_compl = $("#live_range_compl")
-            dist_range.slider({
-                    range: true,
-                    min: ranges[0],
-                    max: ranges[1],
-                    step: ranges[2],
-                    values: [ ranges[0], ranges[1] ],
-                    slide: function( event, ui ) {
-                      live_range_dist.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-                    },
-                    stop: function( event, ui ) {
-                      table.draw();
-                    }
-            });
-            compl_range.slider({
-                range: true,
-                min: ranges[3],
-                max: ranges[4],
-                step: ranges[5],
-                values: [ ranges[3], ranges[4] ],
-                slide: function( event, ui ) {
-                    live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-                },
-                stop: function( event, ui ) {
-                    table.draw();
-                }
-            });
-            cont_range.slider({
-                range: true,
-                min: ranges[6],
-                max: ranges[7],
-                step: ranges[8],
-                values: [ ranges[6], ranges[7] ],
-                slide: function( event, ui ) {
-                    live_range_cont.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-                },
-                stop: function( event, ui ) {
-                    table.draw();
-                }
-            });
-            live_range_dist.val(dist_range.slider("values", 0) + " - " + dist_range.slider( "values", 1 ) );
-            live_range_compl.val(compl_range.slider("values", 0) + " - " + compl_range.slider( "values", 1 ) );
-            live_range_cont.val(cont_range.slider("values", 0) + " - " + cont_range.slider( "values", 1 ) );
+        var min_dist_value  = ranges[0];
+        var max_dist_value  = ranges[1];
+        var min_compl_value = ranges[3];
+        var max_compl_value = ranges[4];
+        var min_cont_value  = ranges[6];
+        var max_cont_value  = ranges[7];
 
-            var table = $('.table').DataTable({
+        dist_range  = $("#dist_range")
+        compl_range = $("#compl_range")
+        cont_range  = $("#cont_range")
+        var live_range_cont  = $("#live_range_cont")
+        var live_range_dist  = $("#live_range_dist")
+        var live_range_compl = $("#live_range_compl")
+        dist_range.slider({
+                range: true,
+                min: ranges[0],
+                max: ranges[1],
+                step: ranges[2],
+                values: [ ranges[0], ranges[1] ],
+                slide: function( event, ui ) {
+                  live_range_dist.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                },
+                stop: function( event, ui ) {
+                    table.draw();
+                    min_dist_value = ui.values[0]
+                    max_dist_value = ui.values[1]
+                    update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                                       max_compl_value, min_cont_value, max_cont_value, false)
+                    recount_sources(root)
+                    update_tree(root)
+                    recolor_rects_and_counts()
+                }
+        });
+        compl_range.slider({
+            range: true,
+            min: ranges[3],
+            max: ranges[4],
+            step: ranges[5],
+            values: [ ranges[3], ranges[4] ],
+            slide: function( event, ui ) {
+                live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            },
+            stop: function( event, ui ) {
+                table.draw();
+                min_compl_value = ui.values[0]
+                max_compl_value = ui.values[1]
+                update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                                   max_compl_value, min_cont_value, max_cont_value, false)
+                recount_sources(root)
+                update_tree(root)
+                recolor_rects_and_counts()
+            }
+        });
+        cont_range.slider({
+            range: true,
+            min: ranges[6],
+            max: ranges[7],
+            step: ranges[8],
+            values: [ ranges[6], ranges[7] ],
+            slide: function( event, ui ) {
+                live_range_cont.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            },
+            stop: function( event, ui ) {
+                table.draw();
+                min_cont_value = ui.values[0]
+                max_cont_value = ui.values[1]
+                update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                                   max_compl_value, min_cont_value, max_cont_value, false)
+                recount_sources(root)
+                update_tree(root)
+                recolor_rects_and_counts()
+            }
+        });
+        live_range_dist.val(dist_range.slider("values", 0) + " - " + dist_range.slider( "values", 1 ) );
+        live_range_compl.val(compl_range.slider("values", 0) + " - " + compl_range.slider( "values", 1 ) );
+        live_range_cont.val(cont_range.slider("values", 0) + " - " + cont_range.slider( "values", 1 ) );
+
+        var table;
+
+        $(document).ready( function () {
+
+            table = $('#stats_table').DataTable({
                 'dom': "<'row'<'col-sm-6'B><'col-sm-6'f>>t<'row'<'col-sm-4'i><'col-sm-8'p>>",
                 'buttons': ['copy', 'csv', 'print', 'colvis'],
                 'bFilter': true
             });
-        } );
+        });
     </script>
 
 <!--     <script>
@@ -390,7 +435,6 @@
         var sources = {{sources|safe}}
         var short_sources = {{short_sources|safe}}
         var number_of_points = {{number_of_points|safe}}
-
     </script>
 
     <script>
@@ -526,7 +570,7 @@
         var legendHeight = 15
         var legendsvg = svg2.append('g')
             .attr("class","legendWrapper")
-            .attr("transform","translate("+ (map_window_width/2) +","+ (40) +")")
+            .attr("transform","translate("+ (tree_width + legendWidth/2) +","+ (40) +")")
 
         legendsvg.append("rect")
             .attr("x", -legendWidth/2)
@@ -559,12 +603,21 @@
           .attr("transform", "translate(0," + (legendY_pos + legendHeight) + ")")
           .call(xAxis);
 
-        var min_dist_value  = ranges[0];
-        var max_dist_value  = ranges[1];
-        var min_compl_value = ranges[3];
-        var max_compl_value = ranges[4];
-        var min_cont_value  = ranges[6];
-        var max_cont_value  = ranges[7];
+        var tree_table;
+
+
+        $(document).ready( function () {
+
+            tree_table = $('#tree_table').DataTable({
+                'dom': "<'row'<'col-sm-6'B><'col-sm-6'f>>t<'row'<'col-sm-4'i><'col-sm-8'p>>",
+                // 'buttons': ['copy', 'csv', 'print', 'colvis'],
+                'bFilter': false
+            });
+        });
+
+        // $('.tree_table').resizeable({}:'n,w')
+
+
 
         root = d3.hierarchy(tree);
         root.x0 = 0;
@@ -574,72 +627,75 @@
         recount_sources(root)
         update_tree(root)
 
-        dist_range_tree  = $("#dist_range_tree")
-        compl_range_tree = $("#compl_range_tree")
-        cont_range_tree  = $("#cont_range_tree")
-        var live_range_cont_tree  = $("#live_range_cont_tree")
-        var live_range_dist_tree  = $("#live_range_dist_tree")
-        var live_range_compl_tree = $("#live_range_compl_tree")
-        dist_range_tree.slider({
-            range: true,
-            min: ranges[0],
-            max: ranges[1],
-            step: ranges[2],
-            values: [ ranges[0], ranges[1] ],
-            slide: function( event, ui ) {
-                live_range_dist_tree.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-            },
-            stop: function( event, ui ) {
-                min_dist_value = ui.values[0]
-                max_dist_value = ui.values[1]
-                update_root(root, min_dist_value, max_dist_value, min_compl_value,
-                                   max_compl_value, min_cont_value, max_cont_value, false)
-                recount_sources(root)
-                update_tree(root)
-                recolor_rects_and_counts()
-            }
-        });
-        compl_range_tree.slider({
-            range: true,
-            min: ranges[3],
-            max: ranges[4],
-            step: ranges[5],
-            values: [ ranges[3], ranges[4] ],
-            slide: function( event, ui ) {
-                live_range_compl_tree.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-            },
-            stop: function( event, ui ) {
-                min_compl_value = ui.values[0]
-                max_compl_value = ui.values[1]
-                update_root(root, min_dist_value, max_dist_value, min_compl_value,
-                                   max_compl_value, min_cont_value, max_cont_value, false)
-                recount_sources(root)
-                update_tree(root)
-                recolor_rects_and_counts()
-            }
-        });
-        cont_range_tree.slider({
-            range: true,
-            min: ranges[6],
-            max: ranges[7],
-            step: ranges[8],
-            values: [ ranges[6], ranges[7] ],
-            slide: function( event, ui ) {
-                live_range_cont_tree.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-            },
-            stop: function( event, ui ) {
-                min_cont_value = ui.values[0]
-                max_cont_value = ui.values[1]
-                update_root(root, min_dist_value, max_dist_value, min_compl_value,
-                                   max_compl_value, min_cont_value, max_cont_value, false)
-                recount_sources(root)
-                update_tree(root)
-                recolor_rects_and_counts()
-            }
-        });
-        live_range_dist_tree.val(dist_range_tree.slider("values", 0) + " - " + dist_range_tree.slider( "values", 1 ) );
-        live_range_compl_tree.val(compl_range_tree.slider("values", 0) + " - " + compl_range_tree.slider( "values", 1 ) );
-        live_range_cont_tree.val(cont_range_tree.slider("values", 0) + " - " + cont_range_tree.slider( "values", 1 ) );
+        // tree_table.clear()
+
+
+        // dist_range_tree  = $("#dist_range_tree")
+        // compl_range_tree = $("#compl_range_tree")
+        // cont_range_tree  = $("#cont_range_tree")
+        // var live_range_cont_tree  = $("#live_range_cont_tree")
+        // var live_range_dist_tree  = $("#live_range_dist_tree")
+        // var live_range_compl_tree = $("#live_range_compl_tree")
+        // dist_range_tree.slider({
+        //     range: true,
+        //     min: ranges[0],
+        //     max: ranges[1],
+        //     step: ranges[2],
+        //     values: [ ranges[0], ranges[1] ],
+        //     slide: function( event, ui ) {
+        //         live_range_dist_tree.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+        //     },
+        //     stop: function( event, ui ) {
+        //         min_dist_value = ui.values[0]
+        //         max_dist_value = ui.values[1]
+        //         update_root(root, min_dist_value, max_dist_value, min_compl_value,
+        //                            max_compl_value, min_cont_value, max_cont_value, false)
+        //         recount_sources(root)
+        //         update_tree(root)
+        //         recolor_rects_and_counts()
+        //     }
+        // });
+        // compl_range_tree.slider({
+        //     range: true,
+        //     min: ranges[3],
+        //     max: ranges[4],
+        //     step: ranges[5],
+        //     values: [ ranges[3], ranges[4] ],
+        //     slide: function( event, ui ) {
+        //         live_range_compl_tree.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+        //     },
+        //     stop: function( event, ui ) {
+        //         min_compl_value = ui.values[0]
+        //         max_compl_value = ui.values[1]
+        //         update_root(root, min_dist_value, max_dist_value, min_compl_value,
+        //                            max_compl_value, min_cont_value, max_cont_value, false)
+        //         recount_sources(root)
+        //         update_tree(root)
+        //         recolor_rects_and_counts()
+        //     }
+        // });
+        // cont_range_tree.slider({
+        //     range: true,
+        //     min: ranges[6],
+        //     max: ranges[7],
+        //     step: ranges[8],
+        //     values: [ ranges[6], ranges[7] ],
+        //     slide: function( event, ui ) {
+        //         live_range_cont_tree.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+        //     },
+        //     stop: function( event, ui ) {
+        //         min_cont_value = ui.values[0]
+        //         max_cont_value = ui.values[1]
+        //         update_root(root, min_dist_value, max_dist_value, min_compl_value,
+        //                            max_compl_value, min_cont_value, max_cont_value, false)
+        //         recount_sources(root)
+        //         update_tree(root)
+        //         recolor_rects_and_counts()
+        //     }
+        // });
+        // live_range_dist_tree.val(dist_range_tree.slider("values", 0) + " - " + dist_range_tree.slider( "values", 1 ) );
+        // live_range_compl_tree.val(compl_range_tree.slider("values", 0) + " - " + compl_range_tree.slider( "values", 1 ) );
+        // live_range_cont_tree.val(cont_range_tree.slider("values", 0) + " - " + cont_range_tree.slider( "values", 1 ) );
 
 
         function update_root(total_root, min_dist, max_dist, min_compl, max_compl, min_cont, max_cont, set){
@@ -651,51 +707,52 @@
         }
 
 
+        function check_in_range(t, data, _data, min_val, max_val, set){
+            var curr_len = 0
+            // var compl_len = t.data[data].length
+            for (key in t.data[data]){
+                if (set){
+                    t.data[_data][key] = t.data[data][key]
+                }
+                entry = t.data[_data][key]
+                if (entry > max_val || entry < min_val){
+                    t.data[data][key] = null
+                }else{
+                    t.data[data][key] = t.data[_data][key]
+                    curr_len = curr_len + 1
+                }
+            }
+            if (curr_len == 0){
+                t.data.bar_filter = true
+            }
+            return t
+        }
+
         function recurse_root(data, min_dist, max_dist, min_compl, max_compl, min_cont, max_cont, set){
             if (data.children){
                 var children_len = data.children.length;
                 var remove = new Array(children_len).fill(false);
 
-                var dist, compl, cont
+                var dist, compl, cont, curr_len
 
                 for (let i = 0; i < children_len; i++){
                     var t = data.children[i]
-                    if (t.data.compl){
-                        compl = t.data.compl
-                        cont  = t.data.cont
-                        if (compl > max_compl || compl < min_compl || cont > max_cont || cont < min_cont){
-                            remove[i] = true
-                            data.children[i].data.bar_filter = true
-                        }else{
-                            remove[i] = false
-                            data.children[i].data.bar_filter = false                    
+                    if (t.data.name){
+                        t.data.bar_filter = false
+                        // we set tree filter here so that the value is set
+                        if (set){
+                            t.data._compl = {}
+                            t.data._cont  = {}
+                            t.data._dist  = {}
                         }
-
-                        if (!remove[i]){
-                            if (set){
-                                t.data._dist = {}
-                            }
-                            // check if all dists have been filtered out for row.
-                            var dist_len = t.data.dist.length
-                            var curr_len = 0
-                            for (key in t.data.dist){
-                                if (set) {
-                                    t.data._dist[key] = t.data.dist[key]
-                                }
-                                dist = t.data._dist[key]
-                                if (dist > max_dist || dist < min_dist){
-                                    t.data.dist[key] = null
-                                }else{
-                                    t.data.dist[key] = t.data._dist[key]
-                                    curr_len = curr_len + 1
-                                }
-                            }
-                            if (curr_len == 0){
-                                remove[i] = true
-                                t.data.bar_filter = true
-                            }
-
+                        t = check_in_range(t, "compl", "_compl", min_compl, max_compl, set)
+                        if (!t.data.bar_filter){
+                            t = check_in_range(t, "cont", "_cont", min_cont, max_cont, set)
                         }
+                        if (!t.data.bar_filter){
+                            t = check_in_range(t, "dist", "_dist", min_dist, max_dist, set)
+                        }
+                        remove[i] = t.data.bar_filter
 
                     }else{
                         remove_limb = recurse_root(t, min_dist, max_dist, min_compl, max_compl, min_cont, max_cont, set)
@@ -719,20 +776,88 @@
         }
 
         function bar_filtration(d){
-            return d.data.bar_filter == false
+            if (d.data.filter_my_children){
+                var curr_depth = d.depth
+                //get all descendants and mark them as filtered out by tree
+                d.descendants().forEach((child) => {
+                    if (child.depth > curr_depth){child.data.tree_filter = true}
+                })
+            }
+            return (d.data.bar_filter == false) && (d.data.tree_filter == false)
+        }
+
+
+        function get_row_table_data(d, i, shared_category){
+            var rows = [];
+            d.data.sources[i].forEach(function(src){
+                var row = []
+                if (d.data.dist[src] != null){
+                    row.push(d.data.dist[src]) //Distance  
+                    row.push(d.data.truncated_name.toString() + src.toString()) //MAG ID
+                    // row['KBase ID'] = 
+                    // row['GOLD Analysis Project ID'] = 
+                    // row['GOLD Sequencing Project ID'] = 
+                    row.push(d.data.truncated_name) // IMG Genome ID
+                    row.push(d.data.compl[src]) // Completeness
+                    row.push(d.data.cont[src]) // Contamination
+                    // row['MIMAG'] = 
+                    row.push(d.data.name) // Project/Study Name
+                    row.push(shared_category)
+
+                    rows.push(row)
+                }
+            })
+            return rows
+        }
+
+        function close_pop_up(){
+            // currently pops up on the bottom 
+            document.getElementById("tree_table_wrapper").style.height = "0%"
+            document.getElementById("tree_group").style.height = "100%"
+            document.getElementById("treelegend").style.height = "60px"
+        }
+
+        function open_pop_up(){
+            // 
+            document.getElementById("tree_table_wrapper").style.height = "100%"
+            document.getElementById("tree_group").style.height = "0%"
+            document.getElementById("treelegend").style.height = "0px"
+        }
+
+        function show_tree_table(d, i){
+            shared_category = d.data.truncated_name
+            if (d.data.name){              
+                rows = get_row_table_data(d, i, shared_category)
+            }else{
+                var rows = []
+                leaf_nodes = d.leaves()
+                leaf_nodes.forEach((ln) => {
+                    if (i in ln.data.sources){
+                        rows = rows.concat(get_row_table_data(ln, i, shared_category))
+                    }
+                })
+            }
+            tree_table.clear()
+            tree_table.rows.add(rows).draw()
+
+            open_pop_up()
+            $("#tree_table_wrapper").show();
         }
 
         function recount_sources(root){
             var source_children = {}
             root.eachAfter(function(n){
                 if (!n.data.bar_filter){
-                    if (!n.data.compl){
+                    if (!n.data.name){
                         source_children = {}
                         leaf_nodes = n.leaves()
                         leaf_nodes.forEach((ln) => {
                             if (!ln.data.bar_filter){
                                 Object.keys(ln.data.sources).forEach((i) => {
-                                    var non_nulls = Object.values(ln.data.sources[i]).filter(key=>ln.data.dist[key]!=null).length
+                                    var non_nulls = Object.values(ln.data.sources[i]).filter(key=>
+                                        (ln.data.dist[key]!=null) && (ln.data.compl[key]!=null) && (ln.data.cont[key]!=null)
+                                    ).length
+
                                     if (non_nulls > 0){
                                         if (i in source_children){
                                             source_children[i] = source_children[i] + non_nulls
@@ -760,10 +885,13 @@
         function recolor_rects_and_counts(){
             d3.selectAll('.map_rect').style('fill', function(d, i){
                 var idx = i % sources.length
-                if (d.data.compl){
+                if (d.data.name){
                     if (idx in d.data.sources){
-                        var non_nulls = Object.values(d.data.sources[idx]).filter(key=>d.data.dist[key]!=null).length
-                        if (non_nulls > 0){
+                        var dist_non_nulls = Object.values(d.data.sources[idx]).filter(key=>d.data.dist[key]!=null).length
+                        var compl_non_nulls = Object.values(d.data.sources[idx]).filter(key=>d.data.compl[key]!=null).length
+                        var cont_non_nulls = Object.values(d.data.sources[idx]).filter(key=>d.data.cont[key]!=null).length
+                        
+                        if (dist_non_nulls > 0 && compl_non_nulls > 0 && cont_non_nulls > 0){
                             return oneBlack
                         }else{
                             return nullGray
@@ -786,7 +914,8 @@
 
 
         function update_tree(source) {
-
+          // Set all tree filters to be false
+          root.descendants().forEach((node) => {node.data.tree_filter = false})
           // Compute the flattened node list.
           var nodes = root.descendants().filter(bar_filtration);
 
@@ -800,6 +929,10 @@
             .duration(duration)
             .attr("height", height);
 
+          document.getElementById("treeid").style.height = height.toString() + "px"
+          document.getElementById("treemap").style.height = height.toString() + "px"
+          document.getElementById("treegroup").style.height = height.toString() + "px"
+
           d3.select(self.frameElement).transition()
             .duration(duration)
             .style("height", height + "px")
@@ -808,7 +941,7 @@
           var index = -1;
 
           root.eachBefore(function(n) {
-            if (!n.data.bar_filter){
+            if (!n.data.bar_filter && !n.data.tree_filter){
                 n.x = ++index * barHeight;
                 n.y = n.depth * 20;
             }
@@ -843,8 +976,9 @@
                 .attr("border", 0)
                 .style("stroke","white")
                 .style("stroke-opacity", 0.6)
+                // .style("fill","#ff0571")
                 .style("fill", function(d) {
-                    if (d.data.compl){
+                    if (d.data.name){
                         if (i in d.data.sources){
                             var non_nulls = Object.values(d.data.sources[i]).filter(key=>d.data.dist[key]!=null).length
                             if (non_nulls > 0){
@@ -855,7 +989,7 @@
                         }else{
                             return zeroGray
                         }
-                    }else{ 
+                    }else{
                         if (i in d.data.sources){
                             return colorScale(d.data.sources[i])
                         }else{
@@ -865,7 +999,7 @@
                 })
                 .on("mouseover", function(d){
                     if (i in d.data.sources){
-                        if (d.data.compl){
+                        if (d.data.name){
                             tooltip.style("background-color",oneBlack)
                             tooltip.style("color", "white")
                         }else{
@@ -873,8 +1007,8 @@
                             tooltip.style("color", "#1e1e1e")
                         }
 
-                        if (d.data.compl){
-                            var st = "<a style=\"text-decoration: underline\">IMG id --- Distance</a><br/>"
+                        if (d.data.name){
+                            var st = "<a style=\"text-decoration: underline\">MAG ID --- Distance</a><br/>"
                             var used = false
                             d.data.sources[i].forEach((key) => {
                                 if (d.data.dist[key] != null){
@@ -899,7 +1033,7 @@
                 .on("mousemove", function(d){
                     if (i in d.data.sources){
                         if (!d.data.bar_filter){
-                            if (d.data.compl){
+                            if (d.data.name){
                                 var non_nulls = Object.values(d.data.sources[i]).filter(key=>d.data.dist[key]!=null).length
                                 if (non_nulls > 0){
                                     return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")
@@ -913,7 +1047,7 @@
                 .on("mouseout", function(d){
                     if (i in d.data.sources){
                         if (!d.data.bar_filter){
-                            if (d.data.compl){
+                            if (d.data.name){
                                 var non_nulls = Object.values(d.data.sources[i]).filter(key=>d.data.dist[key]!=null).length
                                 if (non_nulls > 0){
                                     return tooltip.style("top", "-9999px");
@@ -923,63 +1057,70 @@
                             }
                         }
                     }
+                })
+                .on("click", function(d){
+                        if (i in d.data.sources){
+                            if (!d.data.bar_filter){
+                                show_tree_table(d, i)
+                            }
+                        }
                 });
           }
           
             
           // ========================================================================
           // want only include this if its a leaf...
-          nodeEnter.append("rect")
-              .attr("class", "tree_rect")
-              .attr("y", (-barHeight/2) + title_height + tree_map_gap)
-              .attr("height", barHeight)
-              .attr("width", leaf_width)
-              .attr("border", 0)
-              //.style('stroke', "#7ab9ff")
-              .style("fill", color)
-              .on("click", click)
-              // .append("svg:title")
-              // .text("Distance")
-              .on("mouseover", show_compl_text)
-              .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
-              .on("mouseout", function(d){return tooltip.style("top", "-9999px");})
+          // nodeEnter.append("rect")
+          //     .attr("class", "tree_rect")
+          //     .attr("y", (-barHeight/2) + title_height + tree_map_gap)
+          //     .attr("height", barHeight)
+          //     .attr("width", leaf_width)
+          //     .attr("border", 0)
+          //     //.style('stroke', "#7ab9ff")
+          //     .style("fill", color)
+          //     .on("click", click)
+          //     // .append("svg:title")
+          //     // .text("Distance")
+          //     .on("mouseover", show_compl_text)
+          //     .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
+          //     .on("mouseout", function(d){return tooltip.style("top", "-9999px");})
 
-          nodeEnter.append("text")
-                .attr('y', title_height + tree_map_gap)
-                .attr("dy", 5)
-                .attr("dx", 4.5)
-                .style("font-weight", "bold")
-                .text(function(d){
-                  if(d.children){return ""
-                  }else{return d.data.compl}
-                })
+          // nodeEnter.append("text")
+          //       .attr('y', title_height + tree_map_gap)
+          //       .attr("dy", 5)
+          //       .attr("dx", 4.5)
+          //       .style("font-weight", "bold")
+          //       .text(function(d){
+          //         if(d.children){return ""
+          //         }else{return d.data.compl}
+          //       })
 
-          nodeEnter.append("rect")
-                .attr("class", "tree_rect")
-                .attr("y", (-barHeight / 2) + title_height + tree_map_gap)
-                .attr("height",barHeight)
-                .attr("width", leaf_width)
-                .attr("border", 0)
-                .attr("transform", leaf_transform)
-                //.style('stroke', "#7ab9ff")
-                .style("fill", color)
-                .on("click", click)
-                // .append("svg:title")
-                // .text("Distance")
-                .on("mouseover",show_cont_text)
-                .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
-                .on("mouseout", function(d){return tooltip.style("top", "-9999px");})
+          // nodeEnter.append("rect")
+          //       .attr("class", "tree_rect")
+          //       .attr("y", (-barHeight / 2) + title_height + tree_map_gap)
+          //       .attr("height",barHeight)
+          //       .attr("width", leaf_width)
+          //       .attr("border", 0)
+          //       .attr("transform", leaf_transform)
+          //       //.style('stroke', "#7ab9ff")
+          //       .style("fill", color)
+          //       .on("click", click)
+          //       // .append("svg:title")
+          //       // .text("Distance")
+          //       .on("mouseover",show_cont_text)
+          //       .on("mousemove", function(d){ return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")})
+          //       .on("mouseout", function(d){return tooltip.style("top", "-9999px");})
 
-          nodeEnter.append("text")
-                .attr('y', title_height + tree_map_gap)
-                .attr("dy", 5)
-                .attr("dx", 4.5)
-                .style("font-weight", "bold")
-                .attr("transform", leaf_transform)
-                .text(function(d){
-                  if(d.children){return ""
-                  }else{return d.data.cont}
-                })
+          // nodeEnter.append("text")
+          //       .attr('y', title_height + tree_map_gap)
+          //       .attr("dy", 5)
+          //       .attr("dx", 4.5)
+          //       .style("font-weight", "bold")
+          //       .attr("transform", leaf_transform)
+          //       .text(function(d){
+          //         if(d.children){return ""
+          //         }else{return d.data.cont}
+          //       })
           // ========================================================================
           // ------------------------------------------------------------------------
           // Enter any new nodes at the parent's previous position.
@@ -987,25 +1128,25 @@
               .attr("class", "tree_rect")
               .attr("y", (-barHeight / 2) + title_height + tree_map_gap)
               .attr("height", barHeight)
-              .attr("transform", leaf_transform_2)
+              // .attr("transform", leaf_transform_2)
               .attr("width", function(d){
-                  return barWidth - d.depth * margin.left - leaf_width(d) * 2
+                  return barWidth - d.depth * margin.left // - leaf_width(d) * 2
               })
               .style("fill", color)
               .on("click", click)
-              .on("mouseover", function(d){ if(d.data.compl){
+              .on("mouseover", function(d){ if(d.data.name){
                 tooltip.style("color", "#1e1e1e")
                 tooltip.style("background-color", "#7ab9ff")
                 return tooltip.text(d.data.name); }})
-              .on("mousemove", function(d){ if(d.data.compl){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
-              .on("mouseout", function(d){ if(d.data.compl){return tooltip.style("top", "-9999px"); }});
+              .on("mousemove", function(d){ if(d.data.name){return tooltip.style("top", (event.pageY - 30) + "px").style("left", (event.pageX) + "px")}})
+              .on("mouseout", function(d){ if(d.data.name){return tooltip.style("top", "-9999px"); }});
 
 
           nodeEnter.append("text")
               .attr('y', title_height + tree_map_gap)
               .attr("dy", 5)
               .attr("dx", 5.5)
-              .attr('transform', leaf_transform_2)
+              // .attr('transform', leaf_transform_2)
               .text(function(d) { return d.data.truncated_name; })
 
           nodeEnter.append("text")
@@ -1066,21 +1207,16 @@
         }
 
 
-        // function find_how_many_prev(d, i){
-        //     if nodes.data()[i-1].bar_filter == 0:
-        //         return i-1
-        //     return find_how_many_prev(d, i-1)
-        // }
-
-
         // Toggle children on click.
         function click(d) {
-          if (d.children) {
-            d._children = d.children;
-            d.children = null;
+          if (!d.data.filter_my_children) {
+            d.data.filter_my_children = true
+            // d._children = d.children;
+            // d.children = null;
           } else {
-            d.children = d._children;
-            d._children = null;
+            d.data.filter_my_children = false
+            // d.children = d._children;
+            // d._children = null;
           }
           update_tree(d);
         }
@@ -1106,7 +1242,7 @@
         }
 
         function leaf_width(d){
-          if (d.data.compl){
+          if (d.data.name){
             return lwidth
           }else{
             return 0
@@ -1120,7 +1256,6 @@
         function color(d) {
           return d._children ? "#badaff" : d.children ? "#badaff" : "#7ab9ff";
         }
-
     </script>
 
     <script>

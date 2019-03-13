@@ -42,12 +42,12 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
             tree.append({
                 'truncated_name': str(trunc_name),
                 'name' : t,
-                'count': "({})".format(len(dist)),
-                'compl': str(compl),
-                'cont' :str(cont)
+                'count': "({})".format(len(dist))
             })
             if source_order!=None:
                 tree[-1]['dist'] = dist
+                tree[-1]['compl'] = compl
+                tree[-1]['cont'] = cont
             else:
                 children = []
                 for key, val in dist.items():
@@ -66,7 +66,6 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
             })
         if source_order!=None:
 
-            # sources = {}
             sources = []
             if leaf == []:
                 g = GOLD[GOLD[col]==t][['upa','mag_id']]
@@ -241,19 +240,24 @@ def filter_results(ws_url, cb_url, query_results, n_max_results, max_distance, m
 
         for key in curr_dist_compl:
             if key in dist_compl:
-                dist_1, compl_1, cont_1 = dist_compl[key]
-                dist_2, compl_2, cont_2 = curr_dist_compl[key]
-                if compl_1 == compl_2 and cont_1 == cont_2:
-                    # check to see distance dictionary
-                    unincluded_keys = list(set(list(dist_2.keys())) - set(list(dist_1.keys())))
-                    for uinc_key in unincluded_keys:
-                        dist_1[uinc_key] = dist_2[uinc_key]
-                    dist_compl[key] = [dist_1, compl_1, cont_1]
-                else:
-                    raise ValueError('Same project ids but contamination and/or completeness do not match')
-            # id_to_inputs[key].append(upa_name)
+                for mag_key in curr_dist_compl[key]:
+                    dist_compl[key][mag_key] = curr_dist_compl[key][mag_key]
             else:
                 dist_compl[key] = curr_dist_compl[key]
+
+            #     dist_1, compl_1, cont_1 = dist_compl[key]
+            #     dist_2, compl_2, cont_2 = curr_dist_compl[key]
+            #     if compl_1 == compl_2 and cont_1 == cont_2:
+            #         # check to see distance dictionary
+            #         unincluded_keys = list(set(list(dist_2.keys())) - set(list(dist_1.keys())))
+            #         for uinc_key in unincluded_keys:
+            #             dist_1[uinc_key] = dist_2[uinc_key]
+            #         dist_compl[key] = [dist_1, compl_1, cont_1]
+            #     else:
+            #         raise ValueError('Same project ids but contamination and/or completeness do not match')
+            # # id_to_inputs[key].append(upa_name)
+            # else:
+            #     dist_compl[key] = curr_dist_compl[key]
 
         upa_names.append(upa_name)
 
@@ -305,15 +309,20 @@ def filter_stats(stats, n_max_results, max_distance, min_completeness, max_conta
     dist_compl = {}
     for s in stats:
         if s['project'] not in dist_compl:
-            dist_compl[s['project']] = [{s['mag_id']:round(s['dist'], 3)}, round(s['completeness'],2), round(s['contamination'],2)]
+            dist_compl[s['project']] = {}
+            dist_compl[s['project']][s['mag_id']] = [round(s['dist'], 3), round(s['completeness'],2), round(s['contamination'],2)]
+
+            # dist_compl[s['project']] = [{s['mag_id']:round(s['dist'], 3)}, round(s['completeness'],2), round(s['contamination'],2)]
         else:
-            print("mapping the items:",s, dist_compl[s['project']])
-            if round(s['completeness'],2) == dist_compl[s['project']][1] and round(s['contamination'],2) == dist_compl[s['project']][2]:
-                dist_compl[s['project']][0][s['mag_id']] = (round(s['dist'], 3))
-            else:
-                raise ValueError('same project ids but contamination and/or completeness do not match',\
-                                round(s['completeness'],2), dist_compl[s['project']][1],
-                                round(s['contamination'],2), dist_compl[s['project']][2])
+            dist_compl[s['proejct']][s['mag_id']] = [round(s['dist'], 3), round(s['completeness'],2), round(s['contamination'],2)]
+
+            # print("mapping the items:",s, dist_compl[s['project']])
+            # if round(s['completeness'],2) == dist_compl[s['project']][1] and round(s['contamination'],2) == dist_compl[s['project']][2]:
+            #     dist_compl[s['project']][0][s['mag_id']] = (round(s['dist'], 3))
+            # else:
+            #     raise ValueError('same project ids but contamination and/or completeness do not match',\
+            #                     round(s['completeness'],2), dist_compl[s['project']][1],
+            #                     round(s['contamination'],2), dist_compl[s['project']][2])
 
     # dist_compl = {s['project']:(round(s['dist'], 3), round(s['completeness'], 2), round(s['contamination'], 2)) for s in stats}
     return stats, dist_compl
