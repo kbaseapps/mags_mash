@@ -35,6 +35,11 @@
         list-style-type: none;
     }
 
+    .tabcontent {
+        overflow: auto;
+        height: calc(100% - 140px);
+    }
+
     .tab {
         overflow: hidden;
         border: 1px solid #ccc;
@@ -93,14 +98,14 @@
     .container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr; /* fraction*/
+        max-width: 100vh;
     }
-
 
     </style>
 
 </head>
 <!-- HTML below -->
-<body>
+<body style="height:100vh">
     <div class='tab'>
         <button class="tablinks" onclick="openTab(event, 'stats')" id="defaultOpen">List View</button>
         <button class="tablinks" onclick="openTab(event, 'treetab')">Ecosystem Tree</button>
@@ -120,7 +125,7 @@
     Statistics List view
     -->
     <div id='stats' class="tabcontent">
-        <div class="container" id="sliders">
+        <div class="container" id="sliders" style="height:">
             <div id="dist_slider">
                 <p>
                     <label style="border-right: 5px">Distance Filter:</label><input type="text" id="live_range_dist" readonly style="border:0; color:#6dacff; font-weight:bold; width: 200px;">
@@ -230,60 +235,91 @@
         );
 
         var ranges = {{ranges|safe}}
-        // var ranges = [0,0.5,0,100,0,100]
         var num_steps = 100
 
-        $(document).ready( function () {
-            dist_range  = $("#dist_range")
-            compl_range = $("#compl_range")
-            cont_range  = $("#cont_range")
-            var live_range_cont  = $("#live_range_cont")
-            var live_range_dist  = $("#live_range_dist")
-            var live_range_compl = $("#live_range_compl")
-            dist_range.slider({
-                    range: true,
-                    min: ranges[0],
-                    max: ranges[1],
-                    step: ranges[2],
-                    values: [ ranges[0], ranges[1]],
-                    slide: function( event, ui ) {
-                      live_range_dist.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-                    },
-                    stop: function( event, ui ) {
-                      table.draw();
-                    }
-            });
-            compl_range.slider({
-                range: true,
-                min: ranges[3],
-                max: ranges[4],
-                step: ranges[5],
-                values: [ ranges[3], ranges[4] ],
-                slide: function( event, ui ) {
-                    live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-                },
-                stop: function( event, ui ) {
-                    table.draw();
-                }
-            });
-            cont_range.slider({
-                range: true,
-                min: ranges[6],
-                max: ranges[7],
-                step: ranges[8],
-                values: [ ranges[6], ranges[7] ],
-                slide: function( event, ui ) {
-                    live_range_cont.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-                },
-                stop: function( event, ui ) {
-                    table.draw();
-                }
-            });
-            live_range_dist.val(dist_range.slider( "values", 0 ) + " - " + dist_range.slider( "values", 1 ) );
-            live_range_compl.val(compl_range.slider( "values", 0 ) + " - " + compl_range.slider( "values", 1 ) );
-            live_range_cont.val(cont_range.slider( "values", 0 ) + " - " + cont_range.slider( "values", 1 ) );
+        var min_dist_value  = ranges[0];
+        var max_dist_value  = ranges[1];
+        var min_compl_value = ranges[3];
+        var max_compl_value = ranges[4];
+        var min_cont_value  = ranges[6];
+        var max_cont_value  = ranges[7];
 
-            var table = $('.table').DataTable({
+        dist_range  = $("#dist_range")
+        compl_range = $("#compl_range")
+        cont_range  = $("#cont_range")
+        var live_range_cont  = $("#live_range_cont")
+        var live_range_dist  = $("#live_range_dist")
+        var live_range_compl = $("#live_range_compl")
+        dist_range.slider({
+                range: true,
+                min: ranges[0],
+                max: ranges[1],
+                step: ranges[2],
+                values: [ ranges[0], ranges[1] ],
+                slide: function( event, ui ) {
+                  live_range_dist.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                },
+                stop: function( event, ui ) {
+                    table.draw();
+                    min_dist_value = ui.values[0]
+                    max_dist_value = ui.values[1]
+                    update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                                       max_compl_value, min_cont_value, max_cont_value, false)
+                    recount_sources(root)
+                    update_tree(root)
+                    recolor_rects_and_counts()
+                }
+        });
+        compl_range.slider({
+            range: true,
+            min: ranges[3],
+            max: ranges[4],
+            step: ranges[5],
+            values: [ ranges[3], ranges[4] ],
+            slide: function( event, ui ) {
+                live_range_compl.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            },
+            stop: function( event, ui ) {
+                table.draw();
+                min_compl_value = ui.values[0]
+                max_compl_value = ui.values[1]
+                update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                                   max_compl_value, min_cont_value, max_cont_value, false)
+                recount_sources(root)
+                update_tree(root)
+                recolor_rects_and_counts()
+            }
+        });
+        cont_range.slider({
+            range: true,
+            min: ranges[6],
+            max: ranges[7],
+            step: ranges[8],
+            values: [ ranges[6], ranges[7] ],
+            slide: function( event, ui ) {
+                live_range_cont.val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            },
+            stop: function( event, ui ) {
+                table.draw();
+                min_cont_value = ui.values[0]
+                max_cont_value = ui.values[1]
+                update_root(root, min_dist_value, max_dist_value, min_compl_value,
+                                   max_compl_value, min_cont_value, max_cont_value, false)
+                recount_sources(root)
+                update_tree(root)
+                recolor_rects_and_counts()
+            }
+        });
+        live_range_dist.val(dist_range.slider("values", 0) + " - " + dist_range.slider( "values", 1 ) );
+        live_range_compl.val(compl_range.slider("values", 0) + " - " + compl_range.slider( "values", 1 ) );
+        live_range_cont.val(cont_range.slider("values", 0) + " - " + cont_range.slider( "values", 1 ) );
+
+        var table;
+
+
+        $(document).ready( function () {
+
+            table = $('.table').DataTable({
                 'dom': "<'row'<'col-sm-6'B><'col-sm-6'f>>t<'row'<'col-sm-4'i><'col-sm-8'p>>",
                 'buttons': ['copy', 'csv', 'print', 'colvis'],
             });
