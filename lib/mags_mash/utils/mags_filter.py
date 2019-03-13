@@ -26,7 +26,10 @@ def create_tree(GOLD, tree_cols, dist_compl, source_order=None):
         leaf = create_tree(GOLD[GOLD[col]==t], tree_cols[1:], dist_compl, source_order=source_order)
         if leaf == []:
             if col == "Project / Study Name":
-                dist, compl, cont = dist_compl[t]
+                mag_dict = dist_compl[t]
+                dist  = {mag:val[0] for mag, val in mag_dict.items()}
+                compl = {mag:val[1] for mag, val in mag_dict.items()}
+                cont  = {mag:val[2] for mag, val in mag_dict.items()}
             else:
                 dist, compl, cont =  "", "", ""
             print("-"*90)
